@@ -33,6 +33,10 @@ URL:            https://dracut.wiki.kernel.org/
 Source0:        dracut-%{version}.tar.xz
 Source1:        dracut-rpmlintrc
 Source2:        README.susemaint
+
+# Test patches for openQA
+Patch1:         0001-test-TEST-03-USR-MOUNT-adapt-for-openQA.patch
+
 BuildRequires:  asciidoc
 BuildRequires:  bash
 BuildRequires:  docbook-xsl-stylesheets
@@ -135,8 +139,17 @@ Provides:       dracut:/sbin/mkinitrd
 This package contains the legacy initrd script for dracut.
 Call dracut directly instead.
 
+%package qa-testsuite
+Summary:        Test suite for QA
+Group:          System/Benchmark
+Requires:       %{name} = %{version}-%{release}
+
+%description qa-testsuite
+This package provides the dracut testsuite scripts and binaries for QA.
+
 %prep
-%autosetup
+%setup -q -n dracut-%{version}
+%patch1 -p1
 
 %build
 %configure \
@@ -176,6 +189,13 @@ ln -s %{dracutlibdir}/modules.d/45ifcfg/write-ifcfg-suse.sh %{buildroot}/%{dracu
 mv %{buildroot}/%{dracutlibdir}/modules.d/45ifcfg/write-ifcfg.sh %{buildroot}/%{dracutlibdir}/modules.d/45ifcfg/write-ifcfg-redhat.sh
 ln -s %{dracutlibdir}/modules.d/45ifcfg/write-ifcfg-redhat.sh %{buildroot}/%{dracutlibdir}/modules.d/45ifcfg/write-ifcfg.sh
 %endif
+
+# qa-testsuite installation
+mkdir -p %{buildroot}/%{dracutlibdir}/test
+install -m 0755 test/test-functions %{buildroot}/%{dracutlibdir}/test
+mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-03-USR-MOUNT
+install -m 0755 test/TEST-03-USR-MOUNT/*.sh %{buildroot}/%{dracutlibdir}/test/TEST-03-USR-MOUNT
+install -m 0644 test/TEST-03-USR-MOUNT/fstab %{buildroot}/%{dracutlibdir}/test/TEST-03-USR-MOUNT
 
 %post
 # check whether /var/run has been converted to a symlink
@@ -259,6 +279,12 @@ fi
 %files mkinitrd-deprecated
 %{dracut_sbindir}/mkinitrd
 %{_mandir}/man8/mkinitrd.8*
+
+%files qa-testsuite
+%dir %{dracutlibdir}/test
+%{dracutlibdir}/test/test-functions
+%dir %{dracutlibdir}/test/TEST-03-USR-MOUNT
+%{dracutlibdir}/test/TEST-03-USR-MOUNT/{*.sh,fstab}
 
 %files
 %license COPYING
