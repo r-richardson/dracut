@@ -176,7 +176,7 @@ This package provides the dracut testsuite scripts and binaries for QA.
 
 %prep
 %setup -q -n dracut-%{version}
-%patch1 -p1
+%autopatch -p1
 
 %build
 %configure \
