@@ -35,7 +35,34 @@ Source1:        dracut-rpmlintrc
 Source2:        README.susemaint
 
 # Test patches for openQA
-Patch1:         0001-test-TEST-03-USR-MOUNT-adapt-for-openQA.patch
+Patch1:         0001-test-TEST-01_BASIC-adapt-for-openQA.patch
+Patch2:         0002-test-TEST_02_SYSTEMD-adapt-for-openQA.patch
+Patch3:         0003-test-TEST-03-USR-MOUNT-adapt-for-openQA.patch
+Patch4:         0004-test-TEST_04_FULL_SYSTEMD-adapt-for-openQA.patch
+Patch5:         0005-test-TEST_10_RAID-adapt-for-openQA.patch
+Patch6:         0006-test-TEST_11_LVM-adapt-for-openQA.patch
+Patch7:         0007-test-TEST_12_RAID_DEG-adapt-for-openQA.patch
+Patch8:         0008-test-TEST_13_ENC_RAID_LVM-adapt-for-openQA.patch
+Patch9:         0009-test-TEST_14_IMSM-adapt-for-openQA.patch
+Patch10:        0010-test-TEST_15_BTRFSRAID-adapt-for-openQA.patch
+Patch11:        0011-test-TEST_16_DMSQUASH-adapt-for-openQA.patch
+Patch12:        0012-test-TEST_17_LVM_THIN-adapt-for-openQA.patch
+Patch13:        0013-test-TEST_20_NFS-adapt-for-openQA.patch
+Patch14:        0014-test-TEST_21_NFS_NM-adapt-for-openQA.patch
+Patch15:        0015-test-TEST_30_ISCSI-adapt-for-openQA.patch
+Patch16:        0016-test-TEST_31_ISCSI_NM-adapt-for-openQA.patch
+Patch17:        0017-test-TEST_35_ISCSI_MULTI-adapt-for-openQA.patch
+Patch18:        0018-test-TEST_36_ISCSI_MULTI_NM-adapt-for-openQA.patch
+Patch19:        0019-test-TEST_40_NBD-adapt-for-openQA.patch
+Patch20:        0020-test-TEST_41_NBD_NM-adapt-for-openQA.patch
+Patch21:        0021-test-TEST_50_MULTINIC-adapt-for-openQA.patch
+Patch22:        0022-test-TEST_51_MULTINIC_NM-adapt-for-openQA.patch
+Patch23:        0023-test-TEST_60_BONDBRIDGEVLANIFCFG-adapt-for-openQA.patch
+Patch24:        0024-test-TEST_61_BONDBRIDGEVLANIFCFG_NM-adapt-for-openQA.patch
+Patch25:        0025-test-TEST_62_SKIPCPIO-adapt-for-openQA.patch
+Patch26:        0026-test-TEST_63_DRACUT_CPIO-adapt-for-openQA.patch
+Patch27:        0027-test-TEST_98_GETARG-adapt-for-openQA.patch
+Patch28:        0028-test-TEST_99_RPM-adapt-for-openQA.patch
 
 BuildRequires:  asciidoc
 BuildRequires:  bash
