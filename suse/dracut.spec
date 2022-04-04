@@ -306,6 +306,7 @@ fi
 %files qa-testsuite
 %defattr(-,root,root)
 %{dracutlibdir}/test
+%{dracutlibdir}/test/test-functions
 
 %files
 %license COPYING
