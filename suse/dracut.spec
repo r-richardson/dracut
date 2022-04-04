@@ -218,7 +218,6 @@ ln -s %{dracutlibdir}/modules.d/45ifcfg/write-ifcfg-redhat.sh %{buildroot}/%{dra
 %endif
 
 # qa-testsuite installation
-mkdir -p %{buildroot}/%{dracutlibdir}/test
 cp -a test %{buildroot}/%{dracutlibdir}/test
 
 %post
