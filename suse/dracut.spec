@@ -305,64 +305,8 @@ fi
 %{_mandir}/man8/mkinitrd.8*
 
 %files qa-testsuite
-%dir %{dracutlibdir}/test
-%{dracutlibdir}/test/test-functions
-%dir %{dracutlibdir}/test/TEST_01_BASIC
-%{dracutlibdir}/test/TEST_01_BASIC/*
-%dir %{dracutlibdir}/test/TEST_02_SYSTEMD
-%{dracutlibdir}/test/TEST_02_SYSTEMD/*
-%dir %{dracutlibdir}/test/TEST_03_USR_MOUNT
-%{dracutlibdir}/test/TEST_03_USR_MOUNT/*
-%dir %{dracutlibdir}/test/TEST_04_FULL_SYSTEMD
-%{dracutlibdir}/test/TEST_04_FULL_SYSTEMD/*
-%dir %{dracutlibdir}/test/TEST_10_RAID
-%{dracutlibdir}/test/TEST_10_RAID/*
-%dir %{dracutlibdir}/test/TEST_11_LVM
-%{dracutlibdir}/test/TEST_11_LVM/*
-%dir %{dracutlibdir}/test/TEST_12_RAID_DEG
-%{dracutlibdir}/test/TEST_12_RAID_DEG/*
-%dir %{dracutlibdir}/test/TEST_13_ENC_RAID_LVM
-%{dracutlibdir}/test/TEST_13_ENC_RAID_LVM/*
-%dir %{dracutlibdir}/test/TEST_14_IMSM
-%{dracutlibdir}/test/TEST_14_IMSM/*
-%dir %{dracutlibdir}/test/TEST_15_BTRFSRAID
-%{dracutlibdir}/test/TEST_15_BTRFSRAID/*
-%dir %{dracutlibdir}/test/TEST_16_DMSQUASH
-%{dracutlibdir}/test/TEST_16_DMSQUASH/*
-%dir %{dracutlibdir}/test/TEST_17_LVM_THIN
-%{dracutlibdir}/test/TEST_17_LVM_THIN/*
-%dir %{dracutlibdir}/test/TEST_20_NFS
-%{dracutlibdir}/test/TEST_20_NFS/*
-%dir %{dracutlibdir}/test/TEST_21_NFS_NM
-%{dracutlibdir}/test/TEST_21_NFS_NM/*
-%dir %{dracutlibdir}/test/TEST_30_ISCSI
-%{dracutlibdir}/test/TEST_30_ISCSI/*
-%dir %{dracutlibdir}/test/TEST_31_ISCSI_NM
-%{dracutlibdir}/test/TEST_31_ISCSI_NM/*
-%dir %{dracutlibdir}/test/TEST_35_ISCSI_MULTI
-%{dracutlibdir}/test/TEST_35_ISCSI_MULTI/*
-%dir %{dracutlibdir}/test/TEST_36_ISCSI_MULTI_NM
-%{dracutlibdir}/test/TEST_36_ISCSI_MULTI_NM/*
-%dir %{dracutlibdir}/test/TEST_40_NBD
-%{dracutlibdir}/test/TEST_40_NBD/*
-%dir %{dracutlibdir}/test/TEST_41_NBD_NM
-%{dracutlibdir}/test/TEST_41_NBD_NM/*
-%dir %{dracutlibdir}/test/TEST_50_MULTINIC
-%{dracutlibdir}/test/TEST_50_MULTINIC/*
-%dir %{dracutlibdir}/test/TEST_51_MULTINIC_NM
-%{dracutlibdir}/test/TEST_51_MULTINIC_NM/*
-%dir %{dracutlibdir}/test/TEST_60_BONDBRIDGEVLANIFCFG
-%{dracutlibdir}/test/TEST_60_BONDBRIDGEVLANIFCFG/*
-%dir %{dracutlibdir}/test/TEST_61_BONDBRIDGEVLANIFCFG_NM
-%{dracutlibdir}/test/TEST_61_BONDBRIDGEVLANIFCFG_NM/*
-%dir %{dracutlibdir}/test/TEST_62_SKIPCPIO
-%{dracutlibdir}/test/TEST_62_SKIPCPIO/*
-%dir %{dracutlibdir}/test/TEST_63_DRACUT_CPIO
-%{dracutlibdir}/test/TEST_63_DRACUT_CPIO/*
-%dir %{dracutlibdir}/test/TEST_98_GETARG
-%{dracutlibdir}/test/TEST_98_GETARG/*
-%dir %{dracutlibdir}/test/TEST_99_RPM
-%{dracutlibdir}/test/TEST_99_RPM/*
+%defattr(-,root,root)
+%{dracutlibdir}/test
 
 %files
 %license COPYING
