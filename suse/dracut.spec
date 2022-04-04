@@ -219,63 +219,7 @@ ln -s %{dracutlibdir}/modules.d/45ifcfg/write-ifcfg-redhat.sh %{buildroot}/%{dra
 
 # qa-testsuite installation
 mkdir -p %{buildroot}/%{dracutlibdir}/test
-install -m 0755 test/test-functions %{buildroot}/%{dracutlibdir}/test
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-01-BASIC
-install -m 0755 -D test/TEST-01-BASIC %{buildroot}/%{dracutlibdir}/test/TEST-01-BASIC
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-02-SYSTEMD
-install -m 0755 -D test/TEST-02-SYSTEMD %{buildroot}/%{dracutlibdir}/test/TEST-02-SYSTEMD
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-03-USR-MOUNT
-install -m 0755 -D test/TEST-03-USR-MOUNT %{buildroot}/%{dracutlibdir}/test/TEST-03-USR-MOUNT
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-04-FULL-SYSTEMD
-install -m 0755 -D test/TEST-04-FULL-SYSTEMD %{buildroot}/%{dracutlibdir}/test/TEST-04-FULL-SYSTEMD
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-10-RAID
-install -m 0755 -D test/TEST-10-RAID %{buildroot}/%{dracutlibdir}/test/TEST-10-RAID
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-11-LVM
-install -m 0755 -D test/TEST-11-LVM %{buildroot}/%{dracutlibdir}/test/TEST-11-LVM
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-12-RAID-DEG
-install -m 0755 -D test/TEST-12-RAID-DEG %{buildroot}/%{dracutlibdir}/test/TEST-12-RAID-DEG
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-13-ENC-RAID-LVM
-install -m 0755 -D test/TEST-13-ENC-RAID-LVM %{buildroot}/%{dracutlibdir}/test/TEST-13-ENC-RAID-LVM
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-14-IMSM
-install -m 0755 -D test/TEST-14-IMSM %{buildroot}/%{dracutlibdir}/test/TEST-14-IMSM
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-15-BTRFSRAID
-install -m 0755 -D test/TEST-15-BTRFSRAID %{buildroot}/%{dracutlibdir}/test/TEST-15-BTRFSRAID
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-16-DMSQUASH
-install -m 0755 -D test/TEST-16-DMSQUASH %{buildroot}/%{dracutlibdir}/test/TEST-16-DMSQUASH
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-17-LVM-THIN
-install -m 0755 -D test/TEST-17-LVM-THIN %{buildroot}/%{dracutlibdir}/test/TEST-17-LVM-THIN
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-20-NFS
-install -m 0755 -D test/TEST-20-NFS %{buildroot}/%{dracutlibdir}/test/TEST-20-NFS
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-21-NFS-NM
-install -m 0755 -D test/TEST-21-NFS-NM %{buildroot}/%{dracutlibdir}/test/TEST-21-NFS-NM
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-30-ISCSI
-install -m 0755 -D test/TEST-30-ISCSI %{buildroot}/%{dracutlibdir}/test/TEST-30-ISCSI
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-31-ISCSI-NM
-install -m 0755 -D test/TEST-31-ISCSI-NM %{buildroot}/%{dracutlibdir}/test/TEST-31-ISCSI-NM
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-35-ISCSI-MULTI
-install -m 0755 -D test/TEST-35-ISCSI-MULTI %{buildroot}/%{dracutlibdir}/test/TEST-35-ISCSI-MULTI
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-36-ISCSI-MULTI-NM
-install -m 0755 -D test/TEST-36-ISCSI-MULTI-NM %{buildroot}/%{dracutlibdir}/test/TEST-36-ISCSI-MULTI-NM
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-40-NBD
-install -m 0755 -D test/TEST-40-NBD %{buildroot}/%{dracutlibdir}/test/TEST-40-NBD
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-41-NBD-NM
-install -m 0755 -D test/TEST-41-NBD-NM %{buildroot}/%{dracutlibdir}/test/TEST-41-NBD-NM
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-50-MULTINIC
-install -m 0755 -D test/TEST-50-MULTINIC %{buildroot}/%{dracutlibdir}/test/TEST-50-MULTINIC
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-51-MULTINIC-NM
-install -m 0755 -D test/TEST-51-MULTINIC-NM %{buildroot}/%{dracutlibdir}/test/TEST-51-MULTINIC-NM
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-TEST-60-BONDBRIDGEVLANIFCFG
-install -m 0755 -D test/TEST-TEST-60-BONDBRIDGEVLANIFCFG %{buildroot}/%{dracutlibdir}/test/TEST-TEST-60-BONDBRIDGEVLANIFCFG
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-TEST-60-BONDBRIDGEVLANIFCFG-NM
-install -m 0755 -D test/TEST-TEST-60-BONDBRIDGEVLANIFCFG-NM %{buildroot}/%{dracutlibdir}/test/TEST-TEST-60-BONDBRIDGEVLANIFCFG-NM
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-TEST-62-SKIPCPIO
-install -m 0755 -D test/TEST-TEST-62-SKIPCPIO %{buildroot}/%{dracutlibdir}/test/TEST-TEST-62-SKIPCPIO
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-TEST-63-DRACUT-CPIO
-install -m 0755 -D test/TEST-TEST-63-DRACUT-CPIO %{buildroot}/%{dracutlibdir}/test/TEST-TEST-63-DRACUT-CPIO
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-TEST-98-GETARG
-install -m 0755 -D test/TEST-TEST-98-GETARG %{buildroot}/%{dracutlibdir}/test/TEST-TEST-98-GETARG
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-TEST-99-RPM
-install -m 0755 -D test/TEST-TEST-99-RPM %{buildroot}/%{dracutlibdir}/test/TEST-TEST-99-RPM
+cp -a test %{buildroot}/%{dracutlibdir}/test
 
 %post
 # check whether /var/run has been converted to a symlink
