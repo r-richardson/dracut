@@ -220,7 +220,7 @@ ln -s %{dracutlibdir}/modules.d/45ifcfg/write-ifcfg-redhat.sh %{buildroot}/%{dra
 # qa-testsuite installation
 mkdir -p %{buildroot}/%{dracutlibdir}/test
 install -m 0755 test/test-functions %{buildroot}/%{dracutlibdir}/test
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-01-USR-MOUNT
+mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-01-BASIC
 install -m 0755 test/TEST-01-BASIC/*.sh %{buildroot}/%{dracutlibdir}/test/TEST-01-BASIC
 install -m 0644 test/TEST-01-BASIC/fstab %{buildroot}/%{dracutlibdir}/test/TEST-01-BASIC
 mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-02-SYSTEMD
