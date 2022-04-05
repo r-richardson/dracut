@@ -219,6 +219,7 @@ ln -s %{dracutlibdir}/modules.d/45ifcfg/write-ifcfg-redhat.sh %{buildroot}/%{dra
 
 # qa-testsuite installation
 cp -a test %{buildroot}/%{dracutlibdir}/test
+ln -s %{buildroot}/usr/bin/dracut %{buildroot}/%{dracutlibdir}/dracut.sh
 
 %post
 # check whether /var/run has been converted to a symlink
@@ -303,10 +304,12 @@ fi
 %{dracut_sbindir}/mkinitrd
 %{_mandir}/man8/mkinitrd.8*
 
+
 %files qa-testsuite
 %defattr(-,root,root)
 %{dracutlibdir}/test
 %{dracutlibdir}/test/test-functions
+%{dracutlibdir}/dracut.sh
 
 %files
 %license COPYING
