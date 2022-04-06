@@ -40,12 +40,12 @@ test_setup() {
         )
         inst_multiple sh df free ls shutdown poweroff stty cat ps ln ip \
             mount dmesg dhclient mkdir cp ping dhclient \
-            umount strace less setsid dd sync
+            umount less setsid dd sync
+        inst_multiple -o wicked dhclient arping arping2
         for _terminfodir in /lib/terminfo /etc/terminfo /usr/share/terminfo; do
             [ -f ${_terminfodir}/l/linux ] && break
         done
         inst_multiple -o ${_terminfodir}/l/linux
-        inst "$basedir/modules.d/35network-legacy/dhclient-script.sh" "/sbin/dhclient-script"
         inst "$basedir/modules.d/35network-legacy/ifup.sh" "/sbin/ifup"
 
         inst_simple "${basedir}/modules.d/99base/dracut-lib.sh" "/lib/dracut-lib.sh"
@@ -73,17 +73,6 @@ test_setup() {
         inst_hook initqueue 01 ./create-root.sh
         inst_hook initqueue/finished 01 ./finished-false.sh
     )
-
-    # create an initramfs that will create the target root filesystem.
-    # We do it this way so that we do not risk trashing the host mdraid
-    # devices, volume groups, encrypted partitions, etc.
-    "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
-        -m "dash udev-rules base rootfs-block fs-lib kernel-modules fs-lib qemu" \
-        -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
-        --nomdadmconf \
-        --no-hostonly-cmdline -N \
-        -f "$TESTDIR"/initramfs.makeroot "$KVERSION" || return 1
-    rm -rf -- "$TESTDIR"/overlay
 
     dd if=/dev/zero of="$TESTDIR"/root.img bs=1MiB count=80
     dd if=/dev/zero of="$TESTDIR"/marker.img bs=1MiB count=1
