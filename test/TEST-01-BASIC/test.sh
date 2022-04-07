@@ -7,23 +7,6 @@ KVERSION=${KVERSION-$(uname -r)}
 # Uncomment this to debug failures
 # DEBUGFAIL="rd.shell rd.break"
 
-test_run() {
-    dd if=/dev/zero of="$TESTDIR"/marker.img bs=1MiB count=1
-    declare -a disk_args=()
-    # shellcheck disable=SC2034
-    declare -i disk_index=0
-    qemu_add_drive_args disk_index disk_args "$TESTDIR"/marker.img marker
-    qemu_add_drive_args disk_index disk_args "$TESTDIR"/root.img root
-
-    "$testdir"/run-qemu \
-        "${disk_args[@]}" \
-        -watchdog i6300esb -watchdog-action poweroff \
-        -append "panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot \"root=LABEL=  rdinit=/bin/sh\" rw systemd.log_level=debug systemd.log_target=console rd.retry=3 rd.debug console=ttyS0,115200n81 rd.shell=0 $DEBUGFAIL" \
-        -initrd "$TESTDIR"/initramfs.testing || return 1
-
-    grep -U --binary-files=binary -F -m 1 -q dracut-root-block-success "$TESTDIR"/marker.img
-}
-
 test_setup() {
     kernel=$KVERSION
     # Create what will eventually be our root filesystem onto an overlay
@@ -40,12 +23,12 @@ test_setup() {
         )
         inst_multiple sh df free ls shutdown poweroff stty cat ps ln ip \
             mount dmesg dhclient mkdir cp ping dhclient \
-            umount strace less setsid dd sync
+            umount less setsid dd sync
+        inst_multiple -o wicked dhclient arping arping2
         for _terminfodir in /lib/terminfo /etc/terminfo /usr/share/terminfo; do
             [ -f ${_terminfodir}/l/linux ] && break
         done
         inst_multiple -o ${_terminfodir}/l/linux
-        inst "$basedir/modules.d/35network-legacy/dhclient-script.sh" "/sbin/dhclient-script"
         inst "$basedir/modules.d/35network-legacy/ifup.sh" "/sbin/ifup"
 
         inst_simple "${basedir}/modules.d/99base/dracut-lib.sh" "/lib/dracut-lib.sh"
@@ -61,45 +44,6 @@ test_setup() {
         cp -a /etc/ld.so.conf* "$initdir"/etc
         ldconfig -r "$initdir"
     )
-
-    # second, install the files needed to make the root filesystem
-    (
-        # shellcheck disable=SC2031
-        # shellcheck disable=SC2030
-        export initdir=$TESTDIR/overlay
-        # shellcheck disable=SC1090
-        . "$basedir"/dracut-init.sh
-        inst_multiple sfdisk mkfs.ext3 poweroff cp umount sync dd
-        inst_hook initqueue 01 ./create-root.sh
-        inst_hook initqueue/finished 01 ./finished-false.sh
-    )
-
-    # create an initramfs that will create the target root filesystem.
-    # We do it this way so that we do not risk trashing the host mdraid
-    # devices, volume groups, encrypted partitions, etc.
-    "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
-        -m "dash udev-rules base rootfs-block fs-lib kernel-modules fs-lib qemu" \
-        -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
-        --nomdadmconf \
-        --no-hostonly-cmdline -N \
-        -f "$TESTDIR"/initramfs.makeroot "$KVERSION" || return 1
-    rm -rf -- "$TESTDIR"/overlay
-
-    dd if=/dev/zero of="$TESTDIR"/root.img bs=1MiB count=80
-    dd if=/dev/zero of="$TESTDIR"/marker.img bs=1MiB count=1
-    declare -a disk_args=()
-    # shellcheck disable=SC2034
-    declare -i disk_index=0
-    qemu_add_drive_args disk_index disk_args "$TESTDIR"/marker.img marker
-    qemu_add_drive_args disk_index disk_args "$TESTDIR"/root.img root
-
-    # Invoke KVM and/or QEMU to actually create the target filesystem.
-    "$testdir"/run-qemu \
-        "${disk_args[@]}" \
-        -append "root=/dev/dracut/root rw rootfstype=ext3 quiet console=ttyS0,115200n81 selinux=0" \
-        -initrd "$TESTDIR"/initramfs.makeroot || return 1
-    grep -U --binary-files=binary -F -m 1 -q dracut-root-block-created "$TESTDIR"/marker.img || return 1
-    rm -- "$TESTDIR"/marker.img
 
     (
         # shellcheck disable=SC2031
@@ -117,9 +61,29 @@ test_setup() {
         -f "$TESTDIR"/initramfs.testing "$KVERSION" || return 1
 
     #       -o "plymouth network md dmraid multipath fips caps crypt btrfs resume dmsquash-live dm"
+    
+    # delete old config
+    sed -i '6,$d' /etc/grub.d/40_custom
+    # copy boot menu entry
+    sed -n '/### BEGIN \/etc\/grub.d\/10_linux ###/,/submenu/p' /boot/grub2/grub.cfg >> /etc/grub.d/40_custom
+    sed -i '/### BEGIN \/etc\/grub.d\/10_linux ###/d' /etc/grub.d/40_custom
+    sed -i '/submenu/d' /etc/grub.d/40_custom
+    # modify it for testing
+    sed -i "s#menuentry .*#menuentry \'dracut testing\' {#" /etc/grub.d/40_custom
+    sed -i 's#initrd *.*#initrd /boot/initramfs.testing#' /etc/grub.d/40_custom
+    sed -i "/linux/s/\${extra_cmdline.*/panic=1 systemd.log_target=console rd.retry=3 rd.debug console=tty0 rd.shell=0 $DEBUGFAIL/" /etc/grub.d/40_custom
+    sed -i 's/GRUB_TIMEOUT=.*/GRUB_TIMEMOUT=5/' /etc/default/grub
+    # create new grub config
+    grub2-mkconfig -o /boot/grub2/grub.cfg || return 1
+    grub2-reboot "dracut testing"
+    sleep 10
+    echo -e "\n\n*************************"
+    echo "dracut-root-block-created"
+    echo -e "*************************\n"
 }
 
 test_cleanup() {
+    rm -r "$TESTDIR"
     return 0
 }
 
