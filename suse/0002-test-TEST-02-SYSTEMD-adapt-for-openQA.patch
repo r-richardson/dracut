@@ -1,0 +1,114 @@
+From 4f07ef19f7a1dfbe656f2dc50236200a767f5c5f Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Thu, 7 Apr 2022 18:52:59 +0200
+Subject: [PATCH] test 02 patch
+
+---
+ test/TEST-02-SYSTEMD/test.sh | 64 ++++--------------------------------
+ 1 file changed, 7 insertions(+), 57 deletions(-)
+
+diff --git a/test/TEST-02-SYSTEMD/test.sh b/test/TEST-02-SYSTEMD/test.sh
+index 8b6b5930..e2a65708 100755
+--- a/test/TEST-02-SYSTEMD/test.sh
++++ b/test/TEST-02-SYSTEMD/test.sh
+@@ -6,21 +6,9 @@ KVERSION="${KVERSION-$(uname -r)}"
+ 
+ # Uncomment this to debug failures
+ #DEBUGFAIL="rd.shell=1 rd.break=pre-mount"
+-test_run() {
+-    dd if=/dev/zero of="$TESTDIR"/marker.img bs=1MiB count=1
+-    declare -a disk_args=()
+-    # shellcheck disable=SC2034
+-    declare -i disk_index=0
+-    qemu_add_drive_args disk_index disk_args "$TESTDIR"/marker.img marker
+-    qemu_add_drive_args disk_index disk_args "$TESTDIR"/root.img root
+ 
+-    "$testdir"/run-qemu \
+-        "${disk_args[@]}" \
+-        -append "panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=LABEL=dracut rw loglevel=77 systemd.log_level=debug systemd.log_target=console rd.retry=3 rd.info console=ttyS0,115200n81 selinux=0 init=/sbin/init rd.shell=0 $DEBUGFAIL" \
+-        -initrd "$TESTDIR"/initramfs.testing || return 1
+-
+-    grep -U --binary-files=binary -F -m 1 -q dracut-root-block-success "$TESTDIR"/marker.img
+-}
++export basedir=/usr/lib/dracut
++export bindir=/usr/bin
+ 
+ test_setup() {
+     kernel=$KVERSION
+@@ -38,13 +26,13 @@ test_setup() {
+             mkdir -p -- var/lib/nfs/rpc_pipefs
+         )
+         inst_multiple sh df free ls shutdown poweroff stty cat ps ln ip \
+-            mount dmesg dhclient mkdir cp ping dhclient \
+-            umount strace less setsid systemd-analyze dd sync
++            mount dmesg mkdir cp ping \
++            umount less setsid systemd-analyze dd sync
++        inst_multiple -o wicked dhclient arping arping2
+         for _terminfodir in /lib/terminfo /etc/terminfo /usr/share/terminfo; do
+             [ -f ${_terminfodir}/l/linux ] && break
+         done
+         inst_multiple -o ${_terminfodir}/l/linux
+-        inst "$basedir/modules.d/35network-legacy/dhclient-script.sh" "/sbin/dhclient-script"
+         inst "$basedir/modules.d/35network-legacy/ifup.sh" "/sbin/ifup"
+ 
+         inst_simple "${basedir}/modules.d/99base/dracut-lib.sh" "/lib/dracut-lib.sh"
+@@ -61,45 +49,6 @@ test_setup() {
+         ldconfig -r "$initdir"
+     )
+ 
+-    # second, install the files needed to make the root filesystem
+-    (
+-        # shellcheck disable=SC2031
+-        # shellcheck disable=SC2030
+-        export initdir=$TESTDIR/overlay
+-        # shellcheck disable=SC1090
+-        . "$basedir"/dracut-init.sh
+-        inst_multiple sfdisk mkfs.ext3 poweroff cp umount dd
+-        inst_hook initqueue 01 ./create-root.sh
+-        inst_hook initqueue/finished 01 ./finished-false.sh
+-    )
+-
+-    # create an initramfs that will create the target root filesystem.
+-    # We do it this way so that we do not risk trashing the host mdraid
+-    # devices, volume groups, encrypted partitions, etc.
+-    "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
+-        -m "dash udev-rules base rootfs-block fs-lib kernel-modules qemu" \
+-        -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
+-        --nomdadmconf \
+-        --no-hostonly-cmdline -N \
+-        -f "$TESTDIR"/initramfs.makeroot "$KVERSION" || return 1
+-    rm -rf -- "$TESTDIR"/overlay
+-
+-    dd if=/dev/zero of="$TESTDIR"/root.img bs=1MiB count=80
+-    dd if=/dev/zero of="$TESTDIR"/marker.img bs=1MiB count=1
+-    declare -a disk_args=()
+-    # shellcheck disable=SC2034
+-    declare -i disk_index=0
+-    qemu_add_drive_args disk_index disk_args "$TESTDIR"/marker.img marker
+-    qemu_add_drive_args disk_index disk_args "$TESTDIR"/root.img root
+-
+-    # Invoke KVM and/or QEMU to actually create the target filesystem.
+-    "$testdir"/run-qemu \
+-        "${disk_args[@]}" \
+-        -append "root=/dev/fakeroot rw rootfstype=ext3 quiet console=ttyS0,115200n81 selinux=0" \
+-        -initrd "$TESTDIR"/initramfs.makeroot || return 1
+-    grep -U --binary-files=binary -F -m 1 -q dracut-root-block-created "$TESTDIR"/marker.img || return 1
+-    rm -- "$TESTDIR"/marker.img
+-
+     (
+         # shellcheck disable=SC2031
+         export initdir=$TESTDIR/overlay
+@@ -121,8 +70,9 @@ test_setup() {
+ }
+ 
+ test_cleanup() {
++    rm -r "$TESTDIR"
+     return 0
+ }
+ 
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
+-- 
+2.35.1
+
