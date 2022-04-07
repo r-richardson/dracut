@@ -1,17 +1,17 @@
-From c5b32078738897f3247149598ef5af4de5e30e32 Mon Sep 17 00:00:00 2001
+From 1e5ab22588aef9b46f7d50ae0272b80facf94f12 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Thu, 7 Apr 2022 12:33:00 +0200
 Subject: [PATCH] test 01 patch
 
 ---
- test/TEST-01-BASIC/test.sh | 84 +++++++++++---------------------------
- 1 file changed, 24 insertions(+), 60 deletions(-)
+ test/TEST-01-BASIC/test.sh | 85 ++++++++++++--------------------------
+ 1 file changed, 26 insertions(+), 59 deletions(-)
 
 diff --git a/test/TEST-01-BASIC/test.sh b/test/TEST-01-BASIC/test.sh
-index 012f2e5a..1f9e7d8b 100755
+index 012f2e5a..ec7f4766 100755
 --- a/test/TEST-01-BASIC/test.sh
 +++ b/test/TEST-01-BASIC/test.sh
-@@ -7,23 +7,6 @@ KVERSION=${KVERSION-$(uname -r)}
+@@ -7,22 +7,8 @@ KVERSION=${KVERSION-$(uname -r)}
  # Uncomment this to debug failures
  # DEBUGFAIL="rd.shell rd.break"
  
@@ -31,11 +31,12 @@ index 012f2e5a..1f9e7d8b 100755
 -
 -    grep -U --binary-files=binary -F -m 1 -q dracut-root-block-success "$TESTDIR"/marker.img
 -}
--
++export basedir=/usr/lib/dracut
++export bindir=/usr/bin
+ 
  test_setup() {
      kernel=$KVERSION
-     # Create what will eventually be our root filesystem onto an overlay
-@@ -39,13 +22,13 @@ test_setup() {
+@@ -39,13 +25,13 @@ test_setup() {
              mkdir -p root usr/bin usr/lib usr/lib64 usr/sbin
          )
          inst_multiple sh df free ls shutdown poweroff stty cat ps ln ip \
@@ -52,7 +53,7 @@ index 012f2e5a..1f9e7d8b 100755
          inst "$basedir/modules.d/35network-legacy/ifup.sh" "/sbin/ifup"
  
          inst_simple "${basedir}/modules.d/99base/dracut-lib.sh" "/lib/dracut-lib.sh"
-@@ -62,45 +45,6 @@ test_setup() {
+@@ -62,45 +48,6 @@ test_setup() {
          ldconfig -r "$initdir"
      )
  
@@ -98,7 +99,7 @@ index 012f2e5a..1f9e7d8b 100755
      (
          # shellcheck disable=SC2031
          export initdir=$TESTDIR/overlay
-@@ -117,11 +61,31 @@ test_setup() {
+@@ -117,11 +64,31 @@ test_setup() {
          -f "$TESTDIR"/initramfs.testing "$KVERSION" || return 1
  
      #       -o "plymouth network md dmraid multipath fips caps crypt btrfs resume dmsquash-live dm"
