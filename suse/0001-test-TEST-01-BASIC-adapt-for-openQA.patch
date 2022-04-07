@@ -1,14 +1,14 @@
-From 4cf7a1d86029feaa4f53a40fe182c675b047435b Mon Sep 17 00:00:00 2001
+From 0836d845b836fbd6180ef161d60dcb19ce1eabec Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
-Date: Thu, 7 Apr 2022 10:40:57 +0200
-Subject: [PATCH] create test 01 patch
+Date: Thu, 7 Apr 2022 12:33:00 +0200
+Subject: [PATCH] test 01 patch
 
 ---
- test/TEST-01-BASIC/test.sh | 80 +++++++++++---------------------------
- 1 file changed, 22 insertions(+), 58 deletions(-)
+ test/TEST-01-BASIC/test.sh | 82 +++++++++++---------------------------
+ 1 file changed, 23 insertions(+), 59 deletions(-)
 
 diff --git a/test/TEST-01-BASIC/test.sh b/test/TEST-01-BASIC/test.sh
-index 012f2e5a..08ecc3ed 100755
+index 012f2e5a..889cf563 100755
 --- a/test/TEST-01-BASIC/test.sh
 +++ b/test/TEST-01-BASIC/test.sh
 @@ -7,23 +7,6 @@ KVERSION=${KVERSION-$(uname -r)}
@@ -35,11 +35,13 @@ index 012f2e5a..08ecc3ed 100755
  test_setup() {
      kernel=$KVERSION
      # Create what will eventually be our root filesystem onto an overlay
-@@ -40,12 +23,12 @@ test_setup() {
+@@ -39,13 +22,13 @@ test_setup() {
+             mkdir -p root usr/bin usr/lib usr/lib64 usr/sbin
          )
          inst_multiple sh df free ls shutdown poweroff stty cat ps ln ip \
-             mount dmesg dhclient mkdir cp ping dhclient \
+-            mount dmesg dhclient mkdir cp ping dhclient \
 -            umount strace less setsid dd sync
++            mount dmesg mkdir cp ping \
 +            umount less setsid dd sync
 +        inst_multiple -o wicked dhclient arping arping2
          for _terminfodir in /lib/terminfo /etc/terminfo /usr/share/terminfo; do
