@@ -36,7 +36,7 @@ Source2:        README.susemaint
 
 # Test patches for openQA
 Patch1:         0001-test-TEST-01-BASIC-adapt-for-openQA.patch
-#Patch2:         0002-test-TEST_02_SYSTEMD-adapt-for-openQA.patch
+Patch2:         0002-test-TEST_02_SYSTEMD-adapt-for-openQA.patch
 Patch3:         0003-test-TEST-03-USR-MOUNT-adapt-for-openQA.patch
 #Patch4:         0004-test-TEST_04_FULL_SYSTEMD-adapt-for-openQA.patch
 #Patch5:         0005-test-TEST_10_RAID-adapt-for-openQA.patch
