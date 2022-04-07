@@ -1,14 +1,14 @@
-From 0836d845b836fbd6180ef161d60dcb19ce1eabec Mon Sep 17 00:00:00 2001
+From c5b32078738897f3247149598ef5af4de5e30e32 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Thu, 7 Apr 2022 12:33:00 +0200
 Subject: [PATCH] test 01 patch
 
 ---
- test/TEST-01-BASIC/test.sh | 82 +++++++++++---------------------------
- 1 file changed, 23 insertions(+), 59 deletions(-)
+ test/TEST-01-BASIC/test.sh | 84 +++++++++++---------------------------
+ 1 file changed, 24 insertions(+), 60 deletions(-)
 
 diff --git a/test/TEST-01-BASIC/test.sh b/test/TEST-01-BASIC/test.sh
-index 012f2e5a..889cf563 100755
+index 012f2e5a..1f9e7d8b 100755
 --- a/test/TEST-01-BASIC/test.sh
 +++ b/test/TEST-01-BASIC/test.sh
 @@ -7,23 +7,6 @@ KVERSION=${KVERSION-$(uname -r)}
@@ -98,7 +98,7 @@ index 012f2e5a..889cf563 100755
      (
          # shellcheck disable=SC2031
          export initdir=$TESTDIR/overlay
-@@ -117,9 +61,29 @@ test_setup() {
+@@ -117,11 +61,31 @@ test_setup() {
          -f "$TESTDIR"/initramfs.testing "$KVERSION" || return 1
  
      #       -o "plymouth network md dmraid multipath fips caps crypt btrfs resume dmsquash-live dm"
@@ -128,6 +128,9 @@ index 012f2e5a..889cf563 100755
      return 0
  }
  
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
 -- 
 2.35.1
 
