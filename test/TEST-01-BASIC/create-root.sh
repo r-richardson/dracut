@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -x
+
 trap 'poweroff -f' EXIT
 
 # don't let udev and this script step on eachother's toes
