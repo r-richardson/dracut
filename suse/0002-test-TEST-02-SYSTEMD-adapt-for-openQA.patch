@@ -1,14 +1,14 @@
-From 4f07ef19f7a1dfbe656f2dc50236200a767f5c5f Mon Sep 17 00:00:00 2001
+From 7e973a967a269c35bb0a260f93a9f0341d644444 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
-Date: Thu, 7 Apr 2022 18:52:59 +0200
+Date: Fri, 8 Apr 2022 16:10:46 +0200
 Subject: [PATCH] test 02 patch
 
 ---
- test/TEST-02-SYSTEMD/test.sh | 64 ++++--------------------------------
- 1 file changed, 7 insertions(+), 57 deletions(-)
+ test/TEST-02-SYSTEMD/test.sh | 69 ++++++------------------------------
+ 1 file changed, 10 insertions(+), 59 deletions(-)
 
 diff --git a/test/TEST-02-SYSTEMD/test.sh b/test/TEST-02-SYSTEMD/test.sh
-index 8b6b5930..e2a65708 100755
+index 8b6b5930..0f20e4f7 100755
 --- a/test/TEST-02-SYSTEMD/test.sh
 +++ b/test/TEST-02-SYSTEMD/test.sh
 @@ -6,21 +6,9 @@ KVERSION="${KVERSION-$(uname -r)}"
@@ -98,7 +98,21 @@ index 8b6b5930..e2a65708 100755
      (
          # shellcheck disable=SC2031
          export initdir=$TESTDIR/overlay
-@@ -121,8 +70,9 @@ test_setup() {
+@@ -110,19 +59,21 @@ test_setup() {
+         inst_hook pre-pivot 000 ./systemd-analyze.sh
+         inst_hook emergency 000 ./hard-off.sh
+     )
+-    "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
++    # shellcheck disable=SC2211
++    "$bindir"/dracut -l -i "$TESTDIR"/overlay / \
+         -a "debug systemd" \
+         -o "network kernel-network-modules" \
+         -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
+         --no-hostonly-cmdline -N \
+-        -f "$TESTDIR"/initramfs.testing "$KVERSION" || return 1
++        -f /boot/initramfs.testing "$KVERSION" || return 1
+ 
+     #       -o "plymouth network md dmraid multipath fips caps crypt btrfs resume dmsquash-live dm"
  }
  
  test_cleanup() {
