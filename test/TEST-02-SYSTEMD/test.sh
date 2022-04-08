@@ -4,8 +4,6 @@ TEST_DESCRIPTION="root filesystem on a ext3 filesystem"
 
 KVERSION="${KVERSION-$(uname -r)}"
 
-set -x
-
 # Uncomment this to debug failures
 #DEBUGFAIL="rd.shell=1 rd.break=pre-mount"
 test_run() {
