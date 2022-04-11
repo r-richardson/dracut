@@ -63,6 +63,7 @@ Patch3:         0003-test-TEST-03-USR-MOUNT-adapt-for-openQA.patch
 #Patch26:        0026-test-TEST-63-DRACUT-CPIO-adapt-for-openQA.patch
 #Patch27:        0027-test-TEST-98-GETARG-adapt-for-openQA.patch
 #Patch28:        0028-test-TEST-99-RPM-adapt-for-openQA.patch
+Patch29:        0001-run-qemu-script-patch.patch
 
 BuildRequires:  asciidoc
 BuildRequires:  bash
