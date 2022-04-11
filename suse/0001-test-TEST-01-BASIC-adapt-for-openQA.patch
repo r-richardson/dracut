@@ -1,4 +1,4 @@
-From 46727e1410ca140856832e68dbf9a2e70a5d4b17 Mon Sep 17 00:00:00 2001
+From a42ae914f838cbc2c3360d3548d854ff8b674520 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Mon, 11 Apr 2022 12:27:09 +0200
 Subject: [PATCH] test patch 01
@@ -8,7 +8,7 @@ Subject: [PATCH] test patch 01
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/test/TEST-01-BASIC/test.sh b/test/TEST-01-BASIC/test.sh
-index 012f2e5a..0b541e25 100755
+index 012f2e5a..f9b33757 100755
 --- a/test/TEST-01-BASIC/test.sh
 +++ b/test/TEST-01-BASIC/test.sh
 @@ -39,13 +39,13 @@ test_setup() {
@@ -18,7 +18,7 @@ index 012f2e5a..0b541e25 100755
 -            mount dmesg dhclient mkdir cp ping dhclient \
 -            umount strace less setsid dd sync
 +            mount dmesg mkdir cp ping \
-+            umount less setsid dd sync qemu
++            umount less setsid dd sync
 +        inst_multiple -o wicked dhclient arping arping2
          for _terminfodir in /lib/terminfo /etc/terminfo /usr/share/terminfo; do
              [ -f ${_terminfodir}/l/linux ] && break
