@@ -1,14 +1,14 @@
-From 8d13e09ae2b22ffcdfa784befb6b8af8a6da5b71 Mon Sep 17 00:00:00 2001
+From 46727e1410ca140856832e68dbf9a2e70a5d4b17 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Mon, 11 Apr 2022 12:27:09 +0200
 Subject: [PATCH] test patch 01
 
 ---
- test/TEST-01-BASIC/test.sh | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ test/TEST-01-BASIC/test.sh | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/test/TEST-01-BASIC/test.sh b/test/TEST-01-BASIC/test.sh
-index 012f2e5a..8c68fe40 100755
+index 012f2e5a..0b541e25 100755
 --- a/test/TEST-01-BASIC/test.sh
 +++ b/test/TEST-01-BASIC/test.sh
 @@ -39,13 +39,13 @@ test_setup() {
@@ -28,6 +28,15 @@ index 012f2e5a..8c68fe40 100755
          inst "$basedir/modules.d/35network-legacy/ifup.sh" "/sbin/ifup"
  
          inst_simple "${basedir}/modules.d/99base/dracut-lib.sh" "/lib/dracut-lib.sh"
+@@ -78,7 +78,7 @@ test_setup() {
+     # We do it this way so that we do not risk trashing the host mdraid
+     # devices, volume groups, encrypted partitions, etc.
+     "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
+-        -m "dash udev-rules base rootfs-block fs-lib kernel-modules fs-lib qemu" \
++        -m "bash udev-rules base rootfs-block fs-lib kernel-modules fs-lib qemu" \
+         -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
+         --nomdadmconf \
+         --no-hostonly-cmdline -N \
 -- 
 2.35.1
 
