@@ -1,4 +1,4 @@
-From 6857d8a217369bbde61d665fedb34dc9f279bc90 Mon Sep 17 00:00:00 2001
+From bb7291ad9e273fb57a642c8f83e4826e95ea163b Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Mon, 11 Apr 2022 12:27:09 +0200
 Subject: [PATCH] test patch 01
@@ -8,7 +8,7 @@ Subject: [PATCH] test patch 01
  1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/test/TEST-01-BASIC/test.sh b/test/TEST-01-BASIC/test.sh
-index 012f2e5a..94d637fa 100755
+index 012f2e5a..e1ae7526 100755
 --- a/test/TEST-01-BASIC/test.sh
 +++ b/test/TEST-01-BASIC/test.sh
 @@ -18,7 +18,7 @@ test_run() {
@@ -51,7 +51,7 @@ index 012f2e5a..94d637fa 100755
  
  # shellcheck disable=SC1090
 -. "$testdir"/test-functions
-+. "$basedir"/test/test-functions
++. "$basedir"/test-functions
 -- 
 2.35.1
 
