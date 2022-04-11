@@ -1,17 +1,26 @@
-From bb7291ad9e273fb57a642c8f83e4826e95ea163b Mon Sep 17 00:00:00 2001
+From 1fc44734fdebb0bd1f9de3a95238813cbe89d4d4 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Mon, 11 Apr 2022 12:27:09 +0200
 Subject: [PATCH] test patch 01
 
 ---
- test/TEST-01-BASIC/test.sh | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ test/TEST-01-BASIC/test.sh | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/test/TEST-01-BASIC/test.sh b/test/TEST-01-BASIC/test.sh
-index 012f2e5a..e1ae7526 100755
+index 012f2e5a..ef58c381 100755
 --- a/test/TEST-01-BASIC/test.sh
 +++ b/test/TEST-01-BASIC/test.sh
-@@ -18,7 +18,7 @@ test_run() {
+@@ -7,6 +7,8 @@ KVERSION=${KVERSION-$(uname -r)}
+ # Uncomment this to debug failures
+ # DEBUGFAIL="rd.shell rd.break"
+ 
++export basedir=/usr/lib/dracut
++
+ test_run() {
+     dd if=/dev/zero of="$TESTDIR"/marker.img bs=1MiB count=1
+     declare -a disk_args=()
+@@ -18,7 +20,7 @@ test_run() {
      "$testdir"/run-qemu \
          "${disk_args[@]}" \
          -watchdog i6300esb -watchdog-action poweroff \
@@ -20,7 +29,7 @@ index 012f2e5a..e1ae7526 100755
          -initrd "$TESTDIR"/initramfs.testing || return 1
  
      grep -U --binary-files=binary -F -m 1 -q dracut-root-block-success "$TESTDIR"/marker.img
-@@ -39,13 +39,13 @@ test_setup() {
+@@ -39,13 +41,13 @@ test_setup() {
              mkdir -p root usr/bin usr/lib usr/lib64 usr/sbin
          )
          inst_multiple sh df free ls shutdown poweroff stty cat ps ln ip \
@@ -37,7 +46,7 @@ index 012f2e5a..e1ae7526 100755
          inst "$basedir/modules.d/35network-legacy/ifup.sh" "/sbin/ifup"
  
          inst_simple "${basedir}/modules.d/99base/dracut-lib.sh" "/lib/dracut-lib.sh"
-@@ -78,7 +78,7 @@ test_setup() {
+@@ -78,7 +80,7 @@ test_setup() {
      # We do it this way so that we do not risk trashing the host mdraid
      # devices, volume groups, encrypted partitions, etc.
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -46,12 +55,12 @@ index 012f2e5a..e1ae7526 100755
          -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
          --nomdadmconf \
          --no-hostonly-cmdline -N \
-@@ -124,4 +124,4 @@ test_cleanup() {
+@@ -124,4 +126,4 @@ test_cleanup() {
  }
  
  # shellcheck disable=SC1090
 -. "$testdir"/test-functions
-+. "$basedir"/test-functions
++. "$basedir"/test/test-functions
 -- 
 2.35.1
 
