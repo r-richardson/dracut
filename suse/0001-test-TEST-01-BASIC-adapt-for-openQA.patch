@@ -1,16 +1,25 @@
-From a42ae914f838cbc2c3360d3548d854ff8b674520 Mon Sep 17 00:00:00 2001
+From 6857d8a217369bbde61d665fedb34dc9f279bc90 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Mon, 11 Apr 2022 12:27:09 +0200
 Subject: [PATCH] test patch 01
 
 ---
- test/TEST-01-BASIC/test.sh | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ test/TEST-01-BASIC/test.sh | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/test/TEST-01-BASIC/test.sh b/test/TEST-01-BASIC/test.sh
-index 012f2e5a..f9b33757 100755
+index 012f2e5a..94d637fa 100755
 --- a/test/TEST-01-BASIC/test.sh
 +++ b/test/TEST-01-BASIC/test.sh
+@@ -18,7 +18,7 @@ test_run() {
+     "$testdir"/run-qemu \
+         "${disk_args[@]}" \
+         -watchdog i6300esb -watchdog-action poweroff \
+-        -append "panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot \"root=LABEL=  rdinit=/bin/sh\" rw systemd.log_level=debug systemd.log_target=console rd.retry=3 rd.debug console=ttyS0,115200n81 rd.shell=0 $DEBUGFAIL" \
++        -append "panic=1 oops=panic softlockNe mehr sag ich auch nichtup_panic=1 systemd.crash_reboot \"root=LABEL=  rdinit=/bin/sh\" rw systemd.log_level=debug systemd.log_target=console rd.retry=3 rd.debug console=ttyS0,115200n81 rd.shell=0 $DEBUGFAIL" \
+         -initrd "$TESTDIR"/initramfs.testing || return 1
+ 
+     grep -U --binary-files=binary -F -m 1 -q dracut-root-block-success "$TESTDIR"/marker.img
 @@ -39,13 +39,13 @@ test_setup() {
              mkdir -p root usr/bin usr/lib usr/lib64 usr/sbin
          )
@@ -37,6 +46,12 @@ index 012f2e5a..f9b33757 100755
          -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
          --nomdadmconf \
          --no-hostonly-cmdline -N \
+@@ -124,4 +124,4 @@ test_cleanup() {
+ }
+ 
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
 -- 
 2.35.1
 
