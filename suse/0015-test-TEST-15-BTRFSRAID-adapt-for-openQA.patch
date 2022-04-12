@@ -1,0 +1,46 @@
+From bdf1baaffadc40615405e1168fddc31517236fbd Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Tue, 12 Apr 2022 18:29:41 +0200
+Subject: [PATCH] test 15 patch
+
+---
+ test/TEST-15-BTRFSRAID/test.sh | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/test/TEST-15-BTRFSRAID/test.sh b/test/TEST-15-BTRFSRAID/test.sh
+index 47edac81..64add316 100755
+--- a/test/TEST-15-BTRFSRAID/test.sh
++++ b/test/TEST-15-BTRFSRAID/test.sh
+@@ -4,6 +4,8 @@ TEST_DESCRIPTION="root filesystem on multiple device btrfs"
+ 
+ KVERSION=${KVERSION-$(uname -r)}
+ 
++export basedir=/usr/lib/dracut
++
+ # Uncomment this to debug failures
+ #DEBUGFAIL="rd.shell"
+ test_run() {
+@@ -44,12 +46,12 @@ test_setup() {
+             mkdir -p -- var/lib/nfs/rpc_pipefs
+         )
+         inst_multiple sh df free ls shutdown poweroff stty cat ps ln ip \
+-            mount dmesg dhclient mkdir cp ping dhclient sync dd
++            mount dmesg mkdir cp ping sync dd
++        inst_multiple -o wicked dhclient arping arping2
+         for _terminfodir in /lib/terminfo /etc/terminfo /usr/share/terminfo; do
+             [ -f ${_terminfodir}/l/linux ] && break
+         done
+         inst_multiple -o ${_terminfodir}/l/linux
+-        inst "$basedir/modules.d/35network-legacy/dhclient-script.sh" "/sbin/dhclient-script"
+         inst "$basedir/modules.d/35network-legacy/ifup.sh" "/sbin/ifup"
+ 
+         inst_simple "${basedir}/modules.d/99base/dracut-lib.sh" "/lib/dracut-lib.sh"
+@@ -134,4 +136,4 @@ test_cleanup() {
+ }
+ 
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
+-- 
+2.35.1
+
