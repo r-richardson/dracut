@@ -1,0 +1,31 @@
+From 818afb62dc47bf27d626485ef1b6ce3200896b44 Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Wed, 13 Apr 2022 12:16:31 +0200
+Subject: [PATCH] test 60 patch
+
+---
+ test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh b/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh
+index 309600d4..e10f9a03 100755
+--- a/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh
++++ b/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh
+@@ -15,6 +15,8 @@ TEST_DESCRIPTION="root filesystem on NFS with bridging/bonding/vlan with $USE_NE
+ 
+ KVERSION=${KVERSION-$(uname -r)}
+ 
++export basedir=/usr/lib/dracut
++
+ # Uncomment this to debug failures
+ #DEBUGFAIL="rd.shell rd.break"
+ #DEBUGFAIL="rd.shell rd.break rd.debug"
+@@ -403,4 +405,4 @@ test_cleanup() {
+ }
+ 
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
+-- 
+2.35.1
+

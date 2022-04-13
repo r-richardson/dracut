@@ -47,22 +47,22 @@ Patch9:         TEST-14-IMSM-adapt-for-openQA.patch
 Patch10:        TEST-15-BTRFSRAID-adapt-for-openQA.patch
 Patch11:        TEST-16-DMSQUASH-adapt-for-openQA.patch
 Patch12:        TEST-17-LVM-THIN-adapt-for-openQA.patch
-#Patch13:        TEST-20-NFS-adapt-for-openQA.patch
-#Patch14:        TEST-21-NFS-NM-adapt-for-openQA.patch
-#Patch15:        TEST-30-ISCSI-adapt-for-openQA.patch
-#Patch16:        TEST-31-ISCSI-NM-adapt-for-openQA.patch
-#Patch17:        TEST-35-ISCSI-MULTI-adapt-for-openQA.patch
-#Patch18:        TEST-36-ISCSI-MULTI-NM-adapt-for-openQA.patch
-#Patch19:        TEST-40-NBD-adapt-for-openQA.patch
-#Patch20:        TEST-41-NBD-NM-adapt-for-openQA.patch
-#Patch21:        TEST-50-MULTINIC-adapt-for-openQA.patch
-#Patch22:        TEST-51-MULTINIC-NM-adapt-for-openQA.patch
-#Patch23:        TEST-60-BONDBRIDGEVLANIFCFG-adapt-for-openQA.patch
-#Patch24:        TEST-61-BONDBRIDGEVLANIFCFG-NM-adapt-for-openQA.patch
-#Patch25:        TEST-62-SKIPCPIO-adapt-for-openQA.patch
-#Patch26:        TEST-63-DRACUT-CPIO-adapt-for-openQA.patch
-#Patch27:        TEST-98-GETARG-adapt-for-openQA.patch
-#Patch28:        TEST-99-RPM-adapt-for-openQA.patch
+Patch13:        TEST-20-NFS-adapt-for-openQA.patch
+# Patch14:        TEST-21-NFS-NM-adapt-for-openQA.patch
+Patch15:        TEST-30-ISCSI-adapt-for-openQA.patch
+# Patch16:        TEST-31-ISCSI-NM-adapt-for-openQA.patch
+Patch17:        TEST-35-ISCSI-MULTI-adapt-for-openQA.patch
+# Patch18:        TEST-36-ISCSI-MULTI-NM-adapt-for-openQA.patch
+Patch19:        TEST-40-NBD-adapt-for-openQA.patch
+# Patch20:        TEST-41-NBD-NM-adapt-for-openQA.patch
+Patch21:        TEST-50-MULTINIC-adapt-for-openQA.patch
+# Patch22:        TEST-51-MULTINIC-NM-adapt-for-openQA.patch
+Patch23:        TEST-60-BONDBRIDGEVLANIFCFG-adapt-for-openQA.patch
+# Patch24:        TEST-61-BONDBRIDGEVLANIFCFG-NM-adapt-for-openQA.patch
+Patch25:        TEST-62-SKIPCPIO-adapt-for-openQA.patch
+Patch26:        TEST-63-DRACUT-CPIO-adapt-for-openQA.patch
+Patch27:        TEST-98-GETARG-adapt-for-openQA.patch
+Patch28:        TEST-99-RPM-adapt-for-openQA.patch
 Patch29:        RUN-QEMU-adapt-for-openQA.patch
 
 BuildRequires:  asciidoc

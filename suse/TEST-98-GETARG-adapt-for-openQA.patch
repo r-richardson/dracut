@@ -1,0 +1,31 @@
+From e4c26e8f65493edbebd1824f8b1f1b51c1dee596 Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Wed, 13 Apr 2022 12:31:44 +0200
+Subject: [PATCH] test 98 patch
+
+---
+ test/TEST-98-GETARG/test.sh | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/test/TEST-98-GETARG/test.sh b/test/TEST-98-GETARG/test.sh
+index 012396ba..b6856742 100755
+--- a/test/TEST-98-GETARG/test.sh
++++ b/test/TEST-98-GETARG/test.sh
+@@ -6,6 +6,8 @@
+ # shellcheck disable=SC2034
+ TEST_DESCRIPTION="dracut getarg command"
+ 
++export basedir=/usr/lib/dracut
++
+ test_check() {
+     return 0
+ }
+@@ -154,4 +156,4 @@ test_cleanup() {
+ }
+ 
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
+-- 
+2.35.1
+

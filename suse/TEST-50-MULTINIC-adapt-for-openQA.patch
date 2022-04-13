@@ -1,0 +1,49 @@
+From 1a6eceaf136defc4cdbcf2f97059c4776c8a6c64 Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Wed, 13 Apr 2022 12:13:09 +0200
+Subject: [PATCH] test 50 patch
+
+---
+ test/TEST-50-MULTINIC/test.sh | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/test/TEST-50-MULTINIC/test.sh b/test/TEST-50-MULTINIC/test.sh
+index 81b1f685..a2f4cf0d 100755
+--- a/test/TEST-50-MULTINIC/test.sh
++++ b/test/TEST-50-MULTINIC/test.sh
+@@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem on NFS with multiple nics with $USE_NETWORK"
+ 
+ KVERSION=${KVERSION-$(uname -r)}
+ 
++export basedir=/usr/lib/dracut
++
+ # Uncomment this to debug failures
+ #DEBUGFAIL="loglevel=7 rd.shell rd.break"
+ #SERIAL="tcp:127.0.0.1:9999"
+@@ -354,7 +356,7 @@ test_setup() {
+     )
+     # Make client's dracut image
+     "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
+-        -o "ifcfg plymouth dash ${OMIT_NETWORK}" \
++        -o "ifcfg plymouth bash ${OMIT_NETWORK}" \
+         -a "debug watchdog ${USE_NETWORK}" \
+         --no-hostonly-cmdline -N \
+         -f "$TESTDIR"/initramfs.testing "$KVERSION" || return 1
+@@ -370,7 +372,7 @@ test_setup() {
+     )
+     # Make server's dracut image
+     "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
+-        -m "dash udev-rules base rootfs-block fs-lib debug kernel-modules watchdog qemu network network-legacy" \
++        -m "bash udev-rules base rootfs-block fs-lib debug kernel-modules watchdog qemu network network-legacy" \
+         -d "af_packet piix ide-gd_mod ata_piix ext3 sd_mod nfsv2 nfsv3 nfsv4 nfs_acl nfs_layout_nfsv41_files nfsd e1000 i6300esb ib700wdt" \
+         --no-hostonly-cmdline -N \
+         -f "$TESTDIR"/initramfs.server "$KVERSION" || return 1
+@@ -389,4 +391,4 @@ test_cleanup() {
+ }
+ 
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
+-- 
+2.35.1
+

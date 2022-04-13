@@ -1,0 +1,31 @@
+From 378028977a4c2463f7986ab32ea9643ff01b64d9 Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Wed, 13 Apr 2022 12:26:55 +0200
+Subject: [PATCH] test 62 patch
+
+---
+ test/TEST-62-SKIPCPIO/test.sh | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/test/TEST-62-SKIPCPIO/test.sh b/test/TEST-62-SKIPCPIO/test.sh
+index e263a675..fb2e0dd9 100755
+--- a/test/TEST-62-SKIPCPIO/test.sh
++++ b/test/TEST-62-SKIPCPIO/test.sh
+@@ -5,6 +5,8 @@
+ # shellcheck disable=SC2034
+ TEST_DESCRIPTION="test skipcpio"
+ 
++export basedir=/usr/lib/dracut
++
+ test_check() {
+     which cpio dd truncate find sort diff &> /dev/null
+ }
+@@ -72,4 +74,4 @@ test_cleanup() {
+ }
+ 
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
+-- 
+2.35.1
+
