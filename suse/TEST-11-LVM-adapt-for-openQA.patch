@@ -1,4 +1,4 @@
-From 9eff1232832675d2601bd2bcc6fef3b30e957f94 Mon Sep 17 00:00:00 2001
+From 06314b4dd6debefccb8f6ec95f43d34569e209cf Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Tue, 12 Apr 2022 18:14:31 +0200
 Subject: [PATCH] test 11 patch
@@ -8,7 +8,7 @@ Subject: [PATCH] test 11 patch
  1 file changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/test/TEST-11-LVM/test.sh b/test/TEST-11-LVM/test.sh
-index 12384c09..56809e47 100755
+index 12384c09..5237ce4c 100755
 --- a/test/TEST-11-LVM/test.sh
 +++ b/test/TEST-11-LVM/test.sh
 @@ -8,6 +8,8 @@ KVERSION=${KVERSION-$(uname -r)}
@@ -34,7 +34,7 @@ index 12384c09..56809e47 100755
          )
          inst_multiple sh df free ls shutdown poweroff stty cat ps ln ip \
 -            mount dmesg dhclient mkdir cp ping dhclient dd sync
-+            mount dmesg dhclient mkdir cp ping dd sync
++            mount dmesg mkdir cp ping dd sync
 +        inst_multiple -o wicked dhclient arping arping2
          for _terminfodir in /lib/terminfo /etc/terminfo /usr/share/terminfo; do
              [ -f ${_terminfodir}/l/linux ] && break
