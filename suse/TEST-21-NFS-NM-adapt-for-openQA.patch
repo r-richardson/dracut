@@ -1,7 +1,7 @@
-From dc8da8629c9178891b71cf7545b675a9be4aa586 Mon Sep 17 00:00:00 2001
+From f7d37bb3d873e5e4d1032b203b9333b2399cdc89 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
-Date: Wed, 11 May 2022 12:32:50 +0200
-Subject: [PATCH] create test 20 patch
+Date: Wed, 11 May 2022 13:02:50 +0200
+Subject: [PATCH] create test 21 patch
 
 ---
  test/TEST-20-NFS/test.sh | 10 ++++++----
