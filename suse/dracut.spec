@@ -48,7 +48,7 @@ Patch10:        TEST-15-BTRFSRAID-adapt-for-openQA.patch
 Patch11:        TEST-16-DMSQUASH-adapt-for-openQA.patch
 Patch12:        TEST-17-LVM-THIN-adapt-for-openQA.patch
 Patch13:        TEST-20-NFS-adapt-for-openQA.patch
-Patch14:        TEST-21-NFS-NM-adapt-for-openQA.patch
+#Patch14:        TEST-21-NFS-NM-adapt-for-openQA.patch
 Patch15:        TEST-30-ISCSI-adapt-for-openQA.patch
 # Patch16:        TEST-31-ISCSI-NM-adapt-for-openQA.patch
 Patch17:        TEST-35-ISCSI-MULTI-adapt-for-openQA.patch
