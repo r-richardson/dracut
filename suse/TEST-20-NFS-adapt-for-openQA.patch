@@ -1,13 +1,13 @@
-From dd1af6a2cd5534136c44a3e85c0bec90452d02b1 Mon Sep 17 00:00:00 2001
+From 9fdc2deb655daacb95421fa2aea165ba9b683032 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 11 May 2022 12:32:50 +0200
 Subject: [PATCH] create test 20 patch
 
 ---
  test/TEST-20-NFS/server-init.sh    | 10 +++++-----
- test/TEST-20-NFS/test.sh           | 10 ++++++----
+ test/TEST-20-NFS/test.sh           | 12 +++++++-----
  test/TEST-20-NFS/wait-if-server.sh |  2 +-
- 3 files changed, 12 insertions(+), 10 deletions(-)
+ 3 files changed, 13 insertions(+), 11 deletions(-)
 
 diff --git a/test/TEST-20-NFS/server-init.sh b/test/TEST-20-NFS/server-init.sh
 index 3ddb7333..ad6c5505 100755
@@ -34,7 +34,7 @@ index 3ddb7333..ad6c5505 100755
  : > /dev/watchdog
  modprobe af_packet
 diff --git a/test/TEST-20-NFS/test.sh b/test/TEST-20-NFS/test.sh
-index 0be60a80..47a8341e 100755
+index 0be60a80..21b144b0 100755
 --- a/test/TEST-20-NFS/test.sh
 +++ b/test/TEST-20-NFS/test.sh
 @@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem on NFS with $USE_NETWORK"
@@ -46,6 +46,15 @@ index 0be60a80..47a8341e 100755
  # Uncomment this to debug failures
  DEBUGFAIL="rd.debug loglevel=7"
  #DEBUGFAIL="rd.shell rd.break rd.debug loglevel=7 "
+@@ -45,7 +47,7 @@ run_server() {
+     if ! [[ $SERIAL ]]; then
+         while ! grep -q Serving "$TESTDIR"/server.log; do
+             echo "Waiting for the server to startup"
+-            sleep 1
++            sleep 4
+         done
+     else
+         echo Sleeping 10 seconds to give the server a head start
 @@ -175,7 +177,7 @@ test_nfsv3() {
          52:54:00:12:34:05 "root=dhcp" 192.168.50.1 wsize=4096 || return 1
  
