@@ -1,13 +1,13 @@
-From 9fdc2deb655daacb95421fa2aea165ba9b683032 Mon Sep 17 00:00:00 2001
+From 6f150aa84eb486cb55b865764c271b392f380263 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 11 May 2022 12:32:50 +0200
 Subject: [PATCH] create test 20 patch
 
 ---
  test/TEST-20-NFS/server-init.sh    | 10 +++++-----
- test/TEST-20-NFS/test.sh           | 12 +++++++-----
+ test/TEST-20-NFS/test.sh           | 14 +++++++++-----
  test/TEST-20-NFS/wait-if-server.sh |  2 +-
- 3 files changed, 13 insertions(+), 11 deletions(-)
+ 3 files changed, 15 insertions(+), 11 deletions(-)
 
 diff --git a/test/TEST-20-NFS/server-init.sh b/test/TEST-20-NFS/server-init.sh
 index 3ddb7333..ad6c5505 100755
@@ -34,7 +34,7 @@ index 3ddb7333..ad6c5505 100755
  : > /dev/watchdog
  modprobe af_packet
 diff --git a/test/TEST-20-NFS/test.sh b/test/TEST-20-NFS/test.sh
-index 0be60a80..21b144b0 100755
+index 0be60a80..c1a24e37 100755
 --- a/test/TEST-20-NFS/test.sh
 +++ b/test/TEST-20-NFS/test.sh
 @@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem on NFS with $USE_NETWORK"
@@ -64,7 +64,16 @@ index 0be60a80..21b144b0 100755
  
      client_test "NFSv3 root=dhcp DHCP IP:path,options" \
          52:54:00:12:34:06 "root=dhcp" 192.168.50.2 wsize=4096 || return 1
-@@ -402,7 +404,7 @@ test_setup() {
+@@ -221,6 +223,8 @@ test_run() {
+     test_nfsv3 \
+         && test_nfsv4
+ 
++    echo retval ist: $ret
++
+     ret=$?
+ 
+     if [[ -s $TESTDIR/server.pid ]]; then
+@@ -402,7 +406,7 @@ test_setup() {
  
      # Make client's dracut image
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -73,7 +82,7 @@ index 0be60a80..21b144b0 100755
          -a "debug watchdog ${USE_NETWORK}" \
          --no-hostonly-cmdline -N \
          -f "$TESTDIR"/initramfs.testing "$KVERSION" || return 1
-@@ -418,7 +420,7 @@ test_setup() {
+@@ -418,7 +422,7 @@ test_setup() {
      )
      # Make server's dracut image
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -82,7 +91,7 @@ index 0be60a80..21b144b0 100755
          -d "af_packet piix ide-gd_mod ata_piix ext3 sd_mod e1000 i6300esb" \
          --no-hostonly-cmdline -N \
          -f "$TESTDIR"/initramfs.server "$KVERSION" || return 1
-@@ -434,4 +436,4 @@ test_cleanup() {
+@@ -434,4 +438,4 @@ test_cleanup() {
  }
  
  # shellcheck disable=SC1090
