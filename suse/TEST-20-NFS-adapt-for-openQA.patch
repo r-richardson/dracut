@@ -1,13 +1,13 @@
-From d715415576fd18d5d4f00dfad662ce4a9e8f7564 Mon Sep 17 00:00:00 2001
+From 6177fe0045bd326012b0e0cdddd8b83e41ba89a0 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 11 May 2022 12:32:50 +0200
 Subject: [PATCH] create test 20 patch
 
 ---
  test/TEST-20-NFS/server-init.sh    | 10 +++++-----
- test/TEST-20-NFS/test.sh           | 14 +++++++++-----
+ test/TEST-20-NFS/test.sh           | 16 ++++++++++------
  test/TEST-20-NFS/wait-if-server.sh |  2 +-
- 3 files changed, 15 insertions(+), 11 deletions(-)
+ 3 files changed, 16 insertions(+), 12 deletions(-)
 
 diff --git a/test/TEST-20-NFS/server-init.sh b/test/TEST-20-NFS/server-init.sh
 index 3ddb7333..ad6c5505 100755
@@ -34,7 +34,7 @@ index 3ddb7333..ad6c5505 100755
  : > /dev/watchdog
  modprobe af_packet
 diff --git a/test/TEST-20-NFS/test.sh b/test/TEST-20-NFS/test.sh
-index 0be60a80..2a5578b1 100755
+index 0be60a80..2a5a29a3 100755
 --- a/test/TEST-20-NFS/test.sh
 +++ b/test/TEST-20-NFS/test.sh
 @@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem on NFS with $USE_NETWORK"
@@ -64,15 +64,18 @@ index 0be60a80..2a5578b1 100755
  
      client_test "NFSv3 root=dhcp DHCP IP:path,options" \
          52:54:00:12:34:06 "root=dhcp" 192.168.50.2 wsize=4096 || return 1
-@@ -223,6 +225,8 @@ test_run() {
+@@ -223,8 +225,10 @@ test_run() {
  
      ret=$?
  
 +    echo retval ist: $ret
 +
      if [[ -s $TESTDIR/server.pid ]]; then
-         kill -TERM "$(cat "$TESTDIR"/server.pid)"
+-        kill -TERM "$(cat "$TESTDIR"/server.pid)"
++        # kill -TERM "$(cat "$TESTDIR"/server.pid)"
          rm -f -- "$TESTDIR"/server.pid
+     fi
+ 
 @@ -402,7 +406,7 @@ test_setup() {
  
      # Make client's dracut image
