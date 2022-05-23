@@ -1,14 +1,14 @@
-From b44faed58d1a8a11257f661d152a9a54b6675fa8 Mon Sep 17 00:00:00 2001
+From de1aa6d409919ea575b632cc5b09ef894d305692 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 11 May 2022 12:32:50 +0200
 Subject: [PATCH] create test 20 patch
 
 ---
  test/TEST-20-NFS/server-init.sh    | 10 +++++-----
- test/TEST-20-NFS/test.sh           | 22 +++++++++++++---------
+ test/TEST-20-NFS/test.sh           | 20 ++++++++++++--------
  test/TEST-20-NFS/wait-if-server.sh |  2 +-
  test/test-functions                |  1 +
- 4 files changed, 20 insertions(+), 15 deletions(-)
+ 4 files changed, 19 insertions(+), 14 deletions(-)
 
 diff --git a/test/TEST-20-NFS/server-init.sh b/test/TEST-20-NFS/server-init.sh
 index 3ddb7333..ad6c5505 100755
@@ -35,7 +35,7 @@ index 3ddb7333..ad6c5505 100755
  : > /dev/watchdog
  modprobe af_packet
 diff --git a/test/TEST-20-NFS/test.sh b/test/TEST-20-NFS/test.sh
-index 0be60a80..8698d530 100755
+index 0be60a80..990ba0ba 100755
 --- a/test/TEST-20-NFS/test.sh
 +++ b/test/TEST-20-NFS/test.sh
 @@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem on NFS with $USE_NETWORK"
@@ -56,6 +56,19 @@ index 0be60a80..8698d530 100755
          done
      else
          echo Sleeping 10 seconds to give the server a head start
+@@ -70,9 +72,9 @@ client_test() {
+     declare -i disk_index=0
+     qemu_add_drive_args disk_index disk_args "$TESTDIR"/marker.img marker
+ 
+-    if dhclient --help 2>&1 | grep -q -F -- '--timeout' 2> /dev/null; then
+-        cmdline="$cmdline rd.net.timeout.dhcp=3"
+-    fi
++    # if dhclient --help 2>&1 | grep -q -F -- '--timeout' 2> /dev/null; then
++    #     cmdline="$cmdline rd.net.timeout.dhcp=3"
++    # fi
+ 
+     "$testdir"/run-qemu \
+         "${disk_args[@]}" \
 @@ -175,7 +177,7 @@ test_nfsv3() {
          52:54:00:12:34:05 "root=dhcp" 192.168.50.1 wsize=4096 || return 1
  
@@ -65,23 +78,15 @@ index 0be60a80..8698d530 100755
  
      client_test "NFSv3 root=dhcp DHCP IP:path,options" \
          52:54:00:12:34:06 "root=dhcp" 192.168.50.2 wsize=4096 || return 1
-@@ -223,10 +225,12 @@ test_run() {
+@@ -223,6 +225,8 @@ test_run() {
  
      ret=$?
  
--    if [[ -s $TESTDIR/server.pid ]]; then
--        kill -TERM "$(cat "$TESTDIR"/server.pid)"
--        rm -f -- "$TESTDIR"/server.pid
--    fi
 +    echo retval ist: $ret
 +
-+    # if [[ -s $TESTDIR/server.pid ]]; then
-+    #     kill -TERM "$(cat "$TESTDIR"/server.pid)"
-+    #     rm -f -- "$TESTDIR"/server.pid
-+    # fi
- 
-     return $ret
- }
+     if [[ -s $TESTDIR/server.pid ]]; then
+         kill -TERM "$(cat "$TESTDIR"/server.pid)"
+         rm -f -- "$TESTDIR"/server.pid
 @@ -402,7 +406,7 @@ test_setup() {
  
      # Make client's dracut image
