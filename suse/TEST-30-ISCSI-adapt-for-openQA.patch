@@ -1,14 +1,14 @@
-From 41c0cc2778fcc8cf1f59d2ffdf4ad53266c26717 Mon Sep 17 00:00:00 2001
+From 7b8c7ed7dde33b2f069dbaa9b90ed67596de0cbd Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:02:05 +0200
 Subject: [PATCH] test 30 patch
 
 ---
- test/TEST-30-ISCSI/test.sh | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ test/TEST-30-ISCSI/test.sh | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/test/TEST-30-ISCSI/test.sh b/test/TEST-30-ISCSI/test.sh
-index 5f0063f8..c5782c2b 100755
+index 5f0063f8..d7d8cd09 100755
 --- a/test/TEST-30-ISCSI/test.sh
 +++ b/test/TEST-30-ISCSI/test.sh
 @@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem over iSCSI with $USE_NETWORK"
@@ -20,6 +20,15 @@ index 5f0063f8..c5782c2b 100755
  DEBUGFAIL="loglevel=1"
  #DEBUGFAIL="rd.shell rd.break rd.debug loglevel=7 "
  DEBUGFAIL="rd.debug loglevel=7 "
+@@ -120,7 +122,7 @@ do_test_run() {
+ }
+ 
+ test_run() {
+-    if ! run_server; then
++    if ! ( run_server || tee /tmp/dracut-testsuite-logs/$test_name-test_run_server.log ) ; then
+         echo "Failed to start server" 1>&2
+         return 1
+     fi
 @@ -188,7 +190,7 @@ test_setup() {
      # We do it this way so that we do not risk trashing the host mdraid
      # devices, volume groups, encrypted partitions, etc.
@@ -63,5 +72,5 @@ index 5f0063f8..c5782c2b 100755
 -. "$testdir"/test-functions
 +. "$basedir"/test/test-functions
 -- 
-2.35.1
+2.36.1
 
