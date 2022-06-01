@@ -1,4 +1,4 @@
-From 365e274c0e29047fe8a23608fff757d539e54498 Mon Sep 17 00:00:00 2001
+From f0f884940d1083e0a34d4d3a3ec02cfd86ba6f4d Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:02:05 +0200
 Subject: [PATCH] test 30 patch
@@ -8,7 +8,7 @@ Subject: [PATCH] test 30 patch
  1 file changed, 9 insertions(+), 5 deletions(-)
 
 diff --git a/test/TEST-30-ISCSI/test.sh b/test/TEST-30-ISCSI/test.sh
-index 5f0063f8..521f0a5c 100755
+index 5f0063f8..da5a343e 100755
 --- a/test/TEST-30-ISCSI/test.sh
 +++ b/test/TEST-30-ISCSI/test.sh
 @@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem over iSCSI with $USE_NETWORK"
@@ -24,7 +24,7 @@ index 5f0063f8..521f0a5c 100755
      # Cleanup the terminal if we have one
      tty -s && stty sane
  
-+    assert_script_run cp "$TESTDIR/server.log /tmp/dracut-testsuite-logs/$test_name-test_run_server.log"
++    assert_script_run "cp $TESTDIR/server.log /tmp/dracut-testsuite-logs/$test_name-test_run_server.log"
 +
      if ! [[ $SERIAL ]]; then
          while :; do
