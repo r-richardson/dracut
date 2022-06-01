@@ -1,12 +1,39 @@
-From 31aec01649809a4710eecf47ee338e45508656e7 Mon Sep 17 00:00:00 2001
+From e46735d37165e250c4afadf815ecd584847ca90c Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:02:05 +0200
 Subject: [PATCH] test 30 patch
 
 ---
- test/TEST-30-ISCSI/test.sh | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ test/TEST-30-ISCSI/server-init.sh    | 10 +++-------
+ test/TEST-30-ISCSI/test.sh           | 18 +++++++++++++-----
+ test/TEST-30-ISCSI/wait-if-server.sh |  3 +--
+ 3 files changed, 17 insertions(+), 14 deletions(-)
 
+diff --git a/test/TEST-30-ISCSI/server-init.sh b/test/TEST-30-ISCSI/server-init.sh
+index fd5538d8..c0da4668 100755
+--- a/test/TEST-30-ISCSI/server-init.sh
++++ b/test/TEST-30-ISCSI/server-init.sh
+@@ -47,17 +47,13 @@ linkup() {
+     wait_for_if_link "$1" 2> /dev/null && ip link set "$1" up 2> /dev/null && wait_for_if_up "$1" 2> /dev/null
+ }
+ 
+-wait_for_if_link enx525400123456
+-wait_for_if_link enx525400123457
++wait_for_if_link eth0
+ 
+ ip addr add 127.0.0.1/8 dev lo
+ ip link set lo up
+ 
+-ip addr add 192.168.50.1/24 dev enx525400123456
+-linkup enx525400123456
+-
+-ip addr add 192.168.51.1/24 dev enx525400123457
+-linkup enx525400123457
++ip addr add 192.168.50.1/24 dev eth0
++linkup eth0
+ 
+ modprobe af_packet
+ 
 diff --git a/test/TEST-30-ISCSI/test.sh b/test/TEST-30-ISCSI/test.sh
 index 5f0063f8..769a5dc6 100755
 --- a/test/TEST-30-ISCSI/test.sh
@@ -87,6 +114,17 @@ index 5f0063f8..769a5dc6 100755
  # shellcheck disable=SC1090
 -. "$testdir"/test-functions
 +. "$basedir"/test/test-functions
+diff --git a/test/TEST-30-ISCSI/wait-if-server.sh b/test/TEST-30-ISCSI/wait-if-server.sh
+index b53e41fe..4f2ba77b 100644
+--- a/test/TEST-30-ISCSI/wait-if-server.sh
++++ b/test/TEST-30-ISCSI/wait-if-server.sh
+@@ -1,4 +1,3 @@
+ #!/bin/sh
+ . /lib/net-lib.sh
+-wait_for_if_link enx525400123456
+-wait_for_if_link enx525400123457
++wait_for_if_link eth0
+\ No newline at end of file
 -- 
 2.36.1
 
