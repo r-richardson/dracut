@@ -1,4 +1,4 @@
-From 2b55a8e3bbb56eae8910feac43bb08a4f7d5b02b Mon Sep 17 00:00:00 2001
+From 28f6f7707dd556509fc4375d0d4c5f4087ec5c8f Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:02:05 +0200
 Subject: [PATCH] test 30 patch
@@ -35,7 +35,7 @@ index fd5538d8..c0da4668 100755
  modprobe af_packet
  
 diff --git a/test/TEST-30-ISCSI/test.sh b/test/TEST-30-ISCSI/test.sh
-index 5f0063f8..ee4022d4 100755
+index 5f0063f8..d135d20f 100755
 --- a/test/TEST-30-ISCSI/test.sh
 +++ b/test/TEST-30-ISCSI/test.sh
 @@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem over iSCSI with $USE_NETWORK"
@@ -51,7 +51,7 @@ index 5f0063f8..ee4022d4 100755
      tty -s && stty sane
  
      if ! [[ $SERIAL ]]; then
-+    let count = 0;
++    let count=0;
          while :; do
 +            if [ $count -gt 300 ]; then
 +                  return 1
