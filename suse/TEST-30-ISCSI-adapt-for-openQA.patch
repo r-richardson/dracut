@@ -1,14 +1,14 @@
-From 7b8c7ed7dde33b2f069dbaa9b90ed67596de0cbd Mon Sep 17 00:00:00 2001
+From 365e274c0e29047fe8a23608fff757d539e54498 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:02:05 +0200
 Subject: [PATCH] test 30 patch
 
 ---
- test/TEST-30-ISCSI/test.sh | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ test/TEST-30-ISCSI/test.sh | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
 diff --git a/test/TEST-30-ISCSI/test.sh b/test/TEST-30-ISCSI/test.sh
-index 5f0063f8..d7d8cd09 100755
+index 5f0063f8..521f0a5c 100755
 --- a/test/TEST-30-ISCSI/test.sh
 +++ b/test/TEST-30-ISCSI/test.sh
 @@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem over iSCSI with $USE_NETWORK"
@@ -20,16 +20,16 @@ index 5f0063f8..d7d8cd09 100755
  DEBUGFAIL="loglevel=1"
  #DEBUGFAIL="rd.shell rd.break rd.debug loglevel=7 "
  DEBUGFAIL="rd.debug loglevel=7 "
-@@ -120,7 +122,7 @@ do_test_run() {
- }
+@@ -44,6 +46,8 @@ run_server() {
+     # Cleanup the terminal if we have one
+     tty -s && stty sane
  
- test_run() {
--    if ! run_server; then
-+    if ! ( run_server || tee /tmp/dracut-testsuite-logs/$test_name-test_run_server.log ) ; then
-         echo "Failed to start server" 1>&2
-         return 1
-     fi
-@@ -188,7 +190,7 @@ test_setup() {
++    assert_script_run cp "$TESTDIR/server.log /tmp/dracut-testsuite-logs/$test_name-test_run_server.log"
++
+     if ! [[ $SERIAL ]]; then
+         while :; do
+             grep Serving "$TESTDIR"/server.log && break
+@@ -188,7 +192,7 @@ test_setup() {
      # We do it this way so that we do not risk trashing the host mdraid
      # devices, volume groups, encrypted partitions, etc.
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -38,7 +38,7 @@ index 5f0063f8..d7d8cd09 100755
          -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
          --no-hostonly-cmdline -N \
          -f "$TESTDIR"/initramfs.makeroot "$KVERSION" || return 1
-@@ -279,7 +281,7 @@ test_setup() {
+@@ -279,7 +283,7 @@ test_setup() {
      # We do it this way so that we do not risk trashing the host mdraid
      # devices, volume groups, encrypted partitions, etc.
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -47,7 +47,7 @@ index 5f0063f8..d7d8cd09 100755
          -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
          --nomdadmconf \
          --no-hostonly-cmdline -N \
-@@ -316,7 +318,7 @@ test_setup() {
+@@ -316,7 +320,7 @@ test_setup() {
      )
      # Make client's dracut image
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -56,7 +56,7 @@ index 5f0063f8..d7d8cd09 100755
          -a "debug ${USE_NETWORK}" \
          --no-hostonly-cmdline -N \
          -f "$TESTDIR"/initramfs.testing "$KVERSION" || return 1
-@@ -332,7 +334,7 @@ test_setup() {
+@@ -332,7 +336,7 @@ test_setup() {
      )
      # Make server's dracut image
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -65,7 +65,7 @@ index 5f0063f8..d7d8cd09 100755
          -d "af_packet piix ide-gd_mod ata_piix ext3 sd_mod e1000 drbg" \
          --no-hostonly-cmdline -N \
          -f "$TESTDIR"/initramfs.server "$KVERSION" || return 1
-@@ -348,4 +350,4 @@ test_cleanup() {
+@@ -348,4 +352,4 @@ test_cleanup() {
  }
  
  # shellcheck disable=SC1090
