@@ -1,13 +1,13 @@
-From 28f6f7707dd556509fc4375d0d4c5f4087ec5c8f Mon Sep 17 00:00:00 2001
+From 451e55325c3e3c347a194c12ddaac8f118429a51 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:02:05 +0200
 Subject: [PATCH] test 30 patch
 
 ---
  test/TEST-30-ISCSI/server-init.sh    | 10 +++-------
- test/TEST-30-ISCSI/test.sh           | 18 +++++++++++++-----
+ test/TEST-30-ISCSI/test.sh           | 20 ++++++++++++++------
  test/TEST-30-ISCSI/wait-if-server.sh |  3 +--
- 3 files changed, 17 insertions(+), 14 deletions(-)
+ 3 files changed, 18 insertions(+), 15 deletions(-)
 
 diff --git a/test/TEST-30-ISCSI/server-init.sh b/test/TEST-30-ISCSI/server-init.sh
 index fd5538d8..c0da4668 100755
@@ -35,10 +35,10 @@ index fd5538d8..c0da4668 100755
  modprobe af_packet
  
 diff --git a/test/TEST-30-ISCSI/test.sh b/test/TEST-30-ISCSI/test.sh
-index 5f0063f8..d135d20f 100755
+index 5f0063f8..98168224 100755
 --- a/test/TEST-30-ISCSI/test.sh
 +++ b/test/TEST-30-ISCSI/test.sh
-@@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem over iSCSI with $USE_NETWORK"
+@@ -13,10 +13,12 @@ TEST_DESCRIPTION="root filesystem over iSCSI with $USE_NETWORK"
  
  KVERSION=${KVERSION-$(uname -r)}
  
@@ -47,6 +47,11 @@ index 5f0063f8..d135d20f 100755
  DEBUGFAIL="loglevel=1"
  #DEBUGFAIL="rd.shell rd.break rd.debug loglevel=7 "
  DEBUGFAIL="rd.debug loglevel=7 "
+-#SERVER_DEBUG="rd.debug loglevel=7"
++SERVER_DEBUG="rd.debug loglevel=7"
+ #SERIAL="tcp:127.0.0.1:9999"
+ 
+ run_server() {
 @@ -45,11 +47,16 @@ run_server() {
      tty -s && stty sane
  
