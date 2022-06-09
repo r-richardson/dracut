@@ -1,13 +1,13 @@
-From 451e55325c3e3c347a194c12ddaac8f118429a51 Mon Sep 17 00:00:00 2001
+From 8e3b4729859680be8daab6cfba85a69cc621b0c3 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:02:05 +0200
 Subject: [PATCH] test 30 patch
 
 ---
  test/TEST-30-ISCSI/server-init.sh    | 10 +++-------
- test/TEST-30-ISCSI/test.sh           | 20 ++++++++++++++------
+ test/TEST-30-ISCSI/test.sh           | 22 +++++++++++++++-------
  test/TEST-30-ISCSI/wait-if-server.sh |  3 +--
- 3 files changed, 18 insertions(+), 15 deletions(-)
+ 3 files changed, 19 insertions(+), 16 deletions(-)
 
 diff --git a/test/TEST-30-ISCSI/server-init.sh b/test/TEST-30-ISCSI/server-init.sh
 index fd5538d8..c0da4668 100755
@@ -35,7 +35,7 @@ index fd5538d8..c0da4668 100755
  modprobe af_packet
  
 diff --git a/test/TEST-30-ISCSI/test.sh b/test/TEST-30-ISCSI/test.sh
-index 5f0063f8..98168224 100755
+index 5f0063f8..c0821c96 100755
 --- a/test/TEST-30-ISCSI/test.sh
 +++ b/test/TEST-30-ISCSI/test.sh
 @@ -13,10 +13,12 @@ TEST_DESCRIPTION="root filesystem over iSCSI with $USE_NETWORK"
@@ -95,6 +95,15 @@ index 5f0063f8..98168224 100755
          -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
          --nomdadmconf \
          --no-hostonly-cmdline -N \
+@@ -297,7 +305,7 @@ test_setup() {
+     # Invoke KVM and/or QEMU to actually create the target filesystem.
+     "$testdir"/run-qemu \
+         "${disk_args[@]}" \
+-        -append "root=/dev/dracut/root rw rootfstype=ext3 quiet console=ttyS0,115200n81 selinux=0" \
++        -append "nompath root=/dev/dracut/root rw rootfstype=ext3 quiet console=ttyS0,115200n81 selinux=0" \
+         -initrd "$TESTDIR"/initramfs.makeroot || return 1
+     grep -U --binary-files=binary -F -m 1 -q dracut-root-block-created "$TESTDIR"/marker.img || return 1
+     rm -- "$TESTDIR"/marker.img
 @@ -316,7 +324,7 @@ test_setup() {
      )
      # Make client's dracut image
