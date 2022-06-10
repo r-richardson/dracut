@@ -1,13 +1,13 @@
-From 8e3b4729859680be8daab6cfba85a69cc621b0c3 Mon Sep 17 00:00:00 2001
+From 1c41fe2a48170683f44ecb270f64dfdd00a4c803 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:02:05 +0200
 Subject: [PATCH] test 30 patch
 
 ---
  test/TEST-30-ISCSI/server-init.sh    | 10 +++-------
- test/TEST-30-ISCSI/test.sh           | 22 +++++++++++++++-------
+ test/TEST-30-ISCSI/test.sh           | 23 ++++++++++++++++-------
  test/TEST-30-ISCSI/wait-if-server.sh |  3 +--
- 3 files changed, 19 insertions(+), 16 deletions(-)
+ 3 files changed, 20 insertions(+), 16 deletions(-)
 
 diff --git a/test/TEST-30-ISCSI/server-init.sh b/test/TEST-30-ISCSI/server-init.sh
 index fd5538d8..c0da4668 100755
@@ -35,14 +35,15 @@ index fd5538d8..c0da4668 100755
  modprobe af_packet
  
 diff --git a/test/TEST-30-ISCSI/test.sh b/test/TEST-30-ISCSI/test.sh
-index 5f0063f8..c0821c96 100755
+index 5f0063f8..04a84aeb 100755
 --- a/test/TEST-30-ISCSI/test.sh
 +++ b/test/TEST-30-ISCSI/test.sh
-@@ -13,10 +13,12 @@ TEST_DESCRIPTION="root filesystem over iSCSI with $USE_NETWORK"
+@@ -13,10 +13,13 @@ TEST_DESCRIPTION="root filesystem over iSCSI with $USE_NETWORK"
  
  KVERSION=${KVERSION-$(uname -r)}
  
 +export basedir=/usr/lib/dracut
++. $TESTDIR/test-functions ;
 +
  DEBUGFAIL="loglevel=1"
  #DEBUGFAIL="rd.shell rd.break rd.debug loglevel=7 "
@@ -52,7 +53,7 @@ index 5f0063f8..c0821c96 100755
  #SERIAL="tcp:127.0.0.1:9999"
  
  run_server() {
-@@ -45,11 +47,16 @@ run_server() {
+@@ -45,11 +48,16 @@ run_server() {
      tty -s && stty sane
  
      if ! [[ $SERIAL ]]; then
@@ -69,7 +70,7 @@ index 5f0063f8..c0821c96 100755
          done
      else
          echo Sleeping 10 seconds to give the server a head start
-@@ -122,6 +129,7 @@ do_test_run() {
+@@ -122,6 +130,7 @@ do_test_run() {
  test_run() {
      if ! run_server; then
          echo "Failed to start server" 1>&2
@@ -77,7 +78,7 @@ index 5f0063f8..c0821c96 100755
          return 1
      fi
      do_test_run
-@@ -188,7 +196,7 @@ test_setup() {
+@@ -188,7 +197,7 @@ test_setup() {
      # We do it this way so that we do not risk trashing the host mdraid
      # devices, volume groups, encrypted partitions, etc.
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -86,7 +87,7 @@ index 5f0063f8..c0821c96 100755
          -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
          --no-hostonly-cmdline -N \
          -f "$TESTDIR"/initramfs.makeroot "$KVERSION" || return 1
-@@ -279,7 +287,7 @@ test_setup() {
+@@ -279,7 +288,7 @@ test_setup() {
      # We do it this way so that we do not risk trashing the host mdraid
      # devices, volume groups, encrypted partitions, etc.
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -95,7 +96,7 @@ index 5f0063f8..c0821c96 100755
          -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
          --nomdadmconf \
          --no-hostonly-cmdline -N \
-@@ -297,7 +305,7 @@ test_setup() {
+@@ -297,7 +306,7 @@ test_setup() {
      # Invoke KVM and/or QEMU to actually create the target filesystem.
      "$testdir"/run-qemu \
          "${disk_args[@]}" \
@@ -104,7 +105,7 @@ index 5f0063f8..c0821c96 100755
          -initrd "$TESTDIR"/initramfs.makeroot || return 1
      grep -U --binary-files=binary -F -m 1 -q dracut-root-block-created "$TESTDIR"/marker.img || return 1
      rm -- "$TESTDIR"/marker.img
-@@ -316,7 +324,7 @@ test_setup() {
+@@ -316,7 +325,7 @@ test_setup() {
      )
      # Make client's dracut image
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -113,7 +114,7 @@ index 5f0063f8..c0821c96 100755
          -a "debug ${USE_NETWORK}" \
          --no-hostonly-cmdline -N \
          -f "$TESTDIR"/initramfs.testing "$KVERSION" || return 1
-@@ -332,7 +340,7 @@ test_setup() {
+@@ -332,7 +341,7 @@ test_setup() {
      )
      # Make server's dracut image
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -122,7 +123,7 @@ index 5f0063f8..c0821c96 100755
          -d "af_packet piix ide-gd_mod ata_piix ext3 sd_mod e1000 drbg" \
          --no-hostonly-cmdline -N \
          -f "$TESTDIR"/initramfs.server "$KVERSION" || return 1
-@@ -348,4 +356,4 @@ test_cleanup() {
+@@ -348,4 +357,4 @@ test_cleanup() {
  }
  
  # shellcheck disable=SC1090
