@@ -1,13 +1,13 @@
-From f128fa603c37c2780dfd6ced007392fe7032449e Mon Sep 17 00:00:00 2001
+From f2a7331d261127857bb1b28b733a776da1c72e42 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:02:05 +0200
 Subject: [PATCH] test 30 patch
 
 ---
- test/TEST-30-ISCSI/server-init.sh    | 10 +++-------
- test/TEST-30-ISCSI/test.sh           | 25 +++++++++++++++++--------
+ test/TEST-30-ISCSI/server-init.sh    | 10 +++-----
+ test/TEST-30-ISCSI/test.sh           | 37 +++++++++++++++++-----------
  test/TEST-30-ISCSI/wait-if-server.sh |  3 +--
- 3 files changed, 21 insertions(+), 17 deletions(-)
+ 3 files changed, 27 insertions(+), 23 deletions(-)
 
 diff --git a/test/TEST-30-ISCSI/server-init.sh b/test/TEST-30-ISCSI/server-init.sh
 index fd5538d8..c0da4668 100755
@@ -35,7 +35,7 @@ index fd5538d8..c0da4668 100755
  modprobe af_packet
  
 diff --git a/test/TEST-30-ISCSI/test.sh b/test/TEST-30-ISCSI/test.sh
-index 5f0063f8..208088b1 100755
+index 5f0063f8..03c51666 100755
 --- a/test/TEST-30-ISCSI/test.sh
 +++ b/test/TEST-30-ISCSI/test.sh
 @@ -13,10 +13,13 @@ TEST_DESCRIPTION="root filesystem over iSCSI with $USE_NETWORK"
@@ -79,6 +79,39 @@ index 5f0063f8..208088b1 100755
          done
      else
          echo Sleeping 10 seconds to give the server a head start
+@@ -90,18 +98,18 @@ run_client() {
+ do_test_run() {
+     initiator=$(iscsi-iname)
+ 
+-    run_client "root=dhcp" \
+-        "root=/dev/root netroot=dhcp ip=enp0s1:dhcp" \
++    run_client "nompath root=dhcp" \
++        "root=/dev/root netroot=dhcp ip=eth0:dhcp" \
+         "rd.iscsi.initiator=$initiator" \
+         || return 1
+ 
+-    run_client "netroot=iscsi target0" \
++    run_client "nompath netroot=iscsi target0" \
+         "root=LABEL=singleroot netroot=iscsi:192.168.50.1::::iqn.2009-06.dracut:target0" \
+-        "ip=192.168.50.101::192.168.50.1:255.255.255.0:iscsi-1:enp0s1:off" \
++        "ip=192.168.50.101::192.168.50.1:255.255.255.0:iscsi-1:eth0:off" \
+         "rd.iscsi.initiator=$initiator" \
+         || return 1
+ 
+-    run_client "netroot=iscsi target1 target2" \
++    run_client "nompath netroot=iscsi target1 target2" \
+         "root=LABEL=sysroot" \
+         "ip=dhcp" \
+         "netroot=iscsi:192.168.51.1::::iqn.2009-06.dracut:target1" \
+@@ -109,7 +117,7 @@ do_test_run() {
+         "rd.iscsi.initiator=$initiator" \
+         || return 1
+ 
+-    run_client "root=ibft" \
++    run_client "nompath root=ibft" \
+         "root=LABEL=singleroot" \
+         "rd.iscsi.ibft=1" \
+         "rd.iscsi.firmware=1" \
 @@ -122,6 +130,7 @@ do_test_run() {
  test_run() {
      if ! run_server; then
