@@ -1,13 +1,13 @@
-From 1c41fe2a48170683f44ecb270f64dfdd00a4c803 Mon Sep 17 00:00:00 2001
+From f128fa603c37c2780dfd6ced007392fe7032449e Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:02:05 +0200
 Subject: [PATCH] test 30 patch
 
 ---
  test/TEST-30-ISCSI/server-init.sh    | 10 +++-------
- test/TEST-30-ISCSI/test.sh           | 23 ++++++++++++++++-------
+ test/TEST-30-ISCSI/test.sh           | 25 +++++++++++++++++--------
  test/TEST-30-ISCSI/wait-if-server.sh |  3 +--
- 3 files changed, 20 insertions(+), 16 deletions(-)
+ 3 files changed, 21 insertions(+), 17 deletions(-)
 
 diff --git a/test/TEST-30-ISCSI/server-init.sh b/test/TEST-30-ISCSI/server-init.sh
 index fd5538d8..c0da4668 100755
@@ -35,7 +35,7 @@ index fd5538d8..c0da4668 100755
  modprobe af_packet
  
 diff --git a/test/TEST-30-ISCSI/test.sh b/test/TEST-30-ISCSI/test.sh
-index 5f0063f8..04a84aeb 100755
+index 5f0063f8..208088b1 100755
 --- a/test/TEST-30-ISCSI/test.sh
 +++ b/test/TEST-30-ISCSI/test.sh
 @@ -13,10 +13,13 @@ TEST_DESCRIPTION="root filesystem over iSCSI with $USE_NETWORK"
@@ -53,6 +53,15 @@ index 5f0063f8..04a84aeb 100755
  #SERIAL="tcp:127.0.0.1:9999"
  
  run_server() {
+@@ -36,7 +39,7 @@ run_server() {
+         -net nic,macaddr=52:54:00:12:34:56,model=e1000 \
+         -net nic,macaddr=52:54:00:12:34:57,model=e1000 \
+         -net socket,listen=127.0.0.1:12330 \
+-        -append "panic=1 oops=panic softlockup_panic=1 quiet root=/dev/disk/by-id/ata-disk_serverroot rootfstype=ext3 rw console=ttyS0,115200n81 selinux=0 $SERVER_DEBUG" \
++        -append "nompath panic=1 oops=panic softlockup_panic=1 quiet root=/dev/disk/by-id/ata-disk_serverroot rootfstype=ext3 rw console=ttyS0,115200n81 selinux=0 $SERVER_DEBUG" \
+         -initrd "$TESTDIR"/initramfs.server \
+         -pidfile "$TESTDIR"/server.pid -daemonize || return 1
+     chmod 644 "$TESTDIR"/server.pid || return 1
 @@ -45,11 +48,16 @@ run_server() {
      tty -s && stty sane
  
