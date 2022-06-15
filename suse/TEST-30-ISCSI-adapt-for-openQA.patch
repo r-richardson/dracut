@@ -1,4 +1,4 @@
-From fd97c21a7bdfb2d3e269095482b41208d55d3ded Mon Sep 17 00:00:00 2001
+From 9f451e0e2ba085190eff42de99232dbea56a6fe6 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:02:05 +0200
 Subject: [PATCH] test 30 patch
@@ -7,8 +7,8 @@ Subject: [PATCH] test 30 patch
  test/TEST-30-ISCSI/server-init.sh    | 10 +++-----
  test/TEST-30-ISCSI/test.sh           | 35 +++++++++++++++++-----------
  test/TEST-30-ISCSI/wait-if-server.sh |  3 +--
- test/run-qemu                        |  2 ++
- 4 files changed, 28 insertions(+), 22 deletions(-)
+ test/run-qemu                        |  2 +-
+ 4 files changed, 27 insertions(+), 23 deletions(-)
 
 diff --git a/test/TEST-30-ISCSI/server-init.sh b/test/TEST-30-ISCSI/server-init.sh
 index fd5538d8..c0da4668 100755
@@ -179,15 +179,15 @@ index b53e41fe..4f2ba77b 100644
 +wait_for_if_link eth0
 \ No newline at end of file
 diff --git a/test/run-qemu b/test/run-qemu
-index 3c521a14..c11955b0 100755
+index 3c521a14..6268ecc5 100755
 --- a/test/run-qemu
 +++ b/test/run-qemu
-@@ -40,3 +40,5 @@ if ! [ -f "$VMLINUZ" ]; then
+@@ -39,4 +39,4 @@ if ! [ -f "$VMLINUZ" ]; then
+     fi
  fi
  
- exec "$BIN" "${ARGS[@]}" -kernel "$VMLINUZ" "$@"
-+
-+exit 1
+-exec "$BIN" "${ARGS[@]}" -kernel "$VMLINUZ" "$@"
++exec "$BIN" "${ARGS[@]}" -kernel "$VMLINUZ" "$@"
 \ No newline at end of file
 -- 
 2.36.1
