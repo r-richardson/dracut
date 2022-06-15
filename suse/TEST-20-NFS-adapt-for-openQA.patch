@@ -1,4 +1,4 @@
-From de1aa6d409919ea575b632cc5b09ef894d305692 Mon Sep 17 00:00:00 2001
+From ff83bd7a4ae09afa1f4bf72406a5efd6d97b44ca Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 11 May 2022 12:32:50 +0200
 Subject: [PATCH] create test 20 patch
@@ -7,8 +7,7 @@ Subject: [PATCH] create test 20 patch
  test/TEST-20-NFS/server-init.sh    | 10 +++++-----
  test/TEST-20-NFS/test.sh           | 20 ++++++++++++--------
  test/TEST-20-NFS/wait-if-server.sh |  2 +-
- test/test-functions                |  1 +
- 4 files changed, 19 insertions(+), 14 deletions(-)
+ 3 files changed, 18 insertions(+), 14 deletions(-)
 
 diff --git a/test/TEST-20-NFS/server-init.sh b/test/TEST-20-NFS/server-init.sh
 index 3ddb7333..ad6c5505 100755
@@ -121,18 +120,6 @@ index 8ae21f8a..bd96fe78 100644
  . /lib/net-lib.sh
 -wait_for_if_link enx525400123456
 +wait_for_if_link eth0
-diff --git a/test/test-functions b/test/test-functions
-index f2896a91..88ea1ca8 100644
---- a/test/test-functions
-+++ b/test/test-functions
-@@ -83,6 +83,7 @@ while (($# > 0)); do
-             check_root
-             echo "TEST RUN: $TEST_DESCRIPTION"
-             test_check && test_run
-+            echo "exit code in test-functions is $?"
-             exit $?
-             ;;
-         --setup)
 -- 
 2.36.1
 
