@@ -1,37 +1,40 @@
-From 9f451e0e2ba085190eff42de99232dbea56a6fe6 Mon Sep 17 00:00:00 2001
+From 2b75a2d6fc8da3fa8ccb32e12e450edecd817621 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:02:05 +0200
 Subject: [PATCH] test 30 patch
 
 ---
- test/TEST-30-ISCSI/server-init.sh    | 10 +++-----
+ test/TEST-30-ISCSI/server-init.sh    | 12 +++++-----
  test/TEST-30-ISCSI/test.sh           | 35 +++++++++++++++++-----------
  test/TEST-30-ISCSI/wait-if-server.sh |  3 +--
  test/run-qemu                        |  2 +-
- 4 files changed, 27 insertions(+), 23 deletions(-)
+ 4 files changed, 30 insertions(+), 22 deletions(-)
 
 diff --git a/test/TEST-30-ISCSI/server-init.sh b/test/TEST-30-ISCSI/server-init.sh
-index fd5538d8..c0da4668 100755
+index fd5538d8..cef92c9e 100755
 --- a/test/TEST-30-ISCSI/server-init.sh
 +++ b/test/TEST-30-ISCSI/server-init.sh
-@@ -47,17 +47,13 @@ linkup() {
+@@ -47,17 +47,17 @@ linkup() {
      wait_for_if_link "$1" 2> /dev/null && ip link set "$1" up 2> /dev/null && wait_for_if_up "$1" 2> /dev/null
  }
  
 -wait_for_if_link enx525400123456
 -wait_for_if_link enx525400123457
 +wait_for_if_link eth0
++wait_for_if_link eth1
  
  ip addr add 127.0.0.1/8 dev lo
  ip link set lo up
  
 -ip addr add 192.168.50.1/24 dev enx525400123456
 -linkup enx525400123456
--
--ip addr add 192.168.51.1/24 dev enx525400123457
--linkup enx525400123457
 +ip addr add 192.168.50.1/24 dev eth0
 +linkup eth0
+ 
+-ip addr add 192.168.51.1/24 dev enx525400123457
+-linkup enx525400123457
++ip addr add 192.168.51.1/24 dev eth1
++linkup eth1
  
  modprobe af_packet
  
