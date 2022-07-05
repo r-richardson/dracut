@@ -1,20 +1,20 @@
-From 2b75a2d6fc8da3fa8ccb32e12e450edecd817621 Mon Sep 17 00:00:00 2001
+From 411ad642fba91a8c8a8ba260cfa334c7f2292c7e Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:02:05 +0200
 Subject: [PATCH] test 30 patch
 
 ---
- test/TEST-30-ISCSI/server-init.sh    | 12 +++++-----
+ test/TEST-30-ISCSI/server-init.sh    | 14 ++++++-----
  test/TEST-30-ISCSI/test.sh           | 35 +++++++++++++++++-----------
  test/TEST-30-ISCSI/wait-if-server.sh |  3 +--
  test/run-qemu                        |  2 +-
- 4 files changed, 30 insertions(+), 22 deletions(-)
+ 4 files changed, 32 insertions(+), 22 deletions(-)
 
 diff --git a/test/TEST-30-ISCSI/server-init.sh b/test/TEST-30-ISCSI/server-init.sh
-index fd5538d8..cef92c9e 100755
+index fd5538d8..9457ac1e 100755
 --- a/test/TEST-30-ISCSI/server-init.sh
 +++ b/test/TEST-30-ISCSI/server-init.sh
-@@ -47,17 +47,17 @@ linkup() {
+@@ -47,17 +47,19 @@ linkup() {
      wait_for_if_link "$1" 2> /dev/null && ip link set "$1" up 2> /dev/null && wait_for_if_up "$1" 2> /dev/null
  }
  
@@ -33,6 +33,8 @@ index fd5538d8..cef92c9e 100755
  
 -ip addr add 192.168.51.1/24 dev enx525400123457
 -linkup enx525400123457
++wait_for_if_link eth0
++
 +ip addr add 192.168.51.1/24 dev eth1
 +linkup eth1
  
