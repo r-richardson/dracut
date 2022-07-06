@@ -1,14 +1,14 @@
-From fd688b0b811e6f6aca9be75be9498b2d91442af9 Mon Sep 17 00:00:00 2001
+From 57b3cd75268efc5c19c119dcc889732281710d7c Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:02:05 +0200
 Subject: [PATCH] test 30 patch
 
 ---
- test/TEST-30-ISCSI/server-init.sh    | 13 ++++----
- test/TEST-30-ISCSI/test.sh           | 47 +++++++++++++++-------------
- test/TEST-30-ISCSI/wait-if-server.sh |  3 +-
+ test/TEST-30-ISCSI/server-init.sh    | 13 +++++-----
+ test/TEST-30-ISCSI/test.sh           | 36 +++++++++++++++++-----------
+ test/TEST-30-ISCSI/wait-if-server.sh |  3 +--
  test/run-qemu                        |  2 +-
- 4 files changed, 35 insertions(+), 30 deletions(-)
+ 4 files changed, 31 insertions(+), 23 deletions(-)
 
 diff --git a/test/TEST-30-ISCSI/server-init.sh b/test/TEST-30-ISCSI/server-init.sh
 index fd5538d8..79bdb5eb 100755
@@ -40,7 +40,7 @@ index fd5538d8..79bdb5eb 100755
  modprobe af_packet
  
 diff --git a/test/TEST-30-ISCSI/test.sh b/test/TEST-30-ISCSI/test.sh
-index 5f0063f8..4b5ac41f 100755
+index 5f0063f8..06fb53c4 100755
 --- a/test/TEST-30-ISCSI/test.sh
 +++ b/test/TEST-30-ISCSI/test.sh
 @@ -13,10 +13,12 @@ TEST_DESCRIPTION="root filesystem over iSCSI with $USE_NETWORK"
@@ -57,14 +57,7 @@ index 5f0063f8..4b5ac41f 100755
  #SERIAL="tcp:127.0.0.1:9999"
  
  run_server() {
-@@ -30,13 +32,13 @@ run_server() {
-     qemu_add_drive_args disk_index disk_args "$TESTDIR"/raid0-1.img raid0-1
-     qemu_add_drive_args disk_index disk_args "$TESTDIR"/raid0-2.img raid0-2
- 
--    "$testdir"/run-qemu \
-+    "$TESTDIR"/run-qemu \
-         "${disk_args[@]}" \
-         -serial "${SERIAL:-"file:$TESTDIR/server.log"}" \
+@@ -36,7 +38,7 @@ run_server() {
          -net nic,macaddr=52:54:00:12:34:56,model=e1000 \
          -net nic,macaddr=52:54:00:12:34:57,model=e1000 \
          -net socket,listen=127.0.0.1:12330 \
@@ -90,15 +83,6 @@ index 5f0063f8..4b5ac41f 100755
          done
      else
          echo Sleeping 10 seconds to give the server a head start
-@@ -68,7 +75,7 @@ run_client() {
-     declare -i disk_index=0
-     qemu_add_drive_args disk_index disk_args "$TESTDIR"/marker.img marker
- 
--    "$testdir"/run-qemu \
-+    "$TESTDIR"/run-qemu \
-         "${disk_args[@]}" \
-         -net nic,macaddr=52:54:00:12:34:00,model=e1000 \
-         -net nic,macaddr=52:54:00:12:34:01,model=e1000 \
 @@ -90,14 +97,14 @@ run_client() {
  do_test_run() {
      initiator=$(iscsi-iname)
@@ -144,15 +128,6 @@ index 5f0063f8..4b5ac41f 100755
          -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
          --no-hostonly-cmdline -N \
          -f "$TESTDIR"/initramfs.makeroot "$KVERSION" || return 1
-@@ -207,7 +215,7 @@ test_setup() {
-     qemu_add_drive_args disk_index disk_args "$TESTDIR"/raid0-2.img raid0-2
- 
-     # Invoke KVM and/or QEMU to actually create the target filesystem.
--    "$testdir"/run-qemu \
-+    "$TESTDIR"/run-qemu \
-         "${disk_args[@]}" \
-         -append "root=/dev/fakeroot rw rootfstype=ext3 quiet console=ttyS0,115200n81 selinux=0" \
-         -initrd "$TESTDIR"/initramfs.makeroot || return 1
 @@ -256,7 +264,7 @@ test_setup() {
          _nsslibs=${_nsslibs#|}
          _nsslibs=${_nsslibs%|}
@@ -171,12 +146,9 @@ index 5f0063f8..4b5ac41f 100755
          -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
          --nomdadmconf \
          --no-hostonly-cmdline -N \
-@@ -295,9 +303,9 @@ test_setup() {
-     qemu_add_drive_args disk_index disk_args "$TESTDIR"/server.img root
- 
+@@ -297,7 +305,7 @@ test_setup() {
      # Invoke KVM and/or QEMU to actually create the target filesystem.
--    "$testdir"/run-qemu \
-+    "$TESTDIR"/run-qemu \
+     "$testdir"/run-qemu \
          "${disk_args[@]}" \
 -        -append "root=/dev/dracut/root rw rootfstype=ext3 quiet console=ttyS0,115200n81 selinux=0" \
 +        -append "nompath root=/dev/dracut/root rw rootfstype=ext3 quiet console=ttyS0,115200n81 selinux=0" \
@@ -201,15 +173,12 @@ index 5f0063f8..4b5ac41f 100755
          -d "af_packet piix ide-gd_mod ata_piix ext3 sd_mod e1000 drbg" \
          --no-hostonly-cmdline -N \
          -f "$TESTDIR"/initramfs.server "$KVERSION" || return 1
-@@ -345,7 +353,4 @@ test_cleanup() {
-         kill -TERM "$(cat "$TESTDIR"/server.pid)"
-         rm -f -- "$TESTDIR"/server.pid
-     fi
--}
--
--# shellcheck disable=SC1090
+@@ -348,4 +356,4 @@ test_cleanup() {
+ }
+ 
+ # shellcheck disable=SC1090
 -. "$testdir"/test-functions
-+}
++. "$TESTDIR"/test-functions
 \ No newline at end of file
 diff --git a/test/TEST-30-ISCSI/wait-if-server.sh b/test/TEST-30-ISCSI/wait-if-server.sh
 index b53e41fe..4f2ba77b 100644
