@@ -1,14 +1,14 @@
-From 4ea93ea31ceb363901c09392eb3653be6200d972 Mon Sep 17 00:00:00 2001
+From fd688b0b811e6f6aca9be75be9498b2d91442af9 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:02:05 +0200
 Subject: [PATCH] test 30 patch
 
 ---
  test/TEST-30-ISCSI/server-init.sh    | 13 ++++----
- test/TEST-30-ISCSI/test.sh           | 48 ++++++++++++++++------------
+ test/TEST-30-ISCSI/test.sh           | 47 +++++++++++++++-------------
  test/TEST-30-ISCSI/wait-if-server.sh |  3 +-
  test/run-qemu                        |  2 +-
- 4 files changed, 36 insertions(+), 30 deletions(-)
+ 4 files changed, 35 insertions(+), 30 deletions(-)
 
 diff --git a/test/TEST-30-ISCSI/server-init.sh b/test/TEST-30-ISCSI/server-init.sh
 index fd5538d8..79bdb5eb 100755
@@ -40,14 +40,13 @@ index fd5538d8..79bdb5eb 100755
  modprobe af_packet
  
 diff --git a/test/TEST-30-ISCSI/test.sh b/test/TEST-30-ISCSI/test.sh
-index 5f0063f8..c2b734e7 100755
+index 5f0063f8..4b5ac41f 100755
 --- a/test/TEST-30-ISCSI/test.sh
 +++ b/test/TEST-30-ISCSI/test.sh
-@@ -13,10 +13,13 @@ TEST_DESCRIPTION="root filesystem over iSCSI with $USE_NETWORK"
+@@ -13,10 +13,12 @@ TEST_DESCRIPTION="root filesystem over iSCSI with $USE_NETWORK"
  
  KVERSION=${KVERSION-$(uname -r)}
  
-+export basedir=/usr/lib/dracut
 +. $TESTDIR/test-functions ;
 +
  DEBUGFAIL="loglevel=1"
@@ -58,7 +57,7 @@ index 5f0063f8..c2b734e7 100755
  #SERIAL="tcp:127.0.0.1:9999"
  
  run_server() {
-@@ -30,13 +33,13 @@ run_server() {
+@@ -30,13 +32,13 @@ run_server() {
      qemu_add_drive_args disk_index disk_args "$TESTDIR"/raid0-1.img raid0-1
      qemu_add_drive_args disk_index disk_args "$TESTDIR"/raid0-2.img raid0-2
  
@@ -74,7 +73,7 @@ index 5f0063f8..c2b734e7 100755
          -initrd "$TESTDIR"/initramfs.server \
          -pidfile "$TESTDIR"/server.pid -daemonize || return 1
      chmod 644 "$TESTDIR"/server.pid || return 1
-@@ -45,11 +48,16 @@ run_server() {
+@@ -45,11 +47,16 @@ run_server() {
      tty -s && stty sane
  
      if ! [[ $SERIAL ]]; then
@@ -91,7 +90,7 @@ index 5f0063f8..c2b734e7 100755
          done
      else
          echo Sleeping 10 seconds to give the server a head start
-@@ -68,7 +76,7 @@ run_client() {
+@@ -68,7 +75,7 @@ run_client() {
      declare -i disk_index=0
      qemu_add_drive_args disk_index disk_args "$TESTDIR"/marker.img marker
  
@@ -100,7 +99,7 @@ index 5f0063f8..c2b734e7 100755
          "${disk_args[@]}" \
          -net nic,macaddr=52:54:00:12:34:00,model=e1000 \
          -net nic,macaddr=52:54:00:12:34:01,model=e1000 \
-@@ -90,14 +98,14 @@ run_client() {
+@@ -90,14 +97,14 @@ run_client() {
  do_test_run() {
      initiator=$(iscsi-iname)
  
@@ -119,7 +118,7 @@ index 5f0063f8..c2b734e7 100755
          "rd.iscsi.initiator=$initiator" \
          || return 1
  
-@@ -109,7 +117,7 @@ do_test_run() {
+@@ -109,7 +116,7 @@ do_test_run() {
          "rd.iscsi.initiator=$initiator" \
          || return 1
  
@@ -128,7 +127,7 @@ index 5f0063f8..c2b734e7 100755
          "root=LABEL=singleroot" \
          "rd.iscsi.ibft=1" \
          "rd.iscsi.firmware=1" \
-@@ -122,6 +130,7 @@ do_test_run() {
+@@ -122,6 +129,7 @@ do_test_run() {
  test_run() {
      if ! run_server; then
          echo "Failed to start server" 1>&2
@@ -136,7 +135,7 @@ index 5f0063f8..c2b734e7 100755
          return 1
      fi
      do_test_run
-@@ -188,7 +197,7 @@ test_setup() {
+@@ -188,7 +196,7 @@ test_setup() {
      # We do it this way so that we do not risk trashing the host mdraid
      # devices, volume groups, encrypted partitions, etc.
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -145,7 +144,7 @@ index 5f0063f8..c2b734e7 100755
          -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
          --no-hostonly-cmdline -N \
          -f "$TESTDIR"/initramfs.makeroot "$KVERSION" || return 1
-@@ -207,7 +216,7 @@ test_setup() {
+@@ -207,7 +215,7 @@ test_setup() {
      qemu_add_drive_args disk_index disk_args "$TESTDIR"/raid0-2.img raid0-2
  
      # Invoke KVM and/or QEMU to actually create the target filesystem.
@@ -154,7 +153,7 @@ index 5f0063f8..c2b734e7 100755
          "${disk_args[@]}" \
          -append "root=/dev/fakeroot rw rootfstype=ext3 quiet console=ttyS0,115200n81 selinux=0" \
          -initrd "$TESTDIR"/initramfs.makeroot || return 1
-@@ -256,7 +265,7 @@ test_setup() {
+@@ -256,7 +264,7 @@ test_setup() {
          _nsslibs=${_nsslibs#|}
          _nsslibs=${_nsslibs%|}
  
@@ -163,7 +162,7 @@ index 5f0063f8..c2b734e7 100755
  
          cp -a /etc/ld.so.conf* "$initdir"/etc
          ldconfig -r "$initdir"
-@@ -279,7 +288,7 @@ test_setup() {
+@@ -279,7 +287,7 @@ test_setup() {
      # We do it this way so that we do not risk trashing the host mdraid
      # devices, volume groups, encrypted partitions, etc.
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -172,7 +171,7 @@ index 5f0063f8..c2b734e7 100755
          -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
          --nomdadmconf \
          --no-hostonly-cmdline -N \
-@@ -295,9 +304,9 @@ test_setup() {
+@@ -295,9 +303,9 @@ test_setup() {
      qemu_add_drive_args disk_index disk_args "$TESTDIR"/server.img root
  
      # Invoke KVM and/or QEMU to actually create the target filesystem.
@@ -184,7 +183,7 @@ index 5f0063f8..c2b734e7 100755
          -initrd "$TESTDIR"/initramfs.makeroot || return 1
      grep -U --binary-files=binary -F -m 1 -q dracut-root-block-created "$TESTDIR"/marker.img || return 1
      rm -- "$TESTDIR"/marker.img
-@@ -316,7 +325,7 @@ test_setup() {
+@@ -316,7 +324,7 @@ test_setup() {
      )
      # Make client's dracut image
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -193,7 +192,7 @@ index 5f0063f8..c2b734e7 100755
          -a "debug ${USE_NETWORK}" \
          --no-hostonly-cmdline -N \
          -f "$TESTDIR"/initramfs.testing "$KVERSION" || return 1
-@@ -332,7 +341,7 @@ test_setup() {
+@@ -332,7 +340,7 @@ test_setup() {
      )
      # Make server's dracut image
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -202,7 +201,7 @@ index 5f0063f8..c2b734e7 100755
          -d "af_packet piix ide-gd_mod ata_piix ext3 sd_mod e1000 drbg" \
          --no-hostonly-cmdline -N \
          -f "$TESTDIR"/initramfs.server "$KVERSION" || return 1
-@@ -345,7 +354,4 @@ test_cleanup() {
+@@ -345,7 +353,4 @@ test_cleanup() {
          kill -TERM "$(cat "$TESTDIR"/server.pid)"
          rm -f -- "$TESTDIR"/server.pid
      fi
