@@ -1,14 +1,14 @@
-From 57b3cd75268efc5c19c119dcc889732281710d7c Mon Sep 17 00:00:00 2001
+From bfb8f3ad74e01eca62a5692840f4d04f0a682c75 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:02:05 +0200
 Subject: [PATCH] test 30 patch
 
 ---
- test/TEST-30-ISCSI/server-init.sh    | 13 +++++-----
- test/TEST-30-ISCSI/test.sh           | 36 +++++++++++++++++-----------
+ test/TEST-30-ISCSI/server-init.sh    | 13 ++++++-----
+ test/TEST-30-ISCSI/test.sh           | 34 ++++++++++++++++------------
  test/TEST-30-ISCSI/wait-if-server.sh |  3 +--
  test/run-qemu                        |  2 +-
- 4 files changed, 31 insertions(+), 23 deletions(-)
+ 4 files changed, 29 insertions(+), 23 deletions(-)
 
 diff --git a/test/TEST-30-ISCSI/server-init.sh b/test/TEST-30-ISCSI/server-init.sh
 index fd5538d8..79bdb5eb 100755
@@ -40,15 +40,10 @@ index fd5538d8..79bdb5eb 100755
  modprobe af_packet
  
 diff --git a/test/TEST-30-ISCSI/test.sh b/test/TEST-30-ISCSI/test.sh
-index 5f0063f8..06fb53c4 100755
+index 5f0063f8..ce6c50f2 100755
 --- a/test/TEST-30-ISCSI/test.sh
 +++ b/test/TEST-30-ISCSI/test.sh
-@@ -13,10 +13,12 @@ TEST_DESCRIPTION="root filesystem over iSCSI with $USE_NETWORK"
- 
- KVERSION=${KVERSION-$(uname -r)}
- 
-+. $TESTDIR/test-functions ;
-+
+@@ -16,7 +16,7 @@ KVERSION=${KVERSION-$(uname -r)}
  DEBUGFAIL="loglevel=1"
  #DEBUGFAIL="rd.shell rd.break rd.debug loglevel=7 "
  DEBUGFAIL="rd.debug loglevel=7 "
@@ -57,7 +52,7 @@ index 5f0063f8..06fb53c4 100755
  #SERIAL="tcp:127.0.0.1:9999"
  
  run_server() {
-@@ -36,7 +38,7 @@ run_server() {
+@@ -36,7 +36,7 @@ run_server() {
          -net nic,macaddr=52:54:00:12:34:56,model=e1000 \
          -net nic,macaddr=52:54:00:12:34:57,model=e1000 \
          -net socket,listen=127.0.0.1:12330 \
@@ -66,7 +61,7 @@ index 5f0063f8..06fb53c4 100755
          -initrd "$TESTDIR"/initramfs.server \
          -pidfile "$TESTDIR"/server.pid -daemonize || return 1
      chmod 644 "$TESTDIR"/server.pid || return 1
-@@ -45,11 +47,16 @@ run_server() {
+@@ -45,11 +45,16 @@ run_server() {
      tty -s && stty sane
  
      if ! [[ $SERIAL ]]; then
@@ -83,7 +78,7 @@ index 5f0063f8..06fb53c4 100755
          done
      else
          echo Sleeping 10 seconds to give the server a head start
-@@ -90,14 +97,14 @@ run_client() {
+@@ -90,14 +95,14 @@ run_client() {
  do_test_run() {
      initiator=$(iscsi-iname)
  
@@ -102,7 +97,7 @@ index 5f0063f8..06fb53c4 100755
          "rd.iscsi.initiator=$initiator" \
          || return 1
  
-@@ -109,7 +116,7 @@ do_test_run() {
+@@ -109,7 +114,7 @@ do_test_run() {
          "rd.iscsi.initiator=$initiator" \
          || return 1
  
@@ -111,7 +106,7 @@ index 5f0063f8..06fb53c4 100755
          "root=LABEL=singleroot" \
          "rd.iscsi.ibft=1" \
          "rd.iscsi.firmware=1" \
-@@ -122,6 +129,7 @@ do_test_run() {
+@@ -122,6 +127,7 @@ do_test_run() {
  test_run() {
      if ! run_server; then
          echo "Failed to start server" 1>&2
@@ -119,7 +114,7 @@ index 5f0063f8..06fb53c4 100755
          return 1
      fi
      do_test_run
-@@ -188,7 +196,7 @@ test_setup() {
+@@ -188,7 +194,7 @@ test_setup() {
      # We do it this way so that we do not risk trashing the host mdraid
      # devices, volume groups, encrypted partitions, etc.
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -128,7 +123,7 @@ index 5f0063f8..06fb53c4 100755
          -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
          --no-hostonly-cmdline -N \
          -f "$TESTDIR"/initramfs.makeroot "$KVERSION" || return 1
-@@ -256,7 +264,7 @@ test_setup() {
+@@ -256,7 +262,7 @@ test_setup() {
          _nsslibs=${_nsslibs#|}
          _nsslibs=${_nsslibs%|}
  
@@ -137,7 +132,7 @@ index 5f0063f8..06fb53c4 100755
  
          cp -a /etc/ld.so.conf* "$initdir"/etc
          ldconfig -r "$initdir"
-@@ -279,7 +287,7 @@ test_setup() {
+@@ -279,7 +285,7 @@ test_setup() {
      # We do it this way so that we do not risk trashing the host mdraid
      # devices, volume groups, encrypted partitions, etc.
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -146,7 +141,7 @@ index 5f0063f8..06fb53c4 100755
          -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
          --nomdadmconf \
          --no-hostonly-cmdline -N \
-@@ -297,7 +305,7 @@ test_setup() {
+@@ -297,7 +303,7 @@ test_setup() {
      # Invoke KVM and/or QEMU to actually create the target filesystem.
      "$testdir"/run-qemu \
          "${disk_args[@]}" \
@@ -155,7 +150,7 @@ index 5f0063f8..06fb53c4 100755
          -initrd "$TESTDIR"/initramfs.makeroot || return 1
      grep -U --binary-files=binary -F -m 1 -q dracut-root-block-created "$TESTDIR"/marker.img || return 1
      rm -- "$TESTDIR"/marker.img
-@@ -316,7 +324,7 @@ test_setup() {
+@@ -316,7 +322,7 @@ test_setup() {
      )
      # Make client's dracut image
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -164,7 +159,7 @@ index 5f0063f8..06fb53c4 100755
          -a "debug ${USE_NETWORK}" \
          --no-hostonly-cmdline -N \
          -f "$TESTDIR"/initramfs.testing "$KVERSION" || return 1
-@@ -332,7 +340,7 @@ test_setup() {
+@@ -332,7 +338,7 @@ test_setup() {
      )
      # Make server's dracut image
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -173,12 +168,12 @@ index 5f0063f8..06fb53c4 100755
          -d "af_packet piix ide-gd_mod ata_piix ext3 sd_mod e1000 drbg" \
          --no-hostonly-cmdline -N \
          -f "$TESTDIR"/initramfs.server "$KVERSION" || return 1
-@@ -348,4 +356,4 @@ test_cleanup() {
+@@ -348,4 +354,4 @@ test_cleanup() {
  }
  
  # shellcheck disable=SC1090
 -. "$testdir"/test-functions
-+. "$TESTDIR"/test-functions
++. "$testdir"/test-functions
 \ No newline at end of file
 diff --git a/test/TEST-30-ISCSI/wait-if-server.sh b/test/TEST-30-ISCSI/wait-if-server.sh
 index b53e41fe..4f2ba77b 100644
