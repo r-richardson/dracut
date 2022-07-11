@@ -1,14 +1,14 @@
-From 47076d397b389af438f1f98cc7f1dc4af01ba940 Mon Sep 17 00:00:00 2001
+From 15d2a2f1ff6c536cec24621968f1bcc8082dd9f1 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Tue, 12 Apr 2022 13:23:29 +0200
 Subject: [PATCH] test 03 patch
 
 ---
- test/TEST-03-USR-MOUNT/test.sh | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ test/TEST-03-USR-MOUNT/test.sh | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/test/TEST-03-USR-MOUNT/test.sh b/test/TEST-03-USR-MOUNT/test.sh
-index 3bb7fab7..9912f7d6 100755
+index 3bb7fab7..309cdbc0 100755
 --- a/test/TEST-03-USR-MOUNT/test.sh
 +++ b/test/TEST-03-USR-MOUNT/test.sh
 @@ -5,6 +5,8 @@ TEST_DESCRIPTION="root filesystem on a btrfs filesystem with /usr subvolume"
@@ -20,6 +20,15 @@ index 3bb7fab7..9912f7d6 100755
  # Uncomment this to debug failures
  #DEBUGFAIL="rd.shell rd.break"
  
+@@ -26,7 +28,7 @@ client_run() {
+     "$testdir"/run-qemu \
+         "${disk_args[@]}" \
+         -watchdog i6300esb -watchdog-action poweroff \
+-        -append "panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=LABEL=dracut $client_opts loglevel=7 rd.retry=3 rd.info console=ttyS0,115200n81 selinux=0 rd.debug rd.shell=0 $DEBUGFAIL" \
++        -append "systemd.default_timeout_start_sec=600 panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=LABEL=dracut $client_opts loglevel=7 rd.retry=3 rd.info console=ttyS0,115200n81 selinux=0 rd.debug rd.shell=0 $DEBUGFAIL" \
+         -initrd "$TESTDIR"/initramfs.testing || return 1
+ 
+     if ! grep -U --binary-files=binary -F -m 1 -q dracut-root-block-success "$TESTDIR"/marker.img; then
 @@ -59,13 +61,13 @@ test_setup() {
              mkdir -p root usr/bin usr/lib usr/lib64 usr/sbin
          )
@@ -53,5 +62,5 @@ index 3bb7fab7..9912f7d6 100755
 -. "$testdir"/test-functions
 +. "$basedir"/test/test-functions
 -- 
-2.35.1
+2.36.1
 
