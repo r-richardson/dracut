@@ -1,4 +1,4 @@
-From ac18b035ba4658d13f8224105a3692ab0dd392b8 Mon Sep 17 00:00:00 2001
+From 2f53ec678f62c8794ed858869031dc90d3e37174 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Tue, 12 Apr 2022 13:23:29 +0200
 Subject: [PATCH] test 03 patch
@@ -8,7 +8,7 @@ Subject: [PATCH] test 03 patch
  1 file changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/test/TEST-03-USR-MOUNT/test.sh b/test/TEST-03-USR-MOUNT/test.sh
-index 3bb7fab7..054a8fd7 100755
+index 3bb7fab7..73e03b31 100755
 --- a/test/TEST-03-USR-MOUNT/test.sh
 +++ b/test/TEST-03-USR-MOUNT/test.sh
 @@ -5,6 +5,8 @@ TEST_DESCRIPTION="root filesystem on a btrfs filesystem with /usr subvolume"
@@ -25,7 +25,7 @@ index 3bb7fab7..054a8fd7 100755
          "${disk_args[@]}" \
          -watchdog i6300esb -watchdog-action poweroff \
 -        -append "panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=LABEL=dracut $client_opts loglevel=7 rd.retry=3 rd.info console=ttyS0,115200n81 selinux=0 rd.debug rd.shell=0 $DEBUGFAIL" \
-+        -append "nompath systemd.default_timeout_start_sec=600 panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=LABEL=dracut $client_opts loglevel=7 rd.retry=3 rd.info console=ttyS0,115200n81 selinux=0 rd.debug rd.shell=0 $DEBUGFAIL" \
++        -append "nompath panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=LABEL=dracut $client_opts loglevel=7 rd.retry=3 rd.info console=ttyS0,115200n81 selinux=0 rd.debug rd.shell=0 $DEBUGFAIL" \
          -initrd "$TESTDIR"/initramfs.testing || return 1
  
      if ! grep -U --binary-files=binary -F -m 1 -q dracut-root-block-success "$TESTDIR"/marker.img; then
