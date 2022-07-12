@@ -1,14 +1,14 @@
-From 47040dcfb6ad57b51b89b6efc662df65d36fad16 Mon Sep 17 00:00:00 2001
+From 5966d5a577a61e54e3bf4a7edc28a02ecf349303 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Tue, 12 Apr 2022 18:00:30 +0200
 Subject: [PATCH] test 04 patch
 
 ---
- test/TEST-04-FULL-SYSTEMD/test.sh | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ test/TEST-04-FULL-SYSTEMD/test.sh | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/test/TEST-04-FULL-SYSTEMD/test.sh b/test/TEST-04-FULL-SYSTEMD/test.sh
-index 38cb1464..e72a69e8 100755
+index 38cb1464..067bc10c 100755
 --- a/test/TEST-04-FULL-SYSTEMD/test.sh
 +++ b/test/TEST-04-FULL-SYSTEMD/test.sh
 @@ -5,6 +5,8 @@ TEST_DESCRIPTION="Full systemd serialization/deserialization test with /usr moun
@@ -31,20 +31,17 @@ index 38cb1464..e72a69e8 100755
          for _terminfodir in /lib/terminfo /etc/terminfo /usr/share/terminfo; do
              [ -f ${_terminfodir}/l/linux ] && break
          done
-@@ -245,6 +247,7 @@ EOF
-     # We do it this way so that we do not risk trashing the host mdraid
-     # devices, volume groups, encrypted partitions, etc.
-     "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
-+        -a "haveged" \
-         -m "bash udev-rules btrfs base rootfs-block fs-lib kernel-modules qemu" \
-         -d "piix ide-gd_mod ata_piix btrfs sd_mod" \
-         --nomdadmconf \
-@@ -289,9 +292,9 @@ EOF
-     [ -e /etc/machine-info ] && EXTRA_MACHINE+=" /etc/machine-info"
+@@ -91,6 +93,7 @@ test_setup() {
+         fi
+         inst /sbin/init
+         inst_multiple -o {,/usr}/lib/systemd/system/"dracut*"
++        inst_multiple -o {,/usr}/lib/systemd/system/"haveged*"
  
+         inst_simple "${basedir}/modules.d/99base/dracut-lib.sh" "/lib/dracut-lib.sh"
+         inst_simple "${basedir}/modules.d/99base/dracut-dev-lib.sh" "/lib/dracut-dev-lib.sh"
+@@ -291,7 +294,7 @@ EOF
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
--        -a "debug systemd i18n qemu" \
-+        -a "debug systemd i18n qemu haveged" \
+         -a "debug systemd i18n qemu" \
          ${EXTRA_MACHINE:+-I "$EXTRA_MACHINE"} \
 -        -o "dash network plymouth lvm mdraid resume crypt caps dm terminfo usrmount kernel-network-modules rngd" \
 +        -o "bash network plymouth lvm mdraid resume crypt caps dm terminfo usrmount kernel-network-modules rngd" \
@@ -58,5 +55,5 @@ index 38cb1464..e72a69e8 100755
 -. "$testdir"/test-functions
 +. "$basedir"/test/test-functions
 -- 
-2.36.1
+2.37.0
 
