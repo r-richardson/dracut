@@ -1,12 +1,42 @@
-From 0b48be9bfc4c51554e9b9145aec18621a66a20fd Mon Sep 17 00:00:00 2001
+From 1c583e8e391e4dd997ddfe9d7b198d1fe52db36a Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:06:08 +0200
 Subject: [PATCH] test 35 patch
 
 ---
- test/TEST-35-ISCSI-MULTI/test.sh | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ test/TEST-35-ISCSI-MULTI/server-init.sh    | 12 ++++++------
+ test/TEST-35-ISCSI-MULTI/test.sh           | 12 +++++++-----
+ test/TEST-35-ISCSI-MULTI/wait-if-server.sh |  4 ++--
+ 3 files changed, 15 insertions(+), 13 deletions(-)
 
+diff --git a/test/TEST-35-ISCSI-MULTI/server-init.sh b/test/TEST-35-ISCSI-MULTI/server-init.sh
+index fd5538d8..cef92c9e 100755
+--- a/test/TEST-35-ISCSI-MULTI/server-init.sh
++++ b/test/TEST-35-ISCSI-MULTI/server-init.sh
+@@ -47,17 +47,17 @@ linkup() {
+     wait_for_if_link "$1" 2> /dev/null && ip link set "$1" up 2> /dev/null && wait_for_if_up "$1" 2> /dev/null
+ }
+ 
+-wait_for_if_link enx525400123456
+-wait_for_if_link enx525400123457
++wait_for_if_link eth0
++wait_for_if_link eth1
+ 
+ ip addr add 127.0.0.1/8 dev lo
+ ip link set lo up
+ 
+-ip addr add 192.168.50.1/24 dev enx525400123456
+-linkup enx525400123456
++ip addr add 192.168.50.1/24 dev eth0
++linkup eth0
+ 
+-ip addr add 192.168.51.1/24 dev enx525400123457
+-linkup enx525400123457
++ip addr add 192.168.51.1/24 dev eth1
++linkup eth1
+ 
+ modprobe af_packet
+ 
 diff --git a/test/TEST-35-ISCSI-MULTI/test.sh b/test/TEST-35-ISCSI-MULTI/test.sh
 index 628131e0..fd4fcaa6 100755
 --- a/test/TEST-35-ISCSI-MULTI/test.sh
@@ -62,6 +92,17 @@ index 628131e0..fd4fcaa6 100755
  # shellcheck disable=SC1090
 -. "$testdir"/test-functions
 +. "$basedir"/test/test-functions
+diff --git a/test/TEST-35-ISCSI-MULTI/wait-if-server.sh b/test/TEST-35-ISCSI-MULTI/wait-if-server.sh
+index b53e41fe..2e26d9ed 100644
+--- a/test/TEST-35-ISCSI-MULTI/wait-if-server.sh
++++ b/test/TEST-35-ISCSI-MULTI/wait-if-server.sh
+@@ -1,4 +1,4 @@
+ #!/bin/sh
+ . /lib/net-lib.sh
+-wait_for_if_link enx525400123456
+-wait_for_if_link enx525400123457
++wait_for_if_link eth0
++wait_for_if_link eth1
 -- 
-2.35.1
+2.37.1
 
