@@ -64,6 +64,7 @@ Patch26:        TEST-63-DRACUT-CPIO-adapt-for-openQA.patch
 Patch27:        TEST-98-GETARG-adapt-for-openQA.patch
 Patch28:        TEST-99-RPM-adapt-for-openQA.patch
 Patch29:        RUN-QEMU-adapt-for-openQA.patch
+Patch30:	0001-fix-network-legacy-add-support-for-wicked-provided-R.patch
 
 BuildRequires:  asciidoc
 BuildRequires:  bash
