@@ -1,0 +1,31 @@
+From d14e0f61b56d70b92e6f6c8de8389f26aaf0d3a7 Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Wed, 13 Apr 2022 12:32:59 +0200
+Subject: [PATCH] test 99 patch
+
+---
+ test/TEST-99-RPM/test.sh | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/test/TEST-99-RPM/test.sh b/test/TEST-99-RPM/test.sh
+index ee59db32..ba785758 100755
+--- a/test/TEST-99-RPM/test.sh
++++ b/test/TEST-99-RPM/test.sh
+@@ -6,6 +6,8 @@
+ # shellcheck disable=SC2034
+ TEST_DESCRIPTION="rpm integrity after dracut and kernel install"
+ 
++export basedir=/usr/lib/dracut
++
+ test_check() {
+     # disable for now
+     return 1
+@@ -127,4 +129,4 @@ test_cleanup() {
+ }
+ 
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
+-- 
+2.35.1
+

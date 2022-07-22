@@ -1,0 +1,26 @@
+From 88f2b29a161faa5aa1809bf7b6d7e7de05e6e2b6 Mon Sep 17 00:00:00 2001
+From: Thomas Blume <Thomas.Blume@suse.com>
+Date: Thu, 21 Jul 2022 11:55:39 +0200
+Subject: [PATCH] fix(network-legacy): add support for wicked provided ROOTPATH
+
+---
+modules.d/35network-legacy/ifup.sh | 4 ++++
+1 file changed, 4 insertions(+)
+
+diff --git a/modules.d/35network-legacy/ifup.sh b/modules.d/35network-legacy/ifup.sh
+index db896ede..1d96af86 100755
+--- a/modules.d/35network-legacy/ifup.sh
++++ b/modules.d/35network-legacy/ifup.sh
+@@ -105,6 +105,10 @@ dhcp_wicked_apply() {
+         fi >> /etc/resolv.conf
+     fi
+
++    if [ -n "${ROOTPATH}" ]; then
++        echo new_root_path="${ROOTPATH}"
++    fi >> /tmp/dhclient."$netif".dhcpopts
++
+     info "DHCP is finished successfully"
+     return 0
+
+--
+2.37.1

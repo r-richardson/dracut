@@ -1,0 +1,42 @@
+From bfb61f5c76b2ae5e2b167d9a4ff3f2c495a999f8 Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Mon, 11 Apr 2022 16:34:22 +0200
+Subject: [PATCH] run-qemu script patch
+
+---
+ test/run-qemu | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/test/run-qemu b/test/run-qemu
+index 3c521a14..e2a584b6 100755
+--- a/test/run-qemu
++++ b/test/run-qemu
+@@ -2,6 +2,25 @@
+ # Check which virtualization technology to use
+ # We prefer kvm, kqemu, userspace in that order.
+ 
++ARCH=$(uname -m)
++            case $ARCH in
++                x86_64|i*86)
++                     QEMU_PKG=qemu-x86
++                     ;;
++                ppc64*)
++                     QEMU_PKG="qemu-ppc qemu-vgabios"
++                     ;;
++                s390x)
++                     QEMU_PKG=qemu-s390
++                     ;;
++                aarch64)
++                     QEMU_PKG=qemu-arm
++                     ;;
++            esac
++
++rpm -q $QEMU_PKG || zypper -n in --no-recommends "$QEMU_PKG" qemu-kvm
++[[ $? -ne 0 ]] && { echo "error installing required packages"; exit 1; }
++
+ export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+ 
+ [[ -x /usr/bin/qemu ]] && BIN=/usr/bin/qemu && ARGS=(-cpu max)
+-- 
+2.35.1
+

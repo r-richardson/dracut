@@ -1,0 +1,73 @@
+From 3915545e2edd319c269976fefdbfc71a47c324e5 Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Tue, 12 Apr 2022 18:24:27 +0200
+Subject: [PATCH] test 13 patch
+
+---
+ test/TEST-13-ENC-RAID-LVM/test.sh | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/test/TEST-13-ENC-RAID-LVM/test.sh b/test/TEST-13-ENC-RAID-LVM/test.sh
+index 968eafe7..5cd356f6 100755
+--- a/test/TEST-13-ENC-RAID-LVM/test.sh
++++ b/test/TEST-13-ENC-RAID-LVM/test.sh
+@@ -4,6 +4,8 @@ TEST_DESCRIPTION="root filesystem on LVM on encrypted partitions of a RAID-5"
+ 
+ KVERSION=${KVERSION-$(uname -r)}
+ 
++export basedir=/usr/lib/dracut
++
+ # Uncomment this to debug failures
+ #DEBUGFAIL="rd.shell rd.break" # udev.log-priority=debug
+ #DEBUGFAIL="rd.shell rd.udev.log-priority=debug loglevel=70 systemd.log_target=kmsg systemd.log_target=debug"
+@@ -26,7 +28,7 @@ test_run() {
+ 
+     "$testdir"/run-qemu \
+         "${disk_args[@]}" \
+-        -append "panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=/dev/dracut/root rw rd.auto rd.retry=20 console=ttyS0,115200n81 selinux=0 rd.debug rootwait $LUKSARGS rd.shell=0 $DEBUGFAIL" \
++        -append "nompath panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=/dev/dracut/root rw rd.auto rd.retry=20 console=ttyS0,115200n81 selinux=0 rd.debug rootwait $LUKSARGS rd.shell=0 $DEBUGFAIL" \
+         -initrd "$TESTDIR"/initramfs.testing
+     grep -U --binary-files=binary -F -m 1 -q dracut-root-block-success "$TESTDIR"/marker.img || return 1
+     echo "CLIENT TEST END: [OK]"
+@@ -36,7 +38,7 @@ test_run() {
+     echo "CLIENT TEST START: Any LUKS"
+     "$testdir"/run-qemu \
+         "${disk_args[@]}" \
+-        -append "panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=/dev/dracut/root rw quiet rd.auto rd.retry=20 rd.info console=ttyS0,115200n81 selinux=0 rd.debug  $DEBUGFAIL" \
++        -append "nompath panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=/dev/dracut/root rw quiet rd.auto rd.retry=20 rd.info console=ttyS0,115200n81 selinux=0 rd.debug  $DEBUGFAIL" \
+         -initrd "$TESTDIR"/initramfs.testing
+     grep -U --binary-files=binary -F -m 1 -q dracut-root-block-success "$TESTDIR"/marker.img || return 1
+     echo "CLIENT TEST END: [OK]"
+@@ -46,7 +48,7 @@ test_run() {
+     echo "CLIENT TEST START: Wrong LUKS UUID"
+     "$testdir"/run-qemu \
+         "${disk_args[@]}" \
+-        -append "panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=/dev/dracut/root rw quiet rd.auto rd.retry=10 rd.info console=ttyS0,115200n81 selinux=0 rd.debug  $DEBUGFAIL rd.luks.uuid=failme" \
++        -append "nompath panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=/dev/dracut/root rw quiet rd.auto rd.retry=10 rd.info console=ttyS0,115200n81 selinux=0 rd.debug  $DEBUGFAIL rd.luks.uuid=failme" \
+         -initrd "$TESTDIR"/initramfs.testing
+     grep -U --binary-files=binary -F -m 1 -q dracut-root-block-success "$TESTDIR"/marker.img && return 1
+     echo "CLIENT TEST END: [OK]"
+@@ -69,12 +71,12 @@ test_setup() {
+             mkdir -p -- var/lib/nfs/rpc_pipefs
+         )
+         inst_multiple sh df free ls shutdown poweroff stty cat ps ln ip \
+-            mount dmesg dhclient mkdir cp ping dhclient dd
++            mount dmesg mkdir cp ping dd
++        inst_multiple -o wicked dhclient arping arping2
+         for _terminfodir in /lib/terminfo /etc/terminfo /usr/share/terminfo; do
+             [ -f ${_terminfodir}/l/linux ] && break
+         done
+         inst_multiple -o ${_terminfodir}/l/linux
+-        inst "$basedir/modules.d/35network-legacy/dhclient-script.sh" "/sbin/dhclient-script"
+         inst "$basedir/modules.d/35network-legacy/ifup.sh" "/sbin/ifup"
+ 
+         inst_simple "${basedir}/modules.d/99base/dracut-lib.sh" "/lib/dracut-lib.sh"
+@@ -169,4 +171,4 @@ test_cleanup() {
+ }
+ 
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
+-- 
+2.37.1
+

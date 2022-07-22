@@ -1,0 +1,40 @@
+From 7f7c2cc83ad363febb5402225b11cfb97ded5bb5 Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Wed, 13 Apr 2022 12:26:55 +0200
+Subject: [PATCH] test 62 patch
+
+---
+ test/TEST-62-SKIPCPIO/test.sh | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/test/TEST-62-SKIPCPIO/test.sh b/test/TEST-62-SKIPCPIO/test.sh
+index e263a675..7972797c 100755
+--- a/test/TEST-62-SKIPCPIO/test.sh
++++ b/test/TEST-62-SKIPCPIO/test.sh
+@@ -5,6 +5,8 @@
+ # shellcheck disable=SC2034
+ TEST_DESCRIPTION="test skipcpio"
+ 
++export basedir=/usr/lib/dracut
++
+ test_check() {
+     which cpio dd truncate find sort diff &> /dev/null
+ }
+@@ -40,7 +42,7 @@ skipcpio_simple() {
+ 2
+ EOF
+ 
+-    "$basedir"/src/skipcpio/skipcpio "$CPIO_TESTDIR/skipcpio_simple.cpio" \
++    "$basedir"/skipcpio "$CPIO_TESTDIR/skipcpio_simple.cpio" \
+         | cpio -i --list > "$CPIO_TESTDIR/skipcpio_simple.list"
+     cat << EOF | diff - "$CPIO_TESTDIR/skipcpio_simple.list"
+ .
+@@ -72,4 +74,4 @@ test_cleanup() {
+ }
+ 
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
+-- 
+2.36.1
+

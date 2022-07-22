@@ -1,0 +1,54 @@
+From 1cbbb6f0b472fa8f9ba6ce3563835218056ea8d1 Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Tue, 12 Apr 2022 18:38:25 +0200
+Subject: [PATCH] test 14 patch
+
+---
+ test/TEST-14-IMSM/test.sh | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/test/TEST-14-IMSM/test.sh b/test/TEST-14-IMSM/test.sh
+index 78b087f5..52427f90 100755
+--- a/test/TEST-14-IMSM/test.sh
++++ b/test/TEST-14-IMSM/test.sh
+@@ -4,10 +4,15 @@ TEST_DESCRIPTION="root filesystem on LVM PV on a isw dmraid"
+ 
+ KVERSION=${KVERSION-$(uname -r)}
+ 
++export basedir=/usr/lib/dracut
++
+ # Uncomment this to debug failures
+ #DEBUGFAIL="rd.shell"
+ #DEBUGFAIL="$DEBUGFAIL udev.log-priority=debug"
+ 
++echo "Skipping IMSM test due to deprecated dependency (dmraid)."
++exit 0
++
+ client_run() {
+     echo "CLIENT TEST START: $*"
+ 
+@@ -65,13 +70,13 @@ test_setup() {
+             mkdir -p root usr/bin usr/lib usr/lib64 usr/sbin
+         )
+         inst_multiple sh df free ls shutdown poweroff stty cat ps ln ip \
+-            mount dmesg dhclient mkdir cp ping dhclient dd sync
++            mount dmesg mkdir cp ping dd sync
++        inst_multiple -o wicked dhclient arping arping2
+         for _terminfodir in /lib/terminfo /etc/terminfo /usr/share/terminfo; do
+             [ -f ${_terminfodir}/l/linux ] && break
+         done
+         inst_multiple -o ${_terminfodir}/l/linux
+         inst_simple /etc/os-release
+-        inst "$basedir/modules.d/35network-legacy/dhclient-script.sh" "/sbin/dhclient-script"
+         inst "$basedir/modules.d/35network-legacy/ifup.sh" "/sbin/ifup"
+ 
+         inst_simple "${basedir}/modules.d/99base/dracut-lib.sh" "/lib/dracut-lib.sh"
+@@ -156,4 +161,4 @@ test_cleanup() {
+ }
+ 
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
+-- 
+2.37.1
+

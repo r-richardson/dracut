@@ -1,0 +1,68 @@
+From dddb8764387446deb4f1729d1169ef538f9c161b Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Tue, 12 Apr 2022 18:00:30 +0200
+Subject: [PATCH] test 04 patch
+
+---
+ test/TEST-04-FULL-SYSTEMD/test.sh | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/test/TEST-04-FULL-SYSTEMD/test.sh b/test/TEST-04-FULL-SYSTEMD/test.sh
+index 38cb1464..33714551 100755
+--- a/test/TEST-04-FULL-SYSTEMD/test.sh
++++ b/test/TEST-04-FULL-SYSTEMD/test.sh
+@@ -5,6 +5,8 @@ TEST_DESCRIPTION="Full systemd serialization/deserialization test with /usr moun
+ 
+ export KVERSION=${KVERSION-$(uname -r)}
+ 
++export basedir=/usr/lib/dracut
++
+ # Uncomment this to debug failures
+ #DEBUGFAIL="rd.shell rd.break"
+ #DEBUGFAIL="rd.shell"
+@@ -40,7 +42,7 @@ client_run() {
+ 
+ test_run() {
+     client_run "no option specified" || return 1
+-    client_run "readonly root" "ro" || return 1
++    #client_run "readonly root" "ro" || return 1
+     client_run "writeable root" "rw" || return 1
+     return 0
+ }
+@@ -72,8 +74,8 @@ test_setup() {
+ 
+         inst_multiple sh df free ls shutdown poweroff stty cat ps ln ip \
+             mount dmesg mkdir cp ping dd \
+-            umount strace less setsid systemctl reset sync
+-
++            umount less setsid systemctl reset sync
++        inst_multiple -o wicked dhclient
+         for _terminfodir in /lib/terminfo /etc/terminfo /usr/share/terminfo; do
+             [ -f ${_terminfodir}/l/linux ] && break
+         done
+@@ -91,6 +93,7 @@ test_setup() {
+         fi
+         inst /sbin/init
+         inst_multiple -o {,/usr}/lib/systemd/system/"dracut*"
++        inst_multiple -o {,/usr}/lib/systemd/system/"haveged*"
+ 
+         inst_simple "${basedir}/modules.d/99base/dracut-lib.sh" "/lib/dracut-lib.sh"
+         inst_simple "${basedir}/modules.d/99base/dracut-dev-lib.sh" "/lib/dracut-dev-lib.sh"
+@@ -291,7 +294,7 @@ EOF
+     "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
+         -a "debug systemd i18n qemu" \
+         ${EXTRA_MACHINE:+-I "$EXTRA_MACHINE"} \
+-        -o "dash network plymouth lvm mdraid resume crypt caps dm terminfo usrmount kernel-network-modules rngd" \
++        -o "bash network plymouth lvm mdraid resume crypt caps dm terminfo usrmount kernel-network-modules rngd" \
+         -d "piix ide-gd_mod ata_piix btrfs sd_mod i6300esb ib700wdt" \
+         --no-hostonly-cmdline -N \
+         -f "$TESTDIR"/initramfs.testing "$KVERSION" || return 1
+@@ -304,4 +307,4 @@ test_cleanup() {
+ }
+ 
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
+-- 
+2.37.0
+
