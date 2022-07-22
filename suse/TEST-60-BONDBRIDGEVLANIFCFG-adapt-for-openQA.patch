@@ -1,12 +1,42 @@
-From 818afb62dc47bf27d626485ef1b6ce3200896b44 Mon Sep 17 00:00:00 2001
+From 45ae141f01d4a082cbd3875d64e462858870dfd9 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:16:31 +0200
 Subject: [PATCH] test 60 patch
 
 ---
- test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh  | 16 ++++++++--------
+ test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh         |  4 +++-
+ .../wait-if-server.sh                            |  8 ++++----
+ 3 files changed, 15 insertions(+), 13 deletions(-)
 
+diff --git a/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh b/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh
+index 5e7e56ef..29c9311a 100755
+--- a/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh
++++ b/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh
+@@ -54,15 +54,15 @@ udevadm settle
+ 
+ ip link show
+ 
+-wait_for_if_link enx525401123456
+-wait_for_if_link enx525401123457
+-wait_for_if_link enx525401123458
+-wait_for_if_link enx525401123459
++wait_for_if_link eth0
++wait_for_if_link eth1
++wait_for_if_link eth2
++wait_for_if_link eth3
+ 
+-ip link set dev enx525401123456 name net1
+-ip link set dev enx525401123457 name net2
+-ip link set dev enx525401123458 name net3
+-ip link set dev enx525401123459 name net4
++ip link set dev eth0 name net1
++ip link set dev eth1 name net2
++ip link set dev eth2 name net3
++ip link set dev eth3 name net4
+ 
+ modprobe --all -b -q 8021q ipvlan macvlan
+ : > /dev/watchdog
 diff --git a/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh b/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh
 index 309600d4..e10f9a03 100755
 --- a/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh
@@ -26,6 +56,21 @@ index 309600d4..e10f9a03 100755
  # shellcheck disable=SC1090
 -. "$testdir"/test-functions
 +. "$basedir"/test/test-functions
+diff --git a/test/TEST-60-BONDBRIDGEVLANIFCFG/wait-if-server.sh b/test/TEST-60-BONDBRIDGEVLANIFCFG/wait-if-server.sh
+index 7cdb9417..189ddff4 100644
+--- a/test/TEST-60-BONDBRIDGEVLANIFCFG/wait-if-server.sh
++++ b/test/TEST-60-BONDBRIDGEVLANIFCFG/wait-if-server.sh
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ . /lib/net-lib.sh
+-wait_for_if_link enx525401123456
+-wait_for_if_link enx525401123457
+-wait_for_if_link enx525401123458
+-wait_for_if_link enx525401123459
++wait_for_if_link eth0
++wait_for_if_link eth1
++wait_for_if_link eth2
++wait_for_if_link eth3
 -- 
-2.35.1
+2.37.1
 
