@@ -1,25 +1,25 @@
-From 1c5b6644d21445af16ecaa92047896965a0229fd Mon Sep 17 00:00:00 2001
+From a4b8a72698e8d00f37e3776a845a9df8b8d08cb8 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:02:05 +0200
 Subject: [PATCH] test 30 patch
 
 ---
- test/TEST-30-ISCSI/server-init.sh    | 13 +++++------
+ test/TEST-30-ISCSI/server-init.sh    | 12 +++++------
  test/TEST-30-ISCSI/test.sh           | 32 +++++++++++++++++-----------
- test/TEST-30-ISCSI/wait-if-server.sh |  3 +--
- test/run-qemu                        |  2 +-
- 4 files changed, 28 insertions(+), 22 deletions(-)
+ test/TEST-30-ISCSI/wait-if-server.sh |  4 ++--
+ 3 files changed, 27 insertions(+), 21 deletions(-)
 
 diff --git a/test/TEST-30-ISCSI/server-init.sh b/test/TEST-30-ISCSI/server-init.sh
-index fd5538d8..79bdb5eb 100755
+index fd5538d8..cef92c9e 100755
 --- a/test/TEST-30-ISCSI/server-init.sh
 +++ b/test/TEST-30-ISCSI/server-init.sh
-@@ -47,17 +47,18 @@ linkup() {
+@@ -47,17 +47,17 @@ linkup() {
      wait_for_if_link "$1" 2> /dev/null && ip link set "$1" up 2> /dev/null && wait_for_if_up "$1" 2> /dev/null
  }
  
 -wait_for_if_link enx525400123456
 -wait_for_if_link enx525400123457
++wait_for_if_link eth0
 +wait_for_if_link eth1
  
  ip addr add 127.0.0.1/8 dev lo
@@ -32,8 +32,6 @@ index fd5538d8..79bdb5eb 100755
  
 -ip addr add 192.168.51.1/24 dev enx525400123457
 -linkup enx525400123457
-+wait_for_if_link eth0
-+
 +ip addr add 192.168.51.1/24 dev eth1
 +linkup eth1
  
@@ -174,26 +172,16 @@ index 5f0063f8..2269aa77 100755
 +. "$testdir"/test-functions
 \ No newline at end of file
 diff --git a/test/TEST-30-ISCSI/wait-if-server.sh b/test/TEST-30-ISCSI/wait-if-server.sh
-index b53e41fe..4f2ba77b 100644
+index b53e41fe..06ad17ff 100644
 --- a/test/TEST-30-ISCSI/wait-if-server.sh
 +++ b/test/TEST-30-ISCSI/wait-if-server.sh
-@@ -1,4 +1,3 @@
+@@ -1,4 +1,4 @@
  #!/bin/sh
  . /lib/net-lib.sh
 -wait_for_if_link enx525400123456
 -wait_for_if_link enx525400123457
 +wait_for_if_link eth0
-\ No newline at end of file
-diff --git a/test/run-qemu b/test/run-qemu
-index 3c521a14..6268ecc5 100755
---- a/test/run-qemu
-+++ b/test/run-qemu
-@@ -39,4 +39,4 @@ if ! [ -f "$VMLINUZ" ]; then
-     fi
- fi
- 
--exec "$BIN" "${ARGS[@]}" -kernel "$VMLINUZ" "$@"
-+exec "$BIN" "${ARGS[@]}" -kernel "$VMLINUZ" "$@"
++wait_for_if_link eth1
 \ No newline at end of file
 -- 
 2.37.1
