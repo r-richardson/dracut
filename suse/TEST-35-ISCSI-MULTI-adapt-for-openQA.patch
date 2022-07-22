@@ -1,13 +1,13 @@
-From 1c583e8e391e4dd997ddfe9d7b198d1fe52db36a Mon Sep 17 00:00:00 2001
+From a3b5fdbe64ec3de20f67575558d3a448ada9f8bf Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:06:08 +0200
 Subject: [PATCH] test 35 patch
 
 ---
  test/TEST-35-ISCSI-MULTI/server-init.sh    | 12 ++++++------
- test/TEST-35-ISCSI-MULTI/test.sh           | 12 +++++++-----
+ test/TEST-35-ISCSI-MULTI/test.sh           | 14 ++++++++------
  test/TEST-35-ISCSI-MULTI/wait-if-server.sh |  4 ++--
- 3 files changed, 15 insertions(+), 13 deletions(-)
+ 3 files changed, 16 insertions(+), 14 deletions(-)
 
 diff --git a/test/TEST-35-ISCSI-MULTI/server-init.sh b/test/TEST-35-ISCSI-MULTI/server-init.sh
 index fd5538d8..cef92c9e 100755
@@ -38,7 +38,7 @@ index fd5538d8..cef92c9e 100755
  modprobe af_packet
  
 diff --git a/test/TEST-35-ISCSI-MULTI/test.sh b/test/TEST-35-ISCSI-MULTI/test.sh
-index 628131e0..fd4fcaa6 100755
+index 628131e0..e46e778b 100755
 --- a/test/TEST-35-ISCSI-MULTI/test.sh
 +++ b/test/TEST-35-ISCSI-MULTI/test.sh
 @@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem over multiple iSCSI with $USE_NETWORK"
@@ -50,6 +50,15 @@ index 628131e0..fd4fcaa6 100755
  #DEBUGFAIL="loglevel=1"
  #DEBUGFAIL="rd.shell rd.break rd.debug loglevel=7 "
  DEBUGFAIL="rd.debug loglevel=7 "
+@@ -36,7 +38,7 @@ run_server() {
+         -net nic,macaddr=52:54:00:12:34:56,model=e1000 \
+         -net nic,macaddr=52:54:00:12:34:57,model=e1000 \
+         -net socket,listen=127.0.0.1:12331 \
+-        -append "panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=/dev/disk/by-id/ata-disk_serverroot rootfstype=ext3 rw console=ttyS0,115200n81 selinux=0 $SERVER_DEBUG" \
++        -append "nompath panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=/dev/disk/by-id/ata-disk_serverroot rootfstype=ext3 rw console=ttyS0,115200n81 selinux=0 $SERVER_DEBUG" \
+         -initrd "$TESTDIR"/initramfs.server \
+         -pidfile "$TESTDIR"/server.pid -daemonize || return 1
+     chmod 644 "$TESTDIR"/server.pid || return 1
 @@ -200,7 +202,7 @@ test_setup() {
      # We do it this way so that we do not risk trashing the host mdraid
      # devices, volume groups, encrypted partitions, etc.
