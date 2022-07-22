@@ -1,13 +1,13 @@
-From a3b5fdbe64ec3de20f67575558d3a448ada9f8bf Mon Sep 17 00:00:00 2001
+From ee5ede23c20b7c23050c882b0baae90e8a43c222 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:06:08 +0200
 Subject: [PATCH] test 35 patch
 
 ---
- test/TEST-35-ISCSI-MULTI/server-init.sh    | 12 ++++++------
- test/TEST-35-ISCSI-MULTI/test.sh           | 14 ++++++++------
- test/TEST-35-ISCSI-MULTI/wait-if-server.sh |  4 ++--
- 3 files changed, 16 insertions(+), 14 deletions(-)
+ test/TEST-35-ISCSI-MULTI/server-init.sh    | 12 ++++-----
+ test/TEST-35-ISCSI-MULTI/test.sh           | 30 ++++++++++++----------
+ test/TEST-35-ISCSI-MULTI/wait-if-server.sh |  4 +--
+ 3 files changed, 24 insertions(+), 22 deletions(-)
 
 diff --git a/test/TEST-35-ISCSI-MULTI/server-init.sh b/test/TEST-35-ISCSI-MULTI/server-init.sh
 index fd5538d8..cef92c9e 100755
@@ -38,7 +38,7 @@ index fd5538d8..cef92c9e 100755
  modprobe af_packet
  
 diff --git a/test/TEST-35-ISCSI-MULTI/test.sh b/test/TEST-35-ISCSI-MULTI/test.sh
-index 628131e0..e46e778b 100755
+index 628131e0..7b21b6a5 100755
 --- a/test/TEST-35-ISCSI-MULTI/test.sh
 +++ b/test/TEST-35-ISCSI-MULTI/test.sh
 @@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem over multiple iSCSI with $USE_NETWORK"
@@ -59,6 +59,50 @@ index 628131e0..e46e778b 100755
          -initrd "$TESTDIR"/initramfs.server \
          -pidfile "$TESTDIR"/server.pid -daemonize || return 1
      chmod 644 "$TESTDIR"/server.pid || return 1
+@@ -87,8 +89,8 @@ do_test_run() {
+     initiator=$(iscsi-iname)
+     run_client "netroot=iscsi target1 target2" \
+         "root=LABEL=sysroot" \
+-        "ip=192.168.50.101:::255.255.255.0::enp0s1:off" \
+-        "ip=192.168.51.101:::255.255.255.0::enp0s2:off" \
++        "ip=192.168.50.101:::255.255.255.0::eth0:off" \
++        "ip=192.168.51.101:::255.255.255.0::eth1:off" \
+         "netroot=iscsi:192.168.51.1::::iqn.2009-06.dracut:target1" \
+         "netroot=iscsi:192.168.50.1::::iqn.2009-06.dracut:target2" \
+         "rd.iscsi.initiator=$initiator" \
+@@ -96,8 +98,8 @@ do_test_run() {
+ 
+     run_client "netroot=iscsi target1 target2 rd.iscsi.waitnet=0" \
+         "root=LABEL=sysroot" \
+-        "ip=192.168.50.101:::255.255.255.0::enp0s1:off" \
+-        "ip=192.168.51.101:::255.255.255.0::enp0s2:off" \
++        "ip=192.168.50.101:::255.255.255.0::eth0:off" \
++        "ip=192.168.51.101:::255.255.255.0::eth1:off" \
+         "netroot=iscsi:192.168.51.1::::iqn.2009-06.dracut:target1" \
+         "netroot=iscsi:192.168.50.1::::iqn.2009-06.dracut:target2" \
+         "rd.iscsi.firmware" \
+@@ -107,8 +109,8 @@ do_test_run() {
+ 
+     run_client "netroot=iscsi target1 target2 rd.iscsi.waitnet=0 rd.iscsi.testroute=0" \
+         "root=LABEL=sysroot" \
+-        "ip=192.168.50.101:::255.255.255.0::enp0s1:off" \
+-        "ip=192.168.51.101:::255.255.255.0::enp0s2:off" \
++        "ip=192.168.50.101:::255.255.255.0::eth0:off" \
++        "ip=192.168.51.101:::255.255.255.0::eth1:off" \
+         "netroot=iscsi:192.168.51.1::::iqn.2009-06.dracut:target1" \
+         "netroot=iscsi:192.168.50.1::::iqn.2009-06.dracut:target2" \
+         "rd.iscsi.firmware" \
+@@ -118,8 +120,8 @@ do_test_run() {
+ 
+     run_client "netroot=iscsi target1 target2 rd.iscsi.waitnet=0 rd.iscsi.testroute=0 default GW" \
+         "root=LABEL=sysroot" \
+-        "ip=192.168.50.101::192.168.50.1:255.255.255.0::enp0s1:off" \
+-        "ip=192.168.51.101::192.168.51.1:255.255.255.0::enp0s2:off" \
++        "ip=192.168.50.101::192.168.50.1:255.255.255.0::eth0:off" \
++        "ip=192.168.51.101::192.168.51.1:255.255.255.0::eth1:off" \
+         "netroot=iscsi:192.168.51.1::::iqn.2009-06.dracut:target1" \
+         "netroot=iscsi:192.168.50.1::::iqn.2009-06.dracut:target2" \
+         "rd.iscsi.firmware" \
 @@ -200,7 +202,7 @@ test_setup() {
      # We do it this way so that we do not risk trashing the host mdraid
      # devices, volume groups, encrypted partitions, etc.
