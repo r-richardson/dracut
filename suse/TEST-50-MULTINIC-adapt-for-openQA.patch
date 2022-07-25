@@ -1,13 +1,13 @@
-From 05dfcf3a216248de5112a87b7f87f81899f1e8e9 Mon Sep 17 00:00:00 2001
+From 7a9bbb15dabadf04ab9b45ff9f62ca790ff50c45 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:13:09 +0200
 Subject: [PATCH] test 50 patch
 
 ---
  test/TEST-50-MULTINIC/server-init.sh    |  6 ++--
- test/TEST-50-MULTINIC/test.sh           | 38 +++++++++++++------------
+ test/TEST-50-MULTINIC/test.sh           | 40 +++++++++++++------------
  test/TEST-50-MULTINIC/wait-if-server.sh |  2 +-
- 3 files changed, 24 insertions(+), 22 deletions(-)
+ 3 files changed, 25 insertions(+), 23 deletions(-)
 
 diff --git a/test/TEST-50-MULTINIC/server-init.sh b/test/TEST-50-MULTINIC/server-init.sh
 index 0808d8d7..5527d85b 100755
@@ -30,7 +30,7 @@ index 0808d8d7..5527d85b 100755
  : > /dev/watchdog
  modprobe af_packet
 diff --git a/test/TEST-50-MULTINIC/test.sh b/test/TEST-50-MULTINIC/test.sh
-index 81b1f685..f63c85d2 100755
+index 81b1f685..c32e05f4 100755
 --- a/test/TEST-50-MULTINIC/test.sh
 +++ b/test/TEST-50-MULTINIC/test.sh
 @@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem on NFS with multiple nics with $USE_NETWORK"
@@ -51,6 +51,15 @@ index 81b1f685..f63c85d2 100755
          -initrd "$TESTDIR"/initramfs.server \
          -pidfile "$TESTDIR"/server.pid -daemonize || return 1
  
+@@ -86,7 +88,7 @@ client_test() {
+         -device e1000,netdev=n1,mac=52:54:00:12:34:98 \
+         -device e1000,netdev=n2,mac=52:54:00:12:34:99 \
+         -watchdog i6300esb -watchdog-action poweroff \
+-        -append "quiet panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot rd.shell=0 $cmdline $DEBUGFAIL rd.retry=5 ro console=ttyS0,115200n81 selinux=0 init=/sbin/init rd.debug systemd.log_target=console" \
++        -append "nompath quiet panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot rd.shell=0 $cmdline $DEBUGFAIL rd.retry=5 ro console=ttyS0,115200n81 selinux=0 init=/sbin/init rd.debug systemd.log_target=console" \
+         -initrd "$TESTDIR"/initramfs.testing || return 1
+ 
+     {
 @@ -139,46 +141,46 @@ test_client() {
      client_test "MULTINIC root=nfs BOOTIF=" \
          00 01 02 \
