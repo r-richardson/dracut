@@ -1,13 +1,13 @@
-From 824fee71419e5b3914dc028aaa3a9317af2319ac Mon Sep 17 00:00:00 2001
+From 05dfcf3a216248de5112a87b7f87f81899f1e8e9 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:13:09 +0200
 Subject: [PATCH] test 50 patch
 
 ---
- test/TEST-50-MULTINIC/server-init.sh    |  6 ++---
- test/TEST-50-MULTINIC/test.sh           | 36 +++++++++++++------------
+ test/TEST-50-MULTINIC/server-init.sh    |  6 ++--
+ test/TEST-50-MULTINIC/test.sh           | 38 +++++++++++++------------
  test/TEST-50-MULTINIC/wait-if-server.sh |  2 +-
- 3 files changed, 23 insertions(+), 21 deletions(-)
+ 3 files changed, 24 insertions(+), 22 deletions(-)
 
 diff --git a/test/TEST-50-MULTINIC/server-init.sh b/test/TEST-50-MULTINIC/server-init.sh
 index 0808d8d7..5527d85b 100755
@@ -30,7 +30,7 @@ index 0808d8d7..5527d85b 100755
  : > /dev/watchdog
  modprobe af_packet
 diff --git a/test/TEST-50-MULTINIC/test.sh b/test/TEST-50-MULTINIC/test.sh
-index 81b1f685..1d640063 100755
+index 81b1f685..f63c85d2 100755
 --- a/test/TEST-50-MULTINIC/test.sh
 +++ b/test/TEST-50-MULTINIC/test.sh
 @@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem on NFS with multiple nics with $USE_NETWORK"
@@ -42,6 +42,15 @@ index 81b1f685..1d640063 100755
  # Uncomment this to debug failures
  #DEBUGFAIL="loglevel=7 rd.shell rd.break"
  #SERIAL="tcp:127.0.0.1:9999"
+@@ -32,7 +34,7 @@ run_server() {
+         -net nic,macaddr=52:54:01:12:34:56,model=e1000 \
+         -serial "${SERIAL:-"file:$TESTDIR/server.log"}" \
+         -watchdog i6300esb -watchdog-action poweroff \
+-        -append "panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=LABEL=dracut rootfstype=ext3 rw console=ttyS0,115200n81 selinux=0" \
++        -append "nompath panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=LABEL=dracut rootfstype=ext3 rw console=ttyS0,115200n81 selinux=0" \
+         -initrd "$TESTDIR"/initramfs.server \
+         -pidfile "$TESTDIR"/server.pid -daemonize || return 1
+ 
 @@ -139,46 +141,46 @@ test_client() {
      client_test "MULTINIC root=nfs BOOTIF=" \
          00 01 02 \
