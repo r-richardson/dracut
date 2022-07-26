@@ -1,0 +1,35 @@
+From 53c6bb36c229916a6eadf16215345e6a0ef609a4 Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Tue, 26 Jul 2022 19:21:26 +0200
+Subject: [PATCH] Adds some debug parameters to dracut
+
+---
+ modules.d/35network-legacy/ifup.sh | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/modules.d/35network-legacy/ifup.sh b/modules.d/35network-legacy/ifup.sh
+index 6d899efe..20fa6f1d 100755
+--- a/modules.d/35network-legacy/ifup.sh
++++ b/modules.d/35network-legacy/ifup.sh
+@@ -147,6 +147,8 @@ dhcp_dhclient_run() {
+ dhcp_wicked_run() {
+     [ -d /var/lib/wicked ] || mkdir -p /var/lib/wicked
+ 
++    echo "network device is $netif"
++
+     dhclient=
+     if [ "$1" = "-6" ] ; then
+         ipv6_mode=
+@@ -604,6 +606,9 @@ fi
+ # Specific configuration, spin through the kernel command line
+ # looking for ip= lines
+ for p in $(getargs ip=); do
++
++    echo "network device is $netif"
++
+     ip_to_var "$p"
+     # skip ibft
+     [ "$autoconf" = "ibft" ] && continue
+-- 
+2.37.1
+
