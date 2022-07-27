@@ -1,13 +1,13 @@
-From 2d6b72e1d11ac5ec923e8da720eb1610bb119818 Mon Sep 17 00:00:00 2001
+From 4d4d6bfa0b2586cc4e3c7fb35ac9dae3f46ffc9d Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:13:09 +0200
 Subject: [PATCH] test 50 patch
 
 ---
  test/TEST-50-MULTINIC/server-init.sh    |  6 ++--
- test/TEST-50-MULTINIC/test.sh           | 42 +++++++++++++------------
+ test/TEST-50-MULTINIC/test.sh           | 40 +++++++++++++------------
  test/TEST-50-MULTINIC/wait-if-server.sh |  2 +-
- 3 files changed, 26 insertions(+), 24 deletions(-)
+ 3 files changed, 25 insertions(+), 23 deletions(-)
 
 diff --git a/test/TEST-50-MULTINIC/server-init.sh b/test/TEST-50-MULTINIC/server-init.sh
 index 0808d8d7..5527d85b 100755
@@ -30,21 +30,18 @@ index 0808d8d7..5527d85b 100755
  : > /dev/watchdog
  modprobe af_packet
 diff --git a/test/TEST-50-MULTINIC/test.sh b/test/TEST-50-MULTINIC/test.sh
-index 81b1f685..760ef55c 100755
+index 81b1f685..5974deac 100755
 --- a/test/TEST-50-MULTINIC/test.sh
 +++ b/test/TEST-50-MULTINIC/test.sh
-@@ -13,8 +13,10 @@ TEST_DESCRIPTION="root filesystem on NFS with multiple nics with $USE_NETWORK"
+@@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem on NFS with multiple nics with $USE_NETWORK"
  
  KVERSION=${KVERSION-$(uname -r)}
  
 +export basedir=/usr/lib/dracut
 +
  # Uncomment this to debug failures
--#DEBUGFAIL="loglevel=7 rd.shell rd.break"
-+DEBUGFAIL="loglevel=7 rd.shell rd.break"
+ #DEBUGFAIL="loglevel=7 rd.shell rd.break"
  #SERIAL="tcp:127.0.0.1:9999"
- 
- run_server() {
 @@ -32,7 +34,7 @@ run_server() {
          -net nic,macaddr=52:54:01:12:34:56,model=e1000 \
          -serial "${SERIAL:-"file:$TESTDIR/server.log"}" \
@@ -71,7 +68,7 @@ index 81b1f685..760ef55c 100755
 +        "eth0" || return 1
  
 -    client_test "MULTINIC root=nfs BOOTIF= ip=enp0s3:dhcp" \
-+    client_test "MULTINIC root=nfs BOOTIF= ip=eth2:dhcp" \
++    client_test "MULTINIC root=nfs BOOTIF= ip=eth1:dhcp" \
          00 01 02 \
 -        "root=nfs:192.168.50.1:/nfs/client BOOTIF=52-54-00-12-34-00 ip=enp0s2:dhcp" \
 -        "enp0s1 enp0s2" || return 1
