@@ -1,13 +1,13 @@
-From 791d1c749a31e0752b7767d40f11832f128d71f3 Mon Sep 17 00:00:00 2001
+From 5b7667215132a12d96fdc0d298fc84279a794690 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:13:09 +0200
 Subject: [PATCH] test 50 patch
 
 ---
  test/TEST-50-MULTINIC/server-init.sh    |  6 ++--
- test/TEST-50-MULTINIC/test.sh           | 42 +++++++++++++------------
+ test/TEST-50-MULTINIC/test.sh           | 44 +++++++++++++------------
  test/TEST-50-MULTINIC/wait-if-server.sh |  2 +-
- 3 files changed, 26 insertions(+), 24 deletions(-)
+ 3 files changed, 27 insertions(+), 25 deletions(-)
 
 diff --git a/test/TEST-50-MULTINIC/server-init.sh b/test/TEST-50-MULTINIC/server-init.sh
 index 0808d8d7..5527d85b 100755
@@ -30,10 +30,10 @@ index 0808d8d7..5527d85b 100755
  : > /dev/watchdog
  modprobe af_packet
 diff --git a/test/TEST-50-MULTINIC/test.sh b/test/TEST-50-MULTINIC/test.sh
-index 81b1f685..bb38ce83 100755
+index 81b1f685..e736bab4 100755
 --- a/test/TEST-50-MULTINIC/test.sh
 +++ b/test/TEST-50-MULTINIC/test.sh
-@@ -13,8 +13,10 @@ TEST_DESCRIPTION="root filesystem on NFS with multiple nics with $USE_NETWORK"
+@@ -13,9 +13,11 @@ TEST_DESCRIPTION="root filesystem on NFS with multiple nics with $USE_NETWORK"
  
  KVERSION=${KVERSION-$(uname -r)}
  
@@ -41,10 +41,12 @@ index 81b1f685..bb38ce83 100755
 +
  # Uncomment this to debug failures
 -#DEBUGFAIL="loglevel=7 rd.shell rd.break"
-+DEBUGFAIL="loglevel=7 rd.shell rd.break"
- #SERIAL="tcp:127.0.0.1:9999"
+-#SERIAL="tcp:127.0.0.1:9999"
++# DEBUGFAIL="loglevel=7 rd.shell rd.break"
++# SERIAL="tcp:127.0.0.1:9999"
  
  run_server() {
+     # Start server first
 @@ -32,7 +34,7 @@ run_server() {
          -net nic,macaddr=52:54:01:12:34:56,model=e1000 \
          -serial "${SERIAL:-"file:$TESTDIR/server.log"}" \
