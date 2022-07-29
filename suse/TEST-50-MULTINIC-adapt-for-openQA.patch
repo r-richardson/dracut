@@ -1,4 +1,4 @@
-From 7c7efc5c2c139cd65071d7c8df3d240d211a3fb0 Mon Sep 17 00:00:00 2001
+From ca14ca81d6a1a2988459e3e68a4c2c0e76e2f1e6 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:13:09 +0200
 Subject: [PATCH] test 50 patch
@@ -30,7 +30,7 @@ index 0808d8d7..5527d85b 100755
  : > /dev/watchdog
  modprobe af_packet
 diff --git a/test/TEST-50-MULTINIC/test.sh b/test/TEST-50-MULTINIC/test.sh
-index 81b1f685..02f49e38 100755
+index 81b1f685..5974deac 100755
 --- a/test/TEST-50-MULTINIC/test.sh
 +++ b/test/TEST-50-MULTINIC/test.sh
 @@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem on NFS with multiple nics with $USE_NETWORK"
@@ -68,12 +68,12 @@ index 81b1f685..02f49e38 100755
 +        "eth0" || return 1
  
 -    client_test "MULTINIC root=nfs BOOTIF= ip=enp0s3:dhcp" \
-+    client_test "MULTINIC root=nfs BOOTIF= ip=eth2:dhcp" \
++    client_test "MULTINIC root=nfs BOOTIF= ip=eth1:dhcp" \
          00 01 02 \
 -        "root=nfs:192.168.50.1:/nfs/client BOOTIF=52-54-00-12-34-00 ip=enp0s2:dhcp" \
 -        "enp0s1 enp0s2" || return 1
-+        "root=nfs:192.168.50.1:/nfs/client BOOTIF=52-54-00-12-34-00 ip=eth2:dhcp" \
-+        "eth0 eth2" || return 1
++        "root=nfs:192.168.50.1:/nfs/client BOOTIF=52-54-00-12-34-00 ip=eth1:dhcp" \
++        "eth0 eth1" || return 1
  
      # PXE Style BOOTIF= with dhcp root-path
      client_test "MULTINIC root=dhcp BOOTIF=" \
