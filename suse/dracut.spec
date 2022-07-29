@@ -66,7 +66,8 @@ Patch28:        TEST-99-RPM-adapt-for-openQA.patch
 Patch29:        RUN-QEMU-adapt-for-openQA.patch
 Patch30:	    0001-fix-network-legacy-add-support-for-wicked-provided-R.patch
 Patch31:        0001-fix-network-legacy-netroot-call-for-wicked-dhcp-setu.patch
-Patch32:        0001-debug-params.patch
+Patch32:        0001-fix-network-legacy-wait-for-multiple-interfaces.patch
+Patch33:        0001-debug-params.patch
 
 BuildRequires:  asciidoc
 BuildRequires:  bash
