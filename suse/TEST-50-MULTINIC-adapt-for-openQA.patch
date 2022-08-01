@@ -1,4 +1,4 @@
-From ec39d75722cff19cb3e166bde33c0bd38c5a2f5b Mon Sep 17 00:00:00 2001
+From 58d212dc0add23455d58dcb7f9cdaa50bcea1a58 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:13:09 +0200
 Subject: [PATCH] test 50 patch
@@ -30,7 +30,7 @@ index 0808d8d7..5527d85b 100755
  : > /dev/watchdog
  modprobe af_packet
 diff --git a/test/TEST-50-MULTINIC/test.sh b/test/TEST-50-MULTINIC/test.sh
-index 81b1f685..b7a068b7 100755
+index 81b1f685..abd20868 100755
 --- a/test/TEST-50-MULTINIC/test.sh
 +++ b/test/TEST-50-MULTINIC/test.sh
 @@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem on NFS with multiple nics with $USE_NETWORK"
@@ -91,7 +91,7 @@ index 81b1f685..b7a068b7 100755
  
      # Require two interfaces
 -    client_test "MULTINIC root=nfs ip=enp0s2:dhcp ip=enp0s3:dhcp bootdev=enp0s2" \
-+    client_test "MULTINIC root=nfs ip=eth1:dhcp ip=etht2:dhcp bootdev=eth1" \
++    client_test "MULTINIC root=nfs ip=eth1:dhcp ip=eth2:dhcp bootdev=eth1" \
          00 01 02 \
 -        "root=nfs:192.168.50.1:/nfs/client ip=enp0s2:dhcp ip=enp0s3:dhcp bootdev=enp0s2" \
 -        "enp0s2 enp0s3" || return 1
