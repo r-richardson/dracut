@@ -1,13 +1,13 @@
-From ff83bd7a4ae09afa1f4bf72406a5efd6d97b44ca Mon Sep 17 00:00:00 2001
+From e37375e78b02217626f913bbee4fab2a9a098024 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 11 May 2022 12:32:50 +0200
 Subject: [PATCH] create test 20 patch
 
 ---
  test/TEST-20-NFS/server-init.sh    | 10 +++++-----
- test/TEST-20-NFS/test.sh           | 20 ++++++++++++--------
+ test/TEST-20-NFS/test.sh           | 16 +++++++++-------
  test/TEST-20-NFS/wait-if-server.sh |  2 +-
- 3 files changed, 18 insertions(+), 14 deletions(-)
+ 3 files changed, 15 insertions(+), 13 deletions(-)
 
 diff --git a/test/TEST-20-NFS/server-init.sh b/test/TEST-20-NFS/server-init.sh
 index 3ddb7333..ad6c5505 100755
@@ -34,7 +34,7 @@ index 3ddb7333..ad6c5505 100755
  : > /dev/watchdog
  modprobe af_packet
 diff --git a/test/TEST-20-NFS/test.sh b/test/TEST-20-NFS/test.sh
-index 0be60a80..990ba0ba 100755
+index 0be60a80..f954e99e 100755
 --- a/test/TEST-20-NFS/test.sh
 +++ b/test/TEST-20-NFS/test.sh
 @@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem on NFS with $USE_NETWORK"
@@ -46,6 +46,15 @@ index 0be60a80..990ba0ba 100755
  # Uncomment this to debug failures
  DEBUGFAIL="rd.debug loglevel=7"
  #DEBUGFAIL="rd.shell rd.break rd.debug loglevel=7 "
+@@ -34,7 +36,7 @@ run_server() {
+         -net nic,macaddr=52:54:00:12:34:56,model=e1000 \
+         -serial "${SERIAL:-"file:$TESTDIR/server.log"}" \
+         -watchdog i6300esb -watchdog-action poweroff \
+-        -append "panic=1 oops=panic softlockup_panic=1 root=LABEL=dracut rootfstype=ext3 rw console=ttyS0,115200n81 selinux=0 $SERVER_DEBUG" \
++        -append "nompath panic=1 oops=panic softlockup_panic=1 root=LABEL=dracut rootfstype=ext3 rw console=ttyS0,115200n81 selinux=0 $SERVER_DEBUG" \
+         -initrd "$TESTDIR"/initramfs.server \
+         -pidfile "$TESTDIR"/server.pid -daemonize || return 1
+     chmod 644 "$TESTDIR"/server.pid || return 1
 @@ -45,7 +47,7 @@ run_server() {
      if ! [[ $SERIAL ]]; then
          while ! grep -q Serving "$TESTDIR"/server.log; do
@@ -55,19 +64,15 @@ index 0be60a80..990ba0ba 100755
          done
      else
          echo Sleeping 10 seconds to give the server a head start
-@@ -70,9 +72,9 @@ client_test() {
-     declare -i disk_index=0
-     qemu_add_drive_args disk_index disk_args "$TESTDIR"/marker.img marker
+@@ -79,7 +81,7 @@ client_test() {
+         -net nic,macaddr="$mac",model=e1000 \
+         -net socket,connect=127.0.0.1:12320 \
+         -watchdog i6300esb -watchdog-action poweroff \
+-        -append "panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot rd.shell=0 $cmdline $DEBUGFAIL rd.retry=10 quiet ro console=ttyS0,115200n81 selinux=0" \
++        -append "nompath panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot rd.shell=0 $cmdline $DEBUGFAIL rd.retry=10 quiet ro console=ttyS0,115200n81 selinux=0" \
+         -initrd "$TESTDIR"/initramfs.testing
  
--    if dhclient --help 2>&1 | grep -q -F -- '--timeout' 2> /dev/null; then
--        cmdline="$cmdline rd.net.timeout.dhcp=3"
--    fi
-+    # if dhclient --help 2>&1 | grep -q -F -- '--timeout' 2> /dev/null; then
-+    #     cmdline="$cmdline rd.net.timeout.dhcp=3"
-+    # fi
- 
-     "$testdir"/run-qemu \
-         "${disk_args[@]}" \
+     # shellcheck disable=SC2181
 @@ -175,7 +177,7 @@ test_nfsv3() {
          52:54:00:12:34:05 "root=dhcp" 192.168.50.1 wsize=4096 || return 1
  
@@ -77,16 +82,7 @@ index 0be60a80..990ba0ba 100755
  
      client_test "NFSv3 root=dhcp DHCP IP:path,options" \
          52:54:00:12:34:06 "root=dhcp" 192.168.50.2 wsize=4096 || return 1
-@@ -223,6 +225,8 @@ test_run() {
- 
-     ret=$?
- 
-+    echo retval ist: $ret
-+
-     if [[ -s $TESTDIR/server.pid ]]; then
-         kill -TERM "$(cat "$TESTDIR"/server.pid)"
-         rm -f -- "$TESTDIR"/server.pid
-@@ -402,7 +406,7 @@ test_setup() {
+@@ -402,7 +404,7 @@ test_setup() {
  
      # Make client's dracut image
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -95,7 +91,7 @@ index 0be60a80..990ba0ba 100755
          -a "debug watchdog ${USE_NETWORK}" \
          --no-hostonly-cmdline -N \
          -f "$TESTDIR"/initramfs.testing "$KVERSION" || return 1
-@@ -418,7 +422,7 @@ test_setup() {
+@@ -418,7 +420,7 @@ test_setup() {
      )
      # Make server's dracut image
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -104,7 +100,7 @@ index 0be60a80..990ba0ba 100755
          -d "af_packet piix ide-gd_mod ata_piix ext3 sd_mod e1000 i6300esb" \
          --no-hostonly-cmdline -N \
          -f "$TESTDIR"/initramfs.server "$KVERSION" || return 1
-@@ -434,4 +438,4 @@ test_cleanup() {
+@@ -434,4 +436,4 @@ test_cleanup() {
  }
  
  # shellcheck disable=SC1090
@@ -121,5 +117,5 @@ index 8ae21f8a..bd96fe78 100644
 -wait_for_if_link enx525400123456
 +wait_for_if_link eth0
 -- 
-2.36.1
+2.37.1
 
