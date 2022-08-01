@@ -1,13 +1,13 @@
-From 45ae141f01d4a082cbd3875d64e462858870dfd9 Mon Sep 17 00:00:00 2001
+From ab15dac8f40b20da0e45aabf6c8ead55c106a5dd Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:16:31 +0200
 Subject: [PATCH] test 60 patch
 
 ---
  test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh  | 16 ++++++++--------
- test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh         |  4 +++-
+ test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh         | 10 ++++++----
  .../wait-if-server.sh                            |  8 ++++----
- 3 files changed, 15 insertions(+), 13 deletions(-)
+ 3 files changed, 18 insertions(+), 16 deletions(-)
 
 diff --git a/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh b/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh
 index 5e7e56ef..29c9311a 100755
@@ -38,18 +38,39 @@ index 5e7e56ef..29c9311a 100755
  modprobe --all -b -q 8021q ipvlan macvlan
  : > /dev/watchdog
 diff --git a/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh b/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh
-index 309600d4..e10f9a03 100755
+index 309600d4..abfe7945 100755
 --- a/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh
 +++ b/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh
-@@ -15,6 +15,8 @@ TEST_DESCRIPTION="root filesystem on NFS with bridging/bonding/vlan with $USE_NE
+@@ -15,8 +15,10 @@ TEST_DESCRIPTION="root filesystem on NFS with bridging/bonding/vlan with $USE_NE
  
  KVERSION=${KVERSION-$(uname -r)}
  
 +export basedir=/usr/lib/dracut
 +
  # Uncomment this to debug failures
- #DEBUGFAIL="rd.shell rd.break"
+-#DEBUGFAIL="rd.shell rd.break"
++DEBUGFAIL="rd.shell rd.break"
  #DEBUGFAIL="rd.shell rd.break rd.debug"
+ #SERIAL="tcp:127.0.0.1:9999"
+ 
+@@ -36,7 +38,7 @@ run_server() {
+         -hda "$TESTDIR"/server.ext3 \
+         -serial "${SERIAL:-"file:$TESTDIR/server.log"}" \
+         -watchdog i6300esb -watchdog-action poweroff \
+-        -append "panic=1 oops=panic softlockup_panic=1 loglevel=7 root=LABEL=dracut rootfstype=ext3 rw console=ttyS0,115200n81 selinux=0 rd.debug" \
++        -append "nompath panic=1 oops=panic softlockup_panic=1 loglevel=7 root=LABEL=dracut rootfstype=ext3 rw console=ttyS0,115200n81 selinux=0 rd.debug" \
+         -initrd "$TESTDIR"/initramfs.server \
+         -pidfile "$TESTDIR"/server.pid -daemonize || return 1
+     chmod 644 -- "$TESTDIR"/server.pid || return 1
+@@ -92,7 +94,7 @@ client_test() {
+         -hda "$TESTDIR"/client.img \
+         -watchdog i6300esb -watchdog-action poweroff \
+         -append "
+-        panic=1 oops=panic softlockup_panic=1
++        nompath panic=1 oops=panic softlockup_panic=1
+         ifname=net1:52:54:00:12:34:01
+         ifname=net2:52:54:00:12:34:02
+         ifname=net3:52:54:00:12:34:03
 @@ -403,4 +405,4 @@ test_cleanup() {
  }
  
