@@ -1,13 +1,13 @@
-From c2e9fc87cb39aa701b97609222316be3e7ee9250 Mon Sep 17 00:00:00 2001
+From 86e6e2cb6a3fcf40290ee12a5594c932fca2c0da Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:16:31 +0200
 Subject: [PATCH] test 60 patch
 
 ---
- .../server-init.sh                            | 16 +++++++-------
- test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh      | 22 ++++++++++---------
- .../wait-if-server.sh                         |  8 +++----
- 3 files changed, 24 insertions(+), 22 deletions(-)
+ .../server-init.sh                            | 16 +++++++--------
+ test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh      | 20 ++++++++++---------
+ .../wait-if-server.sh                         |  8 ++++----
+ 3 files changed, 23 insertions(+), 21 deletions(-)
 
 diff --git a/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh b/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh
 index 5e7e56ef..29c9311a 100755
@@ -38,7 +38,7 @@ index 5e7e56ef..29c9311a 100755
  modprobe --all -b -q 8021q ipvlan macvlan
  : > /dev/watchdog
 diff --git a/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh b/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh
-index 309600d4..c6ee4583 100755
+index 309600d4..5aaf3819 100755
 --- a/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh
 +++ b/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh
 @@ -15,6 +15,8 @@ TEST_DESCRIPTION="root filesystem on NFS with bridging/bonding/vlan with $USE_NE
@@ -101,15 +101,6 @@ index 309600d4..c6ee4583 100755
      fi
  
      client_test "Multiple Bridges" \
-@@ -199,7 +201,7 @@ ip=br1:dhcp
- rd.neednet=1
- root=nfs:192.168.50.1:/nfs/client bootdev=br0
- " \
--        "$EXPECT" \
-+#        "$EXPECT" \
-         || return 1
- 
-     kill_server
 @@ -403,4 +405,4 @@ test_cleanup() {
  }
  
