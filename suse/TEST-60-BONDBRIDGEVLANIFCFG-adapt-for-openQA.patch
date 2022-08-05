@@ -1,4 +1,4 @@
-From c4fe9357fa81e29a645b9ce4fa9c2da2f728e8d7 Mon Sep 17 00:00:00 2001
+From 8cd9417175af230dc1c770694b3edab331782351 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:16:31 +0200
 Subject: [PATCH] test 60 patch
@@ -31,7 +31,7 @@ index 644308d1..8e867065 100755
  ) | dd oflag=direct,dsync of=/dev/sda
  
 diff --git a/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh b/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh
-index 5e7e56ef..3e435054 100755
+index 5e7e56ef..943c4080 100755
 --- a/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh
 +++ b/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh
 @@ -54,15 +54,15 @@ udevadm settle
@@ -62,7 +62,7 @@ index 5e7e56ef..3e435054 100755
  #sh -i
  #tcpdump -i net1
  # Wait forever for the VM to die
-+sleep 60
++sh -i
  echo "Serving"
  while :; do
      sleep 10
