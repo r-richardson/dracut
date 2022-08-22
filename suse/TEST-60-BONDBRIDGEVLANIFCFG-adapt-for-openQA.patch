@@ -1,4 +1,4 @@
-From 306aae89bf94f09968437d07db7f9028f8cca79b Mon Sep 17 00:00:00 2001
+From c32e1b1e84ede57260359f2a2e54ca5f8dc17456 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:16:31 +0200
 Subject: [PATCH] test 60 patch
@@ -6,9 +6,9 @@ Subject: [PATCH] test 60 patch
 ---
  .../client-init.sh                            |  9 +++----
  .../server-init.sh                            | 18 ++++++-------
- test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh      | 27 ++++++++++++-------
+ test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh      | 25 +++++++++++++------
  .../wait-if-server.sh                         |  8 +++---
- 4 files changed, 35 insertions(+), 27 deletions(-)
+ 4 files changed, 34 insertions(+), 26 deletions(-)
 
 diff --git a/test/TEST-60-BONDBRIDGEVLANIFCFG/client-init.sh b/test/TEST-60-BONDBRIDGEVLANIFCFG/client-init.sh
 index 644308d1..8e867065 100755
@@ -70,7 +70,7 @@ index 5e7e56ef..c3f8b0f4 100755
  done
  mount -n -o remount,ro /
 diff --git a/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh b/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh
-index 309600d4..17b62f6c 100755
+index 309600d4..bd63bd3a 100755
 --- a/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh
 +++ b/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh
 @@ -15,6 +15,8 @@ TEST_DESCRIPTION="root filesystem on NFS with bridging/bonding/vlan with $USE_NE
@@ -82,18 +82,15 @@ index 309600d4..17b62f6c 100755
  # Uncomment this to debug failures
  #DEBUGFAIL="rd.shell rd.break"
  #DEBUGFAIL="rd.shell rd.break rd.debug"
-@@ -36,9 +38,9 @@ run_server() {
+@@ -36,7 +38,7 @@ run_server() {
          -hda "$TESTDIR"/server.ext3 \
          -serial "${SERIAL:-"file:$TESTDIR/server.log"}" \
          -watchdog i6300esb -watchdog-action poweroff \
 -        -append "panic=1 oops=panic softlockup_panic=1 loglevel=7 root=LABEL=dracut rootfstype=ext3 rw console=ttyS0,115200n81 selinux=0 rd.debug" \
 +        -append "nompath panic=1 oops=panic softlockup_panic=1 loglevel=7 root=LABEL=dracut rootfstype=ext3 rw console=ttyS0,115200n81 selinux=0 rd.debug" \
          -initrd "$TESTDIR"/initramfs.server \
--        -pidfile "$TESTDIR"/server.pid -daemonize || return 1
-+        -pidfile "$TESTDIR"/server.pid || return 1
+         -pidfile "$TESTDIR"/server.pid -daemonize || return 1
      chmod 644 -- "$TESTDIR"/server.pid || return 1
- 
-     # Cleanup the terminal if we have one
 @@ -92,7 +94,7 @@ client_test() {
          -hda "$TESTDIR"/client.img \
          -watchdog i6300esb -watchdog-action poweroff \
