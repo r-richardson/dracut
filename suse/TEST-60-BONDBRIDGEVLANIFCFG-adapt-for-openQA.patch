@@ -1,12 +1,12 @@
-From c49bee578187ed3cd3b681173c26f39888529171 Mon Sep 17 00:00:00 2001
+From 5fd9a53ca50db3ec0db4fcd635f067304e948940 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:16:31 +0200
 Subject: [PATCH] test 60 patch
 
 ---
  .../client-init.sh                            |  9 +++----
- .../server-init.sh                            | 17 ++++++------
- test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh      | 26 ++++++++++++-------
+ .../server-init.sh                            | 16 +++++------
+ test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh      | 27 ++++++++++++-------
  .../wait-if-server.sh                         |  8 +++---
  4 files changed, 34 insertions(+), 26 deletions(-)
 
@@ -31,7 +31,7 @@ index 644308d1..8e867065 100755
  ) | dd oflag=direct,dsync of=/dev/sda
  
 diff --git a/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh b/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh
-index 5e7e56ef..943c4080 100755
+index 5e7e56ef..29c9311a 100755
 --- a/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh
 +++ b/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh
 @@ -54,15 +54,15 @@ udevadm settle
@@ -58,16 +58,8 @@ index 5e7e56ef..943c4080 100755
  
  modprobe --all -b -q 8021q ipvlan macvlan
  : > /dev/watchdog
-@@ -122,6 +122,7 @@ dhcpd -cf /etc/dhcpd.conf -lf /var/lib/dhcpd/dhcpd.leases net1 net3
- #sh -i
- #tcpdump -i net1
- # Wait forever for the VM to die
-+sh -i
- echo "Serving"
- while :; do
-     sleep 10
 diff --git a/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh b/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh
-index 309600d4..dff8ed19 100755
+index 309600d4..17b62f6c 100755
 --- a/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh
 +++ b/test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh
 @@ -15,6 +15,8 @@ TEST_DESCRIPTION="root filesystem on NFS with bridging/bonding/vlan with $USE_NE
@@ -100,7 +92,15 @@ index 309600d4..dff8ed19 100755
          ifname=net1:52:54:00:12:34:01
          ifname=net2:52:54:00:12:34:02
          ifname=net3:52:54:00:12:34:03
-@@ -141,9 +143,10 @@ test_run() {
+@@ -133,6 +135,7 @@ test_run() {
+         echo "Failed to start server" 1>&2
+         return 1
+     fi
++    sleep 100
+     test_client || {
+         kill_server
+         return 1
+@@ -141,9 +144,10 @@ test_run() {
  
  test_client() {
      if [[ $NM ]]; then
@@ -113,7 +113,7 @@ index 309600d4..dff8ed19 100755
      fi
  
      client_test "Multiple VLAN" \
-@@ -160,14 +163,16 @@ ip=192.168.56.103::192.168.56.1:24:test:net3.3:none
+@@ -160,14 +164,16 @@ ip=192.168.56.103::192.168.56.1:24:test:net3.3:none
  ip=192.168.57.104::192.168.57.1:24:test:net3.0004:none
  rd.neednet=1
  root=nfs:192.168.50.1:/nfs/client bootdev=net1
@@ -132,7 +132,7 @@ index 309600d4..dff8ed19 100755
      fi
  
      client_test "Multiple Bonds" \
-@@ -179,14 +184,16 @@ ip=bond0:dhcp
+@@ -179,14 +185,16 @@ ip=bond0:dhcp
  ip=bond1:dhcp
  rd.neednet=1
  root=nfs:192.168.50.1:/nfs/client bootdev=bond0
@@ -150,7 +150,7 @@ index 309600d4..dff8ed19 100755
      fi
  
      client_test "Multiple Bridges" \
-@@ -198,6 +205,7 @@ ip=br0:dhcp
+@@ -198,6 +206,7 @@ ip=br0:dhcp
  ip=br1:dhcp
  rd.neednet=1
  root=nfs:192.168.50.1:/nfs/client bootdev=br0
@@ -158,7 +158,7 @@ index 309600d4..dff8ed19 100755
  " \
          "$EXPECT" \
          || return 1
-@@ -403,4 +411,4 @@ test_cleanup() {
+@@ -403,4 +412,4 @@ test_cleanup() {
  }
  
  # shellcheck disable=SC1090
@@ -180,5 +180,5 @@ index 7cdb9417..189ddff4 100644
 +wait_for_if_link eth2
 +wait_for_if_link eth3
 -- 
-2.37.1
+2.37.2
 
