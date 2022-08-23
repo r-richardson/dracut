@@ -1,14 +1,14 @@
-From dd3b4371a737e659b7708bcdc110bb7515929f72 Mon Sep 17 00:00:00 2001
+From 61da978ad773e07e578e14ca4bfd3623697db517 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Wed, 13 Apr 2022 12:16:31 +0200
 Subject: [PATCH] test 60 patch
 
 ---
  .../client-init.sh                            |  9 +++----
- .../server-init.sh                            | 18 ++++++-------
+ .../server-init.sh                            | 20 +++++++-------
  test/TEST-60-BONDBRIDGEVLANIFCFG/test.sh      | 27 ++++++++++++-------
  .../wait-if-server.sh                         |  8 +++---
- 4 files changed, 35 insertions(+), 27 deletions(-)
+ 4 files changed, 36 insertions(+), 28 deletions(-)
 
 diff --git a/test/TEST-60-BONDBRIDGEVLANIFCFG/client-init.sh b/test/TEST-60-BONDBRIDGEVLANIFCFG/client-init.sh
 index 644308d1..8e867065 100755
@@ -31,7 +31,7 @@ index 644308d1..8e867065 100755
  ) | dd oflag=direct,dsync of=/dev/sda
  
 diff --git a/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh b/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh
-index 5e7e56ef..c3f8b0f4 100755
+index 5e7e56ef..e9c30a74 100755
 --- a/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh
 +++ b/test/TEST-60-BONDBRIDGEVLANIFCFG/server-init.sh
 @@ -54,15 +54,15 @@ udevadm settle
@@ -58,7 +58,13 @@ index 5e7e56ef..c3f8b0f4 100755
  
  modprobe --all -b -q 8021q ipvlan macvlan
  : > /dev/watchdog
-@@ -122,9 +122,9 @@ dhcpd -cf /etc/dhcpd.conf -lf /var/lib/dhcpd/dhcpd.leases net1 net3
+@@ -117,14 +117,14 @@ exportfs -r
+ : > /dev/watchdog
+ chmod 777 /var/lib/dhcpd/dhcpd.leases
+ : > /dev/watchdog
+-dhcpd -cf /etc/dhcpd.conf -lf /var/lib/dhcpd/dhcpd.leases net1 net3
++dhcpd -f -d -cf /etc/dhcpd.conf -lf /var/lib/dhcpd/dhcpd.leases net1 net3 >/dev/ttyS0 2>&1 &
+ #echo -n 'V' : > /dev/watchdog
  #sh -i
  #tcpdump -i net1
  # Wait forever for the VM to die
