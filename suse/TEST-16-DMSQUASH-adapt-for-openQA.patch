@@ -1,17 +1,17 @@
-From c2bb2397388d03ee45166fdda75d964a09f8f189 Mon Sep 17 00:00:00 2001
+From 1e05d46bca67719a363c75927a25ef3d4da314d5 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Tue, 12 Apr 2022 18:31:59 +0200
 Subject: [PATCH] test 16 patch
 
 ---
- test/TEST-16-DMSQUASH/test.sh | 27 +++++++++++++++++++++------
- 1 file changed, 21 insertions(+), 6 deletions(-)
+ test/TEST-16-DMSQUASH/test.sh | 51 ++++++++++++++++++++++-------------
+ 1 file changed, 33 insertions(+), 18 deletions(-)
 
 diff --git a/test/TEST-16-DMSQUASH/test.sh b/test/TEST-16-DMSQUASH/test.sh
-index 2a68f305..fd016fbe 100755
+index 2a68f305..1030a0e3 100755
 --- a/test/TEST-16-DMSQUASH/test.sh
 +++ b/test/TEST-16-DMSQUASH/test.sh
-@@ -4,6 +4,8 @@ TEST_DESCRIPTION="root filesystem on a LiveCD dmsquash filesystem"
+@@ -4,28 +4,34 @@ TEST_DESCRIPTION="root filesystem on a LiveCD dmsquash filesystem"
  
  KVERSION="${KVERSION-$(uname -r)}"
  
@@ -20,8 +20,28 @@ index 2a68f305..fd016fbe 100755
  # Uncomment this to debug failures
  #DEBUGFAIL="rd.shell rd.break rd.debug systemd.log_level=debug systemd.log_target=console"
  
-@@ -20,6 +22,10 @@ test_check() {
- }
+-test_check() {
+-    for pdir in $(python3 -c "import site; print(site.getsitepackages())" | sed -e 's/\[\(.*\)\]/\1/' -e "s/', /' /g"); do
+-        # shellcheck disable=SC2001
+-        pdir1=$(echo "$pdir" | sed "s/^'\(.*\)'$/\1/")
+-        if [[ -d $pdir1/imgcreate ]]; then
+-            return 0
+-        fi
+-    done
+-    echo "python-imgcreate not installed"
+-    return 1
+-}
++#test_check() {
++#    for pdir in $(python3 -c "import site; print(site.getsitepackages())" | sed -e 's/\[\(.*\)\]/\1/' -e "s/', /' /g"); do
++#        # shellcheck disable=SC2001
++#        pdir1=$(echo "$pdir" | sed "s/^'\(.*\)'$/\1/")
++#        if [[ -d $pdir1/imgcreate ]]; then
++#            return 0
++#        fi
++#    done
++#    echo "python-imgcreate not installed"
++#    return 1
++#}
  
  test_run() {
 +    qemu -boot c \
@@ -31,6 +51,13 @@ index 2a68f305..fd016fbe 100755
      dd if=/dev/zero of="$TESTDIR"/marker.img bs=1MiB count=1
      declare -a disk_args=()
      # shellcheck disable=SC2034
+     declare -i disk_index=0
+     qemu_add_drive_args disk_index disk_args "$TESTDIR"/marker.img marker
+-    qemu_add_drive_args disk_index disk_args "$TESTDIR"/livecd.iso livecd 1
++    qemu_add_drive_args disk_index disk_args "$TESTDIR"/myimage.raw livecd 1
+ 
+     "$testdir"/run-qemu \
+         "${disk_args[@]}" \
 @@ -78,13 +84,13 @@ test_setup() {
              mkdir -p root usr/bin usr/lib usr/lib64 usr/sbin
          )
