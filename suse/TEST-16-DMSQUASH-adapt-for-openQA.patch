@@ -1,14 +1,14 @@
-From 51af0b4a3fd4a142b656d9855f9192784156b458 Mon Sep 17 00:00:00 2001
+From c2bb2397388d03ee45166fdda75d964a09f8f189 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Tue, 12 Apr 2022 18:31:59 +0200
 Subject: [PATCH] test 16 patch
 
 ---
- test/TEST-16-DMSQUASH/test.sh | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ test/TEST-16-DMSQUASH/test.sh | 27 +++++++++++++++++++++------
+ 1 file changed, 21 insertions(+), 6 deletions(-)
 
 diff --git a/test/TEST-16-DMSQUASH/test.sh b/test/TEST-16-DMSQUASH/test.sh
-index 2a68f305..88b7951d 100755
+index 2a68f305..fd016fbe 100755
 --- a/test/TEST-16-DMSQUASH/test.sh
 +++ b/test/TEST-16-DMSQUASH/test.sh
 @@ -4,6 +4,8 @@ TEST_DESCRIPTION="root filesystem on a LiveCD dmsquash filesystem"
@@ -20,7 +20,18 @@ index 2a68f305..88b7951d 100755
  # Uncomment this to debug failures
  #DEBUGFAIL="rd.shell rd.break rd.debug systemd.log_level=debug systemd.log_target=console"
  
-@@ -78,13 +80,13 @@ test_setup() {
+@@ -20,6 +22,10 @@ test_check() {
+ }
+ 
+ test_run() {
++    qemu -boot c \
++        -drive file=kiwi-test-image-disk.x86_64-1.15.3.raw,format=raw,if=virtio \
++        -m 4096 -serial stdio
++
+     dd if=/dev/zero of="$TESTDIR"/marker.img bs=1MiB count=1
+     declare -a disk_args=()
+     # shellcheck disable=SC2034
+@@ -78,13 +84,13 @@ test_setup() {
              mkdir -p root usr/bin usr/lib usr/lib64 usr/sbin
          )
          inst_multiple sh df free ls shutdown poweroff stty cat ps ln ip \
@@ -37,12 +48,32 @@ index 2a68f305..88b7951d 100755
          inst "$basedir/modules.d/35network-legacy/ifup.sh" "/sbin/ifup"
  
          inst_simple "${basedir}/modules.d/99base/dracut-lib.sh" "/lib/dracut-lib.sh"
-@@ -124,4 +126,4 @@ test_cleanup() {
+@@ -115,8 +121,17 @@ test_setup() {
+         cp -a -- /etc/ld.so.conf* "$initdir"/etc
+         ldconfig -r "$initdir"
+     )
+-    python3 create.py -d -c livecd-fedora-minimal.ks
+-    return 0
++    pip install kiwi
++
++    git clone https://github.com/OSInside/kiwi
++
++    tree -L 3 kiwi/build-tests
++
++    kiwi-ng system build \
++        --description kiwi/build-tests/x86/leap/test-image-disk \
++        --set-repo obs://openSUSE:Leap:15.4/standard \
++        --target-dir /tmp/myimage
++        return 0
+ }
+ 
+ test_cleanup() {
+@@ -124,4 +139,4 @@ test_cleanup() {
  }
  
  # shellcheck disable=SC1090
 -. "$testdir"/test-functions
 +. "$basedir"/test/test-functions
 -- 
-2.35.1
+2.37.2
 
