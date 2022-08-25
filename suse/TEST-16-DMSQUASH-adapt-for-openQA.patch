@@ -1,17 +1,17 @@
-From 4662813675ab604fc0c60f6fe9b59052c14e96ad Mon Sep 17 00:00:00 2001
+From d5aa3f05200f67f3416d493ac00b2e05ad2282b6 Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Tue, 12 Apr 2022 18:31:59 +0200
 Subject: [PATCH] test 16 patch
 
 ---
- test/TEST-16-DMSQUASH/test.sh | 53 ++++++++++++++++++++++-------------
- 1 file changed, 34 insertions(+), 19 deletions(-)
+ test/TEST-16-DMSQUASH/test.sh | 56 ++++++++++++++++++++++-------------
+ 1 file changed, 36 insertions(+), 20 deletions(-)
 
 diff --git a/test/TEST-16-DMSQUASH/test.sh b/test/TEST-16-DMSQUASH/test.sh
-index 2a68f305..0b3c118d 100755
+index 2a68f305..e05e77ae 100755
 --- a/test/TEST-16-DMSQUASH/test.sh
 +++ b/test/TEST-16-DMSQUASH/test.sh
-@@ -4,28 +4,34 @@ TEST_DESCRIPTION="root filesystem on a LiveCD dmsquash filesystem"
+@@ -4,33 +4,40 @@ TEST_DESCRIPTION="root filesystem on a LiveCD dmsquash filesystem"
  
  KVERSION="${KVERSION-$(uname -r)}"
  
@@ -44,7 +44,8 @@ index 2a68f305..0b3c118d 100755
 +#}
  
  test_run() {
-+    qemu -boot c \
++    "$testdir"/run-qemu \
++        -boot c \
 +        -drive file=kiwi-test-image-disk.x86_64-1.15.3.raw,format=raw,if=virtio \
 +        -m 4096 -serial stdio
 +
@@ -58,7 +59,13 @@ index 2a68f305..0b3c118d 100755
  
      "$testdir"/run-qemu \
          "${disk_args[@]}" \
-@@ -58,7 +64,7 @@ test_setup() {
+         -boot order=d \
+-        -append "panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=live:CDLABEL=LiveCD live rw quiet rd.retry=3 rd.info console=ttyS0,115200n81 selinux=0 rd.shell=0 $DEBUGFAIL" \
++        -append "panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=UUID=2415ae8b-cf0e-4bff-ae98-3aef6ec046e6 live rw quiet rd.retry=3 rd.info console=ttyS0,115200n81 selinux=0 rd.shell=0 $DEBUGFAIL" \
+         -initrd "$TESTDIR"/initramfs.testing
+ 
+     # mediacheck test with qemu GUI
+@@ -58,7 +65,7 @@ test_setup() {
      )
  
      "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
@@ -67,7 +74,7 @@ index 2a68f305..0b3c118d 100755
          -o "rngd" \
          -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
          --no-hostonly-cmdline -N \
-@@ -78,13 +84,13 @@ test_setup() {
+@@ -78,13 +85,13 @@ test_setup() {
              mkdir -p root usr/bin usr/lib usr/lib64 usr/sbin
          )
          inst_multiple sh df free ls shutdown poweroff stty cat ps ln ip \
@@ -84,7 +91,7 @@ index 2a68f305..0b3c118d 100755
          inst "$basedir/modules.d/35network-legacy/ifup.sh" "/sbin/ifup"
  
          inst_simple "${basedir}/modules.d/99base/dracut-lib.sh" "/lib/dracut-lib.sh"
-@@ -115,8 +121,17 @@ test_setup() {
+@@ -115,8 +122,17 @@ test_setup() {
          cp -a -- /etc/ld.so.conf* "$initdir"/etc
          ldconfig -r "$initdir"
      )
@@ -104,7 +111,7 @@ index 2a68f305..0b3c118d 100755
  }
  
  test_cleanup() {
-@@ -124,4 +139,4 @@ test_cleanup() {
+@@ -124,4 +140,4 @@ test_cleanup() {
  }
  
  # shellcheck disable=SC1090
