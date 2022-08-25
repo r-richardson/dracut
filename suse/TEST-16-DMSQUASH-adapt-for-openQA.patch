@@ -1,14 +1,14 @@
-From 1e05d46bca67719a363c75927a25ef3d4da314d5 Mon Sep 17 00:00:00 2001
+From 4662813675ab604fc0c60f6fe9b59052c14e96ad Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Tue, 12 Apr 2022 18:31:59 +0200
 Subject: [PATCH] test 16 patch
 
 ---
- test/TEST-16-DMSQUASH/test.sh | 51 ++++++++++++++++++++++-------------
- 1 file changed, 33 insertions(+), 18 deletions(-)
+ test/TEST-16-DMSQUASH/test.sh | 53 ++++++++++++++++++++++-------------
+ 1 file changed, 34 insertions(+), 19 deletions(-)
 
 diff --git a/test/TEST-16-DMSQUASH/test.sh b/test/TEST-16-DMSQUASH/test.sh
-index 2a68f305..1030a0e3 100755
+index 2a68f305..0b3c118d 100755
 --- a/test/TEST-16-DMSQUASH/test.sh
 +++ b/test/TEST-16-DMSQUASH/test.sh
 @@ -4,28 +4,34 @@ TEST_DESCRIPTION="root filesystem on a LiveCD dmsquash filesystem"
@@ -54,10 +54,19 @@ index 2a68f305..1030a0e3 100755
      declare -i disk_index=0
      qemu_add_drive_args disk_index disk_args "$TESTDIR"/marker.img marker
 -    qemu_add_drive_args disk_index disk_args "$TESTDIR"/livecd.iso livecd 1
-+    qemu_add_drive_args disk_index disk_args "$TESTDIR"/myimage.raw livecd 1
++    qemu_add_drive_args disk_index disk_args /tmp/myimage/kiwi-test-image-disk.x86_64-1.15.3.raw livecd 1
  
      "$testdir"/run-qemu \
          "${disk_args[@]}" \
+@@ -58,7 +64,7 @@ test_setup() {
+     )
+ 
+     "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
+-        -a "debug dmsquash-live qemu" \
++        -a "debug kiwi-overlay qemu" \
+         -o "rngd" \
+         -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
+         --no-hostonly-cmdline -N \
 @@ -78,13 +84,13 @@ test_setup() {
              mkdir -p root usr/bin usr/lib usr/lib64 usr/sbin
          )
