@@ -1,4 +1,4 @@
-From d5aa3f05200f67f3416d493ac00b2e05ad2282b6 Mon Sep 17 00:00:00 2001
+From d4c856bdcfad6d953f3a9543131b4e6b46a3db3d Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Tue, 12 Apr 2022 18:31:59 +0200
 Subject: [PATCH] test 16 patch
@@ -8,7 +8,7 @@ Subject: [PATCH] test 16 patch
  1 file changed, 36 insertions(+), 20 deletions(-)
 
 diff --git a/test/TEST-16-DMSQUASH/test.sh b/test/TEST-16-DMSQUASH/test.sh
-index 2a68f305..e05e77ae 100755
+index 2a68f305..d47daecb 100755
 --- a/test/TEST-16-DMSQUASH/test.sh
 +++ b/test/TEST-16-DMSQUASH/test.sh
 @@ -4,33 +4,40 @@ TEST_DESCRIPTION="root filesystem on a LiveCD dmsquash filesystem"
@@ -46,7 +46,7 @@ index 2a68f305..e05e77ae 100755
  test_run() {
 +    "$testdir"/run-qemu \
 +        -boot c \
-+        -drive file=kiwi-test-image-disk.x86_64-1.15.3.raw,format=raw,if=virtio \
++        -drive file=/tmp/myimage/kiwi-test-image-disk.x86_64-1.15.3.raw,format=raw,if=virtio \
 +        -m 4096 -serial stdio
 +
      dd if=/dev/zero of="$TESTDIR"/marker.img bs=1MiB count=1
