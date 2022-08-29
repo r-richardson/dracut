@@ -1,4 +1,4 @@
-From 5f65325484871e37548b789dfd7ebda8e6ae63b8 Mon Sep 17 00:00:00 2001
+From 315b0db2a866503ae45c3c835c586e17e41b053c Mon Sep 17 00:00:00 2001
 From: Robert Richardson <robert.richardson@suse.com>
 Date: Tue, 12 Apr 2022 18:31:59 +0200
 Subject: [PATCH] test 16 patch
@@ -8,7 +8,7 @@ Subject: [PATCH] test 16 patch
  1 file changed, 38 insertions(+), 20 deletions(-)
 
 diff --git a/test/TEST-16-DMSQUASH/test.sh b/test/TEST-16-DMSQUASH/test.sh
-index 2a68f305..4602b6c3 100755
+index 2a68f305..0353e63a 100755
 --- a/test/TEST-16-DMSQUASH/test.sh
 +++ b/test/TEST-16-DMSQUASH/test.sh
 @@ -4,33 +4,42 @@ TEST_DESCRIPTION="root filesystem on a LiveCD dmsquash filesystem"
@@ -105,9 +105,9 @@ index 2a68f305..4602b6c3 100755
 +
 +    tree -L 3 kiwi/build-tests
 +
-+    kiwi-ng system build \
++    kiwi-ng system create \
++        --root "$TESTDIR"/root-source \
 +        --description kiwi/build-tests/x86/leap/test-image-disk \
-+        --set-repo obs://openSUSE:Leap:15.4/standard \
 +        --target-dir /tmp/myimage
 +        return 0
  }
