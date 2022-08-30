@@ -1,0 +1,31 @@
+From 5c23621eef5235c423c1ea72c7e0677721592aaf Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Wed, 13 Apr 2022 12:28:56 +0200
+Subject: [PATCH] test 63 patch
+
+---
+ test/TEST-63-DRACUT-CPIO/test.sh | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/test/TEST-63-DRACUT-CPIO/test.sh b/test/TEST-63-DRACUT-CPIO/test.sh
+index 8e319bf2..50ca3d12 100755
+--- a/test/TEST-63-DRACUT-CPIO/test.sh
++++ b/test/TEST-63-DRACUT-CPIO/test.sh
+@@ -6,6 +6,8 @@
+ TEST_DESCRIPTION="kernel cpio extraction tests for dracut-cpio"
+ # see dracut-cpio source for unit tests
+ 
++export basedir=/usr/lib/dracut
++
+ test_check() {
+     if ! [[ -x $basedir/dracut-cpio ]]; then
+         echo "Test needs dracut-cpio... Skipping"
+@@ -82,4 +84,4 @@ test_cleanup() {
+ }
+ 
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
+-- 
+2.35.1
+

@@ -1,0 +1,38 @@
+From ab623e8a67d8c25643444de50009ff9eb2260fda Mon Sep 17 00:00:00 2001
+From: Thomas Blume <Thomas.Blume@suse.com>
+Date: Fri, 22 Jul 2022 12:50:59 +0200
+Subject: [PATCH] fix(network-legacy): netroot call for wicked dhcp setup
+
+---
+ modules.d/35network-legacy/ifup.sh | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/modules.d/35network-legacy/ifup.sh b/modules.d/35network-legacy/ifup.sh
+index 1d96af86..f54f8662 100755
+--- a/modules.d/35network-legacy/ifup.sh
++++ b/modules.d/35network-legacy/ifup.sh
+@@ -200,6 +200,11 @@ EOF
+         wait_for_ipv6_dad $netif
+     fi
+
++    #try netroot after dhcp setup
++    if [ "$(ls "/tmp/leaseinfo.${netif}".dhcp.ipv* 2> /dev/null)" ]; then
++        /sbin/netroot "$netif"
++    fi
++
+     return 0
+ }
+
+@@ -704,10 +709,6 @@ for p in $(getargs ip=); do
+             fi
+         fi
+
+-        if command -v wicked > /dev/null && [ -z "$manualup" ]; then
+-            /sbin/netroot "$netif"
+-        fi
+-
+         exit $ret
+     fi
+ done
+--
+2.37.1

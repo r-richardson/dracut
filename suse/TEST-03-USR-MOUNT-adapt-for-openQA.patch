@@ -1,0 +1,66 @@
+From 2f53ec678f62c8794ed858869031dc90d3e37174 Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Tue, 12 Apr 2022 13:23:29 +0200
+Subject: [PATCH] test 03 patch
+
+---
+ test/TEST-03-USR-MOUNT/test.sh | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/test/TEST-03-USR-MOUNT/test.sh b/test/TEST-03-USR-MOUNT/test.sh
+index 3bb7fab7..73e03b31 100755
+--- a/test/TEST-03-USR-MOUNT/test.sh
++++ b/test/TEST-03-USR-MOUNT/test.sh
+@@ -5,6 +5,8 @@ TEST_DESCRIPTION="root filesystem on a btrfs filesystem with /usr subvolume"
+ 
+ KVERSION=${KVERSION-$(uname -r)}
+ 
++export basedir=/usr/lib/dracut
++
+ # Uncomment this to debug failures
+ #DEBUGFAIL="rd.shell rd.break"
+ 
+@@ -26,7 +28,7 @@ client_run() {
+     "$testdir"/run-qemu \
+         "${disk_args[@]}" \
+         -watchdog i6300esb -watchdog-action poweroff \
+-        -append "panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=LABEL=dracut $client_opts loglevel=7 rd.retry=3 rd.info console=ttyS0,115200n81 selinux=0 rd.debug rd.shell=0 $DEBUGFAIL" \
++        -append "nompath panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=LABEL=dracut $client_opts loglevel=7 rd.retry=3 rd.info console=ttyS0,115200n81 selinux=0 rd.debug rd.shell=0 $DEBUGFAIL" \
+         -initrd "$TESTDIR"/initramfs.testing || return 1
+ 
+     if ! grep -U --binary-files=binary -F -m 1 -q dracut-root-block-success "$TESTDIR"/marker.img; then
+@@ -59,13 +61,13 @@ test_setup() {
+             mkdir -p root usr/bin usr/lib usr/lib64 usr/sbin
+         )
+         inst_multiple sh df free ls shutdown poweroff stty cat ps ln ip \
+-            mount dmesg dhclient mkdir cp ping dhclient \
+-            umount strace less setsid dd sync
++            mount dmesg mkdir cp ping \
++            umount less setsid dd sync
++        inst_multiple -o wicked dhclient arping arping2
+         for _terminfodir in /lib/terminfo /etc/terminfo /usr/share/terminfo; do
+             [ -f ${_terminfodir}/l/linux ] && break
+         done
+         inst_multiple -o ${_terminfodir}/l/linux
+-        inst "$basedir/modules.d/35network-legacy/dhclient-script.sh" "/sbin/dhclient-script"
+         inst "$basedir/modules.d/35network-legacy/ifup.sh" "/sbin/ifup"
+ 
+         inst_simple "${basedir}/modules.d/99base/dracut-lib.sh" "/lib/dracut-lib.sh"
+@@ -99,7 +101,7 @@ test_setup() {
+     # We do it this way so that we do not risk trashing the host mdraid
+     # devices, volume groups, encrypted partitions, etc.
+     "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
+-        -m "dash udev-rules btrfs base rootfs-block fs-lib kernel-modules qemu" \
++        -m "bash udev-rules btrfs base rootfs-block fs-lib kernel-modules qemu" \
+         -d "piix ide-gd_mod ata_piix btrfs sd_mod" \
+         --nomdadmconf \
+         --nohardlink \
+@@ -155,4 +157,4 @@ test_cleanup() {
+ }
+ 
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
+-- 
+2.36.1
+

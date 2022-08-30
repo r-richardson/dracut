@@ -1,0 +1,104 @@
+From 98c23a4695ba9efbd07cee5b18ebbea6e0a2e2a6 Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Wed, 13 Apr 2022 12:09:59 +0200
+Subject: [PATCH] test 40 patch
+
+---
+ test/TEST-40-NBD/server-init.sh    |  6 +++---
+ test/TEST-40-NBD/test.sh           | 14 ++++++++------
+ test/TEST-40-NBD/wait-if-server.sh |  2 +-
+ 3 files changed, 12 insertions(+), 10 deletions(-)
+
+diff --git a/test/TEST-40-NBD/server-init.sh b/test/TEST-40-NBD/server-init.sh
+index 729d6a80..e3b4cf2c 100755
+--- a/test/TEST-40-NBD/server-init.sh
++++ b/test/TEST-40-NBD/server-init.sh
+@@ -50,9 +50,9 @@ linkup() {
+ ip addr add 127.0.0.1/8 dev lo
+ ip link set lo up
+ 
+-wait_for_if_link enx525400123456
+-ip addr add 192.168.50.1/24 dev enx525400123456
+-linkup enx525400123456
++wait_for_if_link eth0
++ip addr add 192.168.50.1/24 dev eth0
++linkup eth0
+ 
+ modprobe af_packet
+ nbd-server
+diff --git a/test/TEST-40-NBD/test.sh b/test/TEST-40-NBD/test.sh
+index 178dff40..ffe5f6d6 100755
+--- a/test/TEST-40-NBD/test.sh
++++ b/test/TEST-40-NBD/test.sh
+@@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem on NBD with $USE_NETWORK"
+ 
+ KVERSION=${KVERSION-$(uname -r)}
+ 
++export basedir=/usr/lib/dracut
++
+ # Uncomment this to debug failures
+ # DEBUGFAIL="rd.debug systemd.log_target=console loglevel=7"
+ #DEBUGFAIL="rd.shell rd.break rd.debug systemd.log_target=console loglevel=7 systemd.log_level=debug"
+@@ -48,7 +50,7 @@ run_server() {
+         -serial "${SERIAL:-"file:$TESTDIR/server.log"}" \
+         -net nic,macaddr=52:54:00:12:34:56,model=e1000 \
+         -net socket,listen=127.0.0.1:12340 \
+-        -append "panic=1 oops=panic softlockup_panic=1 rd.luks=0 systemd.crash_reboot quiet root=/dev/disk/by-id/ata-disk_serverroot rootfstype=ext3 rw console=ttyS0,115200n81 selinux=0 $SERVER_DEBUG" \
++        -append "nompath panic=1 oops=panic softlockup_panic=1 rd.luks=0 systemd.crash_reboot quiet root=/dev/disk/by-id/ata-disk_serverroot rootfstype=ext3 rw console=ttyS0,115200n81 selinux=0 $SERVER_DEBUG" \
+         -initrd "$TESTDIR"/initramfs.server \
+         -pidfile "$TESTDIR"/server.pid -daemonize || return 1
+     chmod 644 "$TESTDIR"/server.pid || return 1
+@@ -254,7 +256,7 @@ make_encrypted_root() {
+     # We do it this way so that we do not risk trashing the host mdraid
+     # devices, volume groups, encrypted partitions, etc.
+     "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
+-        -m "dash crypt lvm mdraid udev-rules base rootfs-block fs-lib kernel-modules qemu" \
++        -m "bash crypt lvm mdraid udev-rules base rootfs-block fs-lib kernel-modules qemu" \
+         -d "piix ide-gd_mod ata_piix ext3 ext3 sd_mod" \
+         --no-hostonly-cmdline -N \
+         -f "$TESTDIR"/initramfs.makeroot "$KVERSION" || return 1
+@@ -334,7 +336,7 @@ make_client_root() {
+     # We do it this way so that we do not risk trashing the host mdraid
+     # devices, volume groups, encrypted partitions, etc.
+     "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
+-        -m "dash udev-rules base rootfs-block fs-lib kernel-modules fs-lib qemu" \
++        -m "bash udev-rules base rootfs-block fs-lib kernel-modules fs-lib qemu" \
+         -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
+         --nomdadmconf \
+         --no-hostonly-cmdline -N \
+@@ -433,7 +435,7 @@ EOF
+     # We do it this way so that we do not risk trashing the host mdraid
+     # devices, volume groups, encrypted partitions, etc.
+     "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
+-        -m "dash udev-rules base rootfs-block fs-lib kernel-modules fs-lib qemu" \
++        -m "bash udev-rules base rootfs-block fs-lib kernel-modules fs-lib qemu" \
+         -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
+         --nomdadmconf \
+         --no-hostonly-cmdline -N \
+@@ -486,7 +488,7 @@ test_setup() {
+     )
+ 
+     "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
+-        -o "plymouth dash iscsi nfs ${OMIT_NETWORK}" \
++        -o "plymouth bash iscsi nfs ${OMIT_NETWORK}" \
+         -a "debug watchdog ${USE_NETWORK}" \
+         --no-hostonly-cmdline -N \
+         -f "$TESTDIR"/initramfs.testing "$KVERSION" || return 1
+@@ -521,4 +523,4 @@ test_cleanup() {
+ }
+ 
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
+diff --git a/test/TEST-40-NBD/wait-if-server.sh b/test/TEST-40-NBD/wait-if-server.sh
+index 8ae21f8a..bd96fe78 100644
+--- a/test/TEST-40-NBD/wait-if-server.sh
++++ b/test/TEST-40-NBD/wait-if-server.sh
+@@ -1,3 +1,3 @@
+ #!/bin/sh
+ . /lib/net-lib.sh
+-wait_for_if_link enx525400123456
++wait_for_if_link eth0
+-- 
+2.37.1
+

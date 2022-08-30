@@ -1,0 +1,131 @@
+From d237ed3647c3a1510971e55fb4ec53407a4a7b89 Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Tue, 12 Apr 2022 18:31:59 +0200
+Subject: [PATCH] test 16 patch
+
+---
+ test/TEST-16-DMSQUASH/test.sh | 60 +++++++++++++++++++++++------------
+ 1 file changed, 39 insertions(+), 21 deletions(-)
+
+diff --git a/test/TEST-16-DMSQUASH/test.sh b/test/TEST-16-DMSQUASH/test.sh
+index 2a68f305..49b41c11 100755
+--- a/test/TEST-16-DMSQUASH/test.sh
++++ b/test/TEST-16-DMSQUASH/test.sh
+@@ -4,33 +4,42 @@ TEST_DESCRIPTION="root filesystem on a LiveCD dmsquash filesystem"
+ 
+ KVERSION="${KVERSION-$(uname -r)}"
+ 
++export basedir=/usr/lib/dracut
++
+ # Uncomment this to debug failures
+ #DEBUGFAIL="rd.shell rd.break rd.debug systemd.log_level=debug systemd.log_target=console"
+ 
+-test_check() {
+-    for pdir in $(python3 -c "import site; print(site.getsitepackages())" | sed -e 's/\[\(.*\)\]/\1/' -e "s/', /' /g"); do
+-        # shellcheck disable=SC2001
+-        pdir1=$(echo "$pdir" | sed "s/^'\(.*\)'$/\1/")
+-        if [[ -d $pdir1/imgcreate ]]; then
+-            return 0
+-        fi
+-    done
+-    echo "python-imgcreate not installed"
+-    return 1
+-}
++#test_check() {
++#    for pdir in $(python3 -c "import site; print(site.getsitepackages())" | sed -e 's/\[\(.*\)\]/\1/' -e "s/', /' /g"); do
++#        # shellcheck disable=SC2001
++#        pdir1=$(echo "$pdir" | sed "s/^'\(.*\)'$/\1/")
++#        if [[ -d $pdir1/imgcreate ]]; then
++#            return 0
++#        fi
++#    done
++#    echo "python-imgcreate not installed"
++#    return 1
++#}
+ 
+ test_run() {
++    #"$testdir"/run-qemu \
++    #    -boot c \
++    #    -drive file=/tmp/myimage/kiwi-test-image-disk.x86_64-1.15.3.raw,format=raw,if=virtio \
++    #    -m 4096 -serial stdio
++
+     dd if=/dev/zero of="$TESTDIR"/marker.img bs=1MiB count=1
+     declare -a disk_args=()
+     # shellcheck disable=SC2034
+     declare -i disk_index=0
+     qemu_add_drive_args disk_index disk_args "$TESTDIR"/marker.img marker
+-    qemu_add_drive_args disk_index disk_args "$TESTDIR"/livecd.iso livecd 1
++    qemu_add_drive_args disk_index disk_args /tmp/myimage/kiwi-test-image-disk.x86_64-1.15.3.raw livecd 1
++
++    image_uuid=$(grep -oE 'root=UUID=([[:alnum:]]*-[[:alnum:]]*-[[:alnum:]]*-[[:alnum:]]*-[[:alnum:]]*)' /tmp/dracut-testsuite-logs/TEST-16-DMSQUASH-setup.log)
+ 
+     "$testdir"/run-qemu \
+         "${disk_args[@]}" \
+         -boot order=d \
+-        -append "panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=live:CDLABEL=LiveCD live rw quiet rd.retry=3 rd.info console=ttyS0,115200n81 selinux=0 rd.shell=0 $DEBUGFAIL" \
++        -append "panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=UUID=${image_uuid:10:36} live rw quiet rd.retry=3 rd.info console=ttyS0,115200n81 selinux=0 rd.shell=0 $DEBUGFAIL" \
+         -initrd "$TESTDIR"/initramfs.testing
+ 
+     # mediacheck test with qemu GUI
+@@ -58,13 +67,14 @@ test_setup() {
+     )
+ 
+     "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
+-        -a "debug dmsquash-live qemu" \
++        -a "debug kiwi-overlay qemu" \
+         -o "rngd" \
+         -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
+         --no-hostonly-cmdline -N \
+         -f "$TESTDIR"/initramfs.testing "$KVERSION" || return 1
+ 
+-    mkdir -p -- "$TESTDIR"/root-source
++    kiwi-ng system prepare --description=kiwi/build-tests/x86/leap/test-image-disk --root="$TESTDIR"/root-source --set-repo obs://openSUSE:Leap:15.4/standard
++    
+     kernel="$KVERSION"
+     # Create what will eventually be our root filesystem onto an overlay
+     (
+@@ -78,13 +88,13 @@ test_setup() {
+             mkdir -p root usr/bin usr/lib usr/lib64 usr/sbin
+         )
+         inst_multiple sh df free ls shutdown poweroff stty cat ps ln ip \
+-            mount dmesg dhclient mkdir cp ping dhclient \
+-            umount strace less dd sync
++            mount dmesg mkdir cp ping \
++            umount less dd sync
++        inst_multiple -o wicked dhclient arping arping2
+         for _terminfodir in /lib/terminfo /etc/terminfo /usr/share/terminfo; do
+             [[ -f ${_terminfodir}/l/linux ]] && break
+         done
+         inst_multiple -o "${_terminfodir}"/l/linux
+-        inst "$basedir/modules.d/35network-legacy/dhclient-script.sh" "/sbin/dhclient-script"
+         inst "$basedir/modules.d/35network-legacy/ifup.sh" "/sbin/ifup"
+ 
+         inst_simple "${basedir}/modules.d/99base/dracut-lib.sh" "/lib/dracut-lib.sh"
+@@ -115,8 +125,16 @@ test_setup() {
+         cp -a -- /etc/ld.so.conf* "$initdir"/etc
+         ldconfig -r "$initdir"
+     )
+-    python3 create.py -d -c livecd-fedora-minimal.ks
+-    return 0
++    pip install kiwi
++
++    git clone https://github.com/OSInside/kiwi
++
++    tree -L 3 kiwi/build-tests
++
++    kiwi-ng system create \
++        --root "$TESTDIR"/root-source \
++        --target-dir /tmp/myimage
++        return 0
+ }
+ 
+ test_cleanup() {
+@@ -124,4 +142,4 @@ test_cleanup() {
+ }
+ 
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
+-- 
+2.37.2
+

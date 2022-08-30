@@ -1,0 +1,66 @@
+From cca037ac6743b4256ae812ddb0597f5ff9c8b192 Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Mon, 11 Apr 2022 12:27:09 +0200
+Subject: [PATCH] test patch 01
+
+---
+ test/TEST-01-BASIC/test.sh | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/test/TEST-01-BASIC/test.sh b/test/TEST-01-BASIC/test.sh
+index 012f2e5a..4c171e72 100755
+--- a/test/TEST-01-BASIC/test.sh
++++ b/test/TEST-01-BASIC/test.sh
+@@ -7,6 +7,8 @@ KVERSION=${KVERSION-$(uname -r)}
+ # Uncomment this to debug failures
+ # DEBUGFAIL="rd.shell rd.break"
+ 
++export basedir=/usr/lib/dracut
++
+ test_run() {
+     dd if=/dev/zero of="$TESTDIR"/marker.img bs=1MiB count=1
+     declare -a disk_args=()
+@@ -21,7 +23,7 @@ test_run() {
+         -append "panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot \"root=LABEL=  rdinit=/bin/sh\" rw systemd.log_level=debug systemd.log_target=console rd.retry=3 rd.debug console=ttyS0,115200n81 rd.shell=0 $DEBUGFAIL" \
+         -initrd "$TESTDIR"/initramfs.testing || return 1
+ 
+-    grep -U --binary-files=binary -F -m 1 -q dracut-root-block-success "$TESTDIR"/marker.img
++    grep -U --binary-files=binary -F -m 1 -q dracut-root-block-success "$TESTDIR"/marker.img || return 1
+ }
+ 
+ test_setup() {
+@@ -39,13 +41,13 @@ test_setup() {
+             mkdir -p root usr/bin usr/lib usr/lib64 usr/sbin
+         )
+         inst_multiple sh df free ls shutdown poweroff stty cat ps ln ip \
+-            mount dmesg dhclient mkdir cp ping dhclient \
+-            umount strace less setsid dd sync
++            mount dmesg mkdir cp ping \
++            umount less setsid dd sync
++        inst_multiple -o wicked dhclient arping arping2
+         for _terminfodir in /lib/terminfo /etc/terminfo /usr/share/terminfo; do
+             [ -f ${_terminfodir}/l/linux ] && break
+         done
+         inst_multiple -o ${_terminfodir}/l/linux
+-        inst "$basedir/modules.d/35network-legacy/dhclient-script.sh" "/sbin/dhclient-script"
+         inst "$basedir/modules.d/35network-legacy/ifup.sh" "/sbin/ifup"
+ 
+         inst_simple "${basedir}/modules.d/99base/dracut-lib.sh" "/lib/dracut-lib.sh"
+@@ -78,7 +80,7 @@ test_setup() {
+     # We do it this way so that we do not risk trashing the host mdraid
+     # devices, volume groups, encrypted partitions, etc.
+     "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
+-        -m "dash udev-rules base rootfs-block fs-lib kernel-modules fs-lib qemu" \
++        -m "bash udev-rules base rootfs-block fs-lib kernel-modules fs-lib qemu" \
+         -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
+         --nomdadmconf \
+         --no-hostonly-cmdline -N \
+@@ -124,4 +126,4 @@ test_cleanup() {
+ }
+ 
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
+-- 
+2.35.1
+

@@ -1,0 +1,161 @@
+From ee5ede23c20b7c23050c882b0baae90e8a43c222 Mon Sep 17 00:00:00 2001
+From: Robert Richardson <robert.richardson@suse.com>
+Date: Wed, 13 Apr 2022 12:06:08 +0200
+Subject: [PATCH] test 35 patch
+
+---
+ test/TEST-35-ISCSI-MULTI/server-init.sh    | 12 ++++-----
+ test/TEST-35-ISCSI-MULTI/test.sh           | 30 ++++++++++++----------
+ test/TEST-35-ISCSI-MULTI/wait-if-server.sh |  4 +--
+ 3 files changed, 24 insertions(+), 22 deletions(-)
+
+diff --git a/test/TEST-35-ISCSI-MULTI/server-init.sh b/test/TEST-35-ISCSI-MULTI/server-init.sh
+index fd5538d8..cef92c9e 100755
+--- a/test/TEST-35-ISCSI-MULTI/server-init.sh
++++ b/test/TEST-35-ISCSI-MULTI/server-init.sh
+@@ -47,17 +47,17 @@ linkup() {
+     wait_for_if_link "$1" 2> /dev/null && ip link set "$1" up 2> /dev/null && wait_for_if_up "$1" 2> /dev/null
+ }
+ 
+-wait_for_if_link enx525400123456
+-wait_for_if_link enx525400123457
++wait_for_if_link eth0
++wait_for_if_link eth1
+ 
+ ip addr add 127.0.0.1/8 dev lo
+ ip link set lo up
+ 
+-ip addr add 192.168.50.1/24 dev enx525400123456
+-linkup enx525400123456
++ip addr add 192.168.50.1/24 dev eth0
++linkup eth0
+ 
+-ip addr add 192.168.51.1/24 dev enx525400123457
+-linkup enx525400123457
++ip addr add 192.168.51.1/24 dev eth1
++linkup eth1
+ 
+ modprobe af_packet
+ 
+diff --git a/test/TEST-35-ISCSI-MULTI/test.sh b/test/TEST-35-ISCSI-MULTI/test.sh
+index 628131e0..7b21b6a5 100755
+--- a/test/TEST-35-ISCSI-MULTI/test.sh
++++ b/test/TEST-35-ISCSI-MULTI/test.sh
+@@ -13,6 +13,8 @@ TEST_DESCRIPTION="root filesystem over multiple iSCSI with $USE_NETWORK"
+ 
+ KVERSION=${KVERSION-$(uname -r)}
+ 
++export basedir=/usr/lib/dracut
++
+ #DEBUGFAIL="loglevel=1"
+ #DEBUGFAIL="rd.shell rd.break rd.debug loglevel=7 "
+ DEBUGFAIL="rd.debug loglevel=7 "
+@@ -36,7 +38,7 @@ run_server() {
+         -net nic,macaddr=52:54:00:12:34:56,model=e1000 \
+         -net nic,macaddr=52:54:00:12:34:57,model=e1000 \
+         -net socket,listen=127.0.0.1:12331 \
+-        -append "panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=/dev/disk/by-id/ata-disk_serverroot rootfstype=ext3 rw console=ttyS0,115200n81 selinux=0 $SERVER_DEBUG" \
++        -append "nompath panic=1 oops=panic softlockup_panic=1 systemd.crash_reboot root=/dev/disk/by-id/ata-disk_serverroot rootfstype=ext3 rw console=ttyS0,115200n81 selinux=0 $SERVER_DEBUG" \
+         -initrd "$TESTDIR"/initramfs.server \
+         -pidfile "$TESTDIR"/server.pid -daemonize || return 1
+     chmod 644 "$TESTDIR"/server.pid || return 1
+@@ -87,8 +89,8 @@ do_test_run() {
+     initiator=$(iscsi-iname)
+     run_client "netroot=iscsi target1 target2" \
+         "root=LABEL=sysroot" \
+-        "ip=192.168.50.101:::255.255.255.0::enp0s1:off" \
+-        "ip=192.168.51.101:::255.255.255.0::enp0s2:off" \
++        "ip=192.168.50.101:::255.255.255.0::eth0:off" \
++        "ip=192.168.51.101:::255.255.255.0::eth1:off" \
+         "netroot=iscsi:192.168.51.1::::iqn.2009-06.dracut:target1" \
+         "netroot=iscsi:192.168.50.1::::iqn.2009-06.dracut:target2" \
+         "rd.iscsi.initiator=$initiator" \
+@@ -96,8 +98,8 @@ do_test_run() {
+ 
+     run_client "netroot=iscsi target1 target2 rd.iscsi.waitnet=0" \
+         "root=LABEL=sysroot" \
+-        "ip=192.168.50.101:::255.255.255.0::enp0s1:off" \
+-        "ip=192.168.51.101:::255.255.255.0::enp0s2:off" \
++        "ip=192.168.50.101:::255.255.255.0::eth0:off" \
++        "ip=192.168.51.101:::255.255.255.0::eth1:off" \
+         "netroot=iscsi:192.168.51.1::::iqn.2009-06.dracut:target1" \
+         "netroot=iscsi:192.168.50.1::::iqn.2009-06.dracut:target2" \
+         "rd.iscsi.firmware" \
+@@ -107,8 +109,8 @@ do_test_run() {
+ 
+     run_client "netroot=iscsi target1 target2 rd.iscsi.waitnet=0 rd.iscsi.testroute=0" \
+         "root=LABEL=sysroot" \
+-        "ip=192.168.50.101:::255.255.255.0::enp0s1:off" \
+-        "ip=192.168.51.101:::255.255.255.0::enp0s2:off" \
++        "ip=192.168.50.101:::255.255.255.0::eth0:off" \
++        "ip=192.168.51.101:::255.255.255.0::eth1:off" \
+         "netroot=iscsi:192.168.51.1::::iqn.2009-06.dracut:target1" \
+         "netroot=iscsi:192.168.50.1::::iqn.2009-06.dracut:target2" \
+         "rd.iscsi.firmware" \
+@@ -118,8 +120,8 @@ do_test_run() {
+ 
+     run_client "netroot=iscsi target1 target2 rd.iscsi.waitnet=0 rd.iscsi.testroute=0 default GW" \
+         "root=LABEL=sysroot" \
+-        "ip=192.168.50.101::192.168.50.1:255.255.255.0::enp0s1:off" \
+-        "ip=192.168.51.101::192.168.51.1:255.255.255.0::enp0s2:off" \
++        "ip=192.168.50.101::192.168.50.1:255.255.255.0::eth0:off" \
++        "ip=192.168.51.101::192.168.51.1:255.255.255.0::eth1:off" \
+         "netroot=iscsi:192.168.51.1::::iqn.2009-06.dracut:target1" \
+         "netroot=iscsi:192.168.50.1::::iqn.2009-06.dracut:target2" \
+         "rd.iscsi.firmware" \
+@@ -200,7 +202,7 @@ test_setup() {
+     # We do it this way so that we do not risk trashing the host mdraid
+     # devices, volume groups, encrypted partitions, etc.
+     "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
+-        -m "dash crypt lvm mdraid udev-rules base rootfs-block fs-lib kernel-modules qemu" \
++        -m "bash crypt lvm mdraid udev-rules base rootfs-block fs-lib kernel-modules qemu" \
+         -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
+         --no-hostonly-cmdline -N \
+         -f "$TESTDIR"/initramfs.makeroot "$KVERSION" || return 1
+@@ -291,7 +293,7 @@ test_setup() {
+     # We do it this way so that we do not risk trashing the host mdraid
+     # devices, volume groups, encrypted partitions, etc.
+     "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
+-        -m "dash udev-rules base rootfs-block fs-lib kernel-modules fs-lib qemu" \
++        -m "bash udev-rules base rootfs-block fs-lib kernel-modules fs-lib qemu" \
+         -d "piix ide-gd_mod ata_piix ext3 sd_mod" \
+         --nomdadmconf \
+         --no-hostonly-cmdline -N \
+@@ -328,7 +330,7 @@ test_setup() {
+     )
+     # Make client's dracut image
+     "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
+-        -o "dash plymouth dmraid nfs ${OMIT_NETWORK}" \
++        -o "bash plymouth dmraid nfs ${OMIT_NETWORK}" \
+         -a "debug ${USE_NETWORK}" \
+         --no-hostonly-cmdline -N \
+         -f "$TESTDIR"/initramfs.testing "$KVERSION" || return 1
+@@ -344,7 +346,7 @@ test_setup() {
+     )
+     # Make server's dracut image
+     "$basedir"/dracut.sh -l -i "$TESTDIR"/overlay / \
+-        -a "dash udev-rules base rootfs-block fs-lib debug kernel-modules network network-legacy" \
++        -a "bash udev-rules base rootfs-block fs-lib debug kernel-modules network network-legacy" \
+         -d "af_packet piix ide-gd_mod ata_piix ext3 sd_mod e1000 drbg" \
+         --no-hostonly-cmdline -N \
+         -f "$TESTDIR"/initramfs.server "$KVERSION" || return 1
+@@ -360,4 +362,4 @@ test_cleanup() {
+ }
+ 
+ # shellcheck disable=SC1090
+-. "$testdir"/test-functions
++. "$basedir"/test/test-functions
+diff --git a/test/TEST-35-ISCSI-MULTI/wait-if-server.sh b/test/TEST-35-ISCSI-MULTI/wait-if-server.sh
+index b53e41fe..2e26d9ed 100644
+--- a/test/TEST-35-ISCSI-MULTI/wait-if-server.sh
++++ b/test/TEST-35-ISCSI-MULTI/wait-if-server.sh
+@@ -1,4 +1,4 @@
+ #!/bin/sh
+ . /lib/net-lib.sh
+-wait_for_if_link enx525400123456
+-wait_for_if_link enx525400123457
++wait_for_if_link eth0
++wait_for_if_link eth1
+-- 
+2.37.1
+

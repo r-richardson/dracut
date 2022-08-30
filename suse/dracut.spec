@@ -35,7 +35,39 @@ Source1:        dracut-rpmlintrc
 Source2:        README.susemaint
 
 # Test patches for openQA
-Patch1:         0001-test-TEST-03-USR-MOUNT-adapt-for-openQA.patch
+Patch1:         TEST-01-BASIC-adapt-for-openQA.patch
+Patch2:         TEST-02-SYSTEMD-adapt-for-openQA.patch
+Patch3:         TEST-03-USR-MOUNT-adapt-for-openQA.patch
+Patch4:         TEST-04-FULL-SYSTEMD-adapt-for-openQA.patch
+Patch5:         TEST-10-RAID-adapt-for-openQA.patch
+Patch6:         TEST-11-LVM-adapt-for-openQA.patch
+Patch7:         TEST-12-RAID-DEG-adapt-for-openQA.patch
+Patch8:         TEST-13-ENC-RAID-LVM-adapt-for-openQA.patch
+Patch9:         TEST-14-IMSM-adapt-for-openQA.patch
+Patch10:        TEST-15-BTRFSRAID-adapt-for-openQA.patch
+Patch11:        TEST-16-DMSQUASH-adapt-for-openQA.patch
+Patch12:        TEST-17-LVM-THIN-adapt-for-openQA.patch
+Patch13:        TEST-20-NFS-adapt-for-openQA.patch
+#Patch14:        TEST-21-NFS-NM-adapt-for-openQA.patch
+Patch15:        TEST-30-ISCSI-adapt-for-openQA.patch
+# Patch16:        TEST-31-ISCSI-NM-adapt-for-openQA.patch
+Patch17:        TEST-35-ISCSI-MULTI-adapt-for-openQA.patch
+# Patch18:        TEST-36-ISCSI-MULTI-NM-adapt-for-openQA.patch
+Patch19:        TEST-40-NBD-adapt-for-openQA.patch
+# Patch20:        TEST-41-NBD-NM-adapt-for-openQA.patch
+Patch21:        TEST-50-MULTINIC-adapt-for-openQA.patch
+# Patch22:        TEST-51-MULTINIC-NM-adapt-for-openQA.patch
+Patch23:        TEST-60-BONDBRIDGEVLANIFCFG-adapt-for-openQA.patch
+# Patch24:        TEST-61-BONDBRIDGEVLANIFCFG-NM-adapt-for-openQA.patch
+Patch25:        TEST-62-SKIPCPIO-adapt-for-openQA.patch
+Patch26:        TEST-63-DRACUT-CPIO-adapt-for-openQA.patch
+Patch27:        TEST-98-GETARG-adapt-for-openQA.patch
+Patch28:        TEST-99-RPM-adapt-for-openQA.patch
+Patch29:        RUN-QEMU-adapt-for-openQA.patch
+Patch30:	    0001-fix-network-legacy-add-support-for-wicked-provided-R.patch
+Patch31:        0001-fix-network-legacy-netroot-call-for-wicked-dhcp-setu.patch
+Patch32:        0001-fix-network-legacy-wait-for-multiple-interfaces.patch
+Patch33:        0001-debug-params.patch
 
 BuildRequires:  asciidoc
 BuildRequires:  bash
@@ -84,7 +116,6 @@ NFS, iSCSI, NBD, FCoE.
 Summary:        Dracut modules to build a dracut initramfs with an integrity check
 Group:          System/Base
 Requires:       %{name} = %{version}-%{release}
-Requires:       fipscheck
 Requires:       libcryptsetup12-hmac
 Requires:       libgcrypt20-hmac
 Requires:       libkcapi-tools
@@ -149,7 +180,7 @@ This package provides the dracut testsuite scripts and binaries for QA.
 
 %prep
 %setup -q -n dracut-%{version}
-%patch1 -p1
+%autopatch -p1
 
 %build
 %configure \
@@ -191,11 +222,8 @@ ln -s %{dracutlibdir}/modules.d/45ifcfg/write-ifcfg-redhat.sh %{buildroot}/%{dra
 %endif
 
 # qa-testsuite installation
-mkdir -p %{buildroot}/%{dracutlibdir}/test
-install -m 0755 test/test-functions %{buildroot}/%{dracutlibdir}/test
-mkdir -p %{buildroot}/%{dracutlibdir}/test/TEST-03-USR-MOUNT
-install -m 0755 test/TEST-03-USR-MOUNT/*.sh %{buildroot}/%{dracutlibdir}/test/TEST-03-USR-MOUNT
-install -m 0644 test/TEST-03-USR-MOUNT/fstab %{buildroot}/%{dracutlibdir}/test/TEST-03-USR-MOUNT
+cp -a test %{buildroot}/%{dracutlibdir}/test
+ln -s /usr/bin/dracut %{buildroot}/%{dracutlibdir}/dracut.sh
 
 %post
 # check whether /var/run has been converted to a symlink
@@ -280,11 +308,12 @@ fi
 %{dracut_sbindir}/mkinitrd
 %{_mandir}/man8/mkinitrd.8*
 
+
 %files qa-testsuite
-%dir %{dracutlibdir}/test
+%defattr(-,root,root)
+%{dracutlibdir}/test
 %{dracutlibdir}/test/test-functions
-%dir %{dracutlibdir}/test/TEST-03-USR-MOUNT
-%{dracutlibdir}/test/TEST-03-USR-MOUNT/{*.sh,fstab}
+%{dracutlibdir}/dracut.sh
 
 %files
 %license COPYING
